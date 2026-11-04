@@ -1,6 +1,4 @@
 // --- CONFIGURATION ---
-// 1. CricLive API Key (Aapki key yahan add hai)
-const CRICLIVE_API_KEY = "787|SKABRQEZ6yxsWbkKoJVdttbZWKaMytN7rrj8ZiSk709f1841"; 
 const CRICLIVE_URL = "https://cricketliveapi.com/api/v1/cricket/schedule";
 
 // 2. Aapka AI Backend (Render wala link)
@@ -31,7 +29,7 @@ const popupHTML = `
 `;
 document.body.insertAdjacentHTML('beforeend', popupHTML);
 
-// --- API CALL ---
+// --- API CALL (Without Token) ---
 async function fetchUpcomingMatches() {
     let container = document.getElementById("dynamic-prediction-area");
     if (!container) return;
@@ -39,10 +37,10 @@ async function fetchUpcomingMatches() {
     container.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Upcoming Matches...</h3>`;
 
     try {
+        // Yahan humne Authorization header hata diya hai
         const response = await fetch(CRICLIVE_URL, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${CRICLIVE_API_KEY}`,
                 'Accept': 'application/json'
             }
         });
@@ -52,7 +50,6 @@ async function fetchUpcomingMatches() {
         const data = await response.json();
         console.log("CricLive Data:", data);
         
-        // Data extract karne ka safe tareeqa
         let matches = Array.isArray(data) ? data : (data.data || data.matches || data.response || []);
         
         renderMatches(matches, container);
@@ -68,85 +65,8 @@ async function fetchUpcomingMatches() {
     }
 }
 
-// --- RENDER MATCHES ---
-function renderMatches(matches, container) {
-    if (!matches || matches.length === 0) {
-        container.innerHTML = `<div style="background: #131b2e; padding: 15px; border-radius: 12px; border: 1px solid #00ffcc;">
-            <h3 style="color: #00ffcc; margin: 0;">No Upcoming Matches</h3>
-            <p style="color: #94a3b8; margin: 0;">Abhi koi aane wala match available nahi hai.</p>
-        </div>`;
-        return;
-    }
-
-    let htmlContent = `<h3 style="color: #00ffcc; margin-bottom: 12px;">🏏 Upcoming Fixtures</h3>`;
-    
-    matches.forEach(match => {
-        // Teams ka data nikalna (API format ke hisaab se)
-        const team1 = match.teams && match.teams[0] ? (match.teams[0].name || match.teams[0]) : "Team 1";
-        const team2 = match.teams && match.teams[1] ? (match.teams[1].name || match.teams[1]) : "Team 2";
-        const venue = match.venue ? (match.venue.name || match.venue) : "Unknown Venue";
-        const matchType = match.format || match.matchType || "T20";
-        const date = match.date || match.startTime || "TBD";
-
-        htmlContent += `
-            <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.4);">
-                <h4 style="color: #ffffff; margin: 0 0 8px 0; font-size: 1.1rem;">${team1} vs ${team2}</h4>
-                <p style="color: #94a3b8; margin: 0 0 5px 0; font-size: 0.85rem;">Format: ${matchType} | Date: ${date}</p>
-                <button onclick="openPredictModal('${team1}', '${team2}', '${venue}', '${matchType}')" style="background: #00ffcc; color: #000; padding: 8px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%;">🔮 Predict Winner</button>
-            </div>
-        `;
-    });
-    
-    container.innerHTML = htmlContent;
-}
-
-// --- PREDICTION LOGIC ---
-function openPredictModal(team1, team2, venue, matchType) {
-    document.getElementById('prediction-modal').style.display = 'flex';
-    document.getElementById('modal-match-name').innerText = `${team1} vs ${team2} (${matchType})`;
-    document.getElementById('prediction-result').innerText = "";
-    
-    const tossSelect = document.getElementById('toss-winner');
-    tossSelect.innerHTML = `<option value="${team1}">${team1}</option><option value="${team2}">${team2}</option>`;
-
-    document.getElementById('get-prediction-btn').onclick = async () => {
-        const tossWinner = tossSelect.value;
-        const tossDecision = document.getElementById('toss-decision').value;
-        const resultDiv = document.getElementById('prediction-result');
-        
-        resultDiv.style.color = "#00ffcc";
-        resultDiv.innerText = "Calculating... (Server wake up may take 50s)";
-
-        try {
-            const response = await fetch(`${BACKEND_URL}/predict`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    match_type: matchType,
-                    team1: team1,
-                    team2: team2,
-                    venue: venue,
-                    toss_winner: tossWinner,
-                    toss_decision: tossDecision
-                })
-            });
-            
-            const prediction = await response.json();
-            
-            if(prediction.success) {
-                const p1 = prediction.predictions[team1];
-                const p2 = prediction.predictions[team2];
-                resultDiv.innerHTML = `<span style="color:#00ffcc;">${team1}: ${p1}</span><br><span style="color:#ff4d4d;">${team2}: ${p2}</span>`;
-            } else {
-                resultDiv.style.color = "#ff4d4d";
-                resultDiv.innerText = "Prediction error.";
-            }
-        } catch (error) {
-            resultDiv.style.color = "#ff4d4d";
-            resultDiv.innerText = "Backend connect nahi ho raha. Thodi der baad try karein.";
-        }
-    };
-}
+// Baaki code (renderMatches, openPredictModal, etc.) waisa hi rahega
+// ... (pichla code yahan paste karein) ...
 
 // --- INITIALIZE ---
 document.addEventListener("DOMContentLoaded", fetchUpcomingMatches);
