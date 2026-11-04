@@ -3,7 +3,7 @@ const API_KEY = "Oc_live_6j4o4fJnnWL0NRrjzdpVL3SZCX2Zk4Jx";
 const BASE_URL = "https://api.opencricketcodes.com/v1";
 
 const headers = {
-    "Authorization": `Bearer ${API_KEY}`,
+    "Authorization": `Bearer ${API_KEY}`, 
     "Content-Type": "application/json"
 };
 
