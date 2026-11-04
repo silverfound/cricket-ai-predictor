@@ -1,7 +1,6 @@
 // --- CONFIGURATION ---
-// 1. Nayi CricLive API Key (Yahan apni key paste karein)
-const CRICLIVE_API_KEY = "
-787|SKABRQEZ6yxsWbkKoJVdttbZWKaMytN7rrj8ZiSk709f1841"; 
+// 1. CricLive API Key (Aapki key yahan add hai)
+const CRICLIVE_API_KEY = "787|SKABRQEZ6yxsWbkKoJVdttbZWKaMytN7rrj8ZiSk709f1841"; 
 const CRICLIVE_URL = "https://cricketliveapi.com/api/v1/cricket/schedule";
 
 // 2. Aapka AI Backend (Render wala link)
@@ -53,7 +52,7 @@ async function fetchUpcomingMatches() {
         const data = await response.json();
         console.log("CricLive Data:", data);
         
-        // API response ke hisaab se data extract karein
+        // Data extract karne ka safe tareeqa
         let matches = Array.isArray(data) ? data : (data.data || data.matches || data.response || []);
         
         renderMatches(matches, container);
@@ -82,7 +81,7 @@ function renderMatches(matches, container) {
     let htmlContent = `<h3 style="color: #00ffcc; margin-bottom: 12px;">🏏 Upcoming Fixtures</h3>`;
     
     matches.forEach(match => {
-        // Data fields safely extract karein
+        // Teams ka data nikalna (API format ke hisaab se)
         const team1 = match.teams && match.teams[0] ? (match.teams[0].name || match.teams[0]) : "Team 1";
         const team2 = match.teams && match.teams[1] ? (match.teams[1].name || match.teams[1]) : "Team 2";
         const venue = match.venue ? (match.venue.name || match.venue) : "Unknown Venue";
