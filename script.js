@@ -1,8 +1,13 @@
 // --- CONFIGURATION ---
 const CRICAPI_KEY = "198b0b48-1026-4588-b420-fe70695ed472"; 
-// Hum currentMatches use kar rahe hain live aur aane wale matches ke liye
 const CRICAPI_URL = `https://api.cricapi.com/v1/currentMatches?apikey=${CRICAPI_KEY}&offset=0`;
 const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com"; 
+
+// Global Variables for Data
+let liveMatches = [];
+let upcomingMatches = [];
+let finishedMatches = [];
+let currentTab = 'live'; // Default Tab
 
 // --- POPUP HTML ---
 const popupHTML = `
@@ -29,50 +34,66 @@ const popupHTML = `
 `;
 document.body.insertAdjacentHTML('beforeend', popupHTML);
 
-// --- API CALL ---
+// --- API CALL & TABS SETUP ---
 async function fetchUpcomingMatches() {
     let container = document.getElementById("dynamic-prediction-area");
     if (!container) return;
 
-    container.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Matches...</h3>`;
+    // Tabs ka HTML structure aur style
+    let tabsHTML = `
+        <div style="display: flex; gap: 10px; margin-bottom: 15px; justify-content: center;">
+            <button id="tab-live" onclick="switchTab('live')" style="padding: 8px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; background: #00ffcc; color: #000;">🔴 Live</button>
+            <button id="tab-upcoming" onclick="switchTab('upcoming')" style="padding: 8px 15px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">⏳ Upcoming</button>
+            <button id="tab-finished" onclick="switchTab('finished')" style="padding: 8px 15px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">✅ Finished</button>
+        </div>
+        <div id="matches-container"></div>
+    `;
+    container.innerHTML = tabsHTML;
+
+    let matchesContainer = document.getElementById("matches-container");
+    matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Matches...</h3>`;
 
     try {
         const response = await fetch(CRICAPI_URL);
         if (!response.ok) throw new Error(`API Error: ${response.status}`);
-        
         const data = await response.json();
         
         if (data.status === "success" && data.data) {
-            // ==========================================
-            // SMART FILTER YAHAN LAGAYA HAI
-            // ==========================================
-            let filteredMatches = data.data.filter(match => {
-                // 1. Khelay ja chuke (finished) matches hata dein
-                if (match.matchEnded) return false;
+            
+            // Arrays ko reset karein
+            liveMatches = []; upcomingMatches = []; finishedMatches = [];
 
+            data.data.forEach(match => {
+                // SMART FILTER (T20 sab, ODI/Test sirf international)
                 let type = match.matchType ? match.matchType.toLowerCase() : "";
                 let name = match.name ? match.name.toLowerCase() : "";
-
-                // 2. Domestic ODI/Test ko pehchaanne ke liye keywords
                 let domesticKeywords = ['county', 'shield', 'one day cup', 'odi cup', 'first class', 'ranji', 'duleep', 'super50', 'ford trophy'];
                 let isDomestic = domesticKeywords.some(kw => name.includes(kw));
 
-                // 3. Logic:
-                if (type === 't20') {
-                    return true; // Saare T20 (Int'l + Domestic Leagues) allow hain
-                } else if (type === 'odi' || type === 'test') {
-                    return !isDomestic; // ODI/Test sirf tab allow hain jab domestic na hon
+                let allowed = false;
+                if (type === 't20') allowed = true; 
+                else if ((type === 'odi' || type === 'test') && !isDomestic) allowed = true;
+
+                if (allowed) {
+                    // Matches ko categorize karein
+                    if (match.matchEnded === true) {
+                        finishedMatches.push(match);
+                    } else if (match.matchStarted === true && match.matchEnded === false) {
+                        liveMatches.push(match);
+                    } else {
+                        upcomingMatches.push(match);
+                    }
                 }
-                return false; // Baaki formats (jaise The Hundred) hata dein
             });
 
-            renderMatches(filteredMatches, container);
+            // Default tab render karein
+            switchTab('live');
+
         } else {
             throw new Error(data.reason || "Data not found");
         }
-
     } catch (error) {
-        container.innerHTML = `
+        matchesContainer.innerHTML = `
             <div style="background: #131b2e; padding: 15px; border-radius: 12px; border: 1px solid #ff4d4d;">
                 <h3 style="color: #ff4d4d; margin: 0 0 5px 0;">API Connection Notice</h3>
                 <p style="color: #94a3b8; margin: 0;">Error: ${error.message}</p>
@@ -81,17 +102,45 @@ async function fetchUpcomingMatches() {
     }
 }
 
+// --- TAB SWITCHING LOGIC ---
+function switchTab(tabName) {
+    currentTab = tabName;
+    
+    // Buttons ka color update karein
+    document.getElementById('tab-live').style.background = tabName === 'live' ? '#00ffcc' : '#131b2e';
+    document.getElementById('tab-live').style.color = tabName === 'live' ? '#000' : 'white';
+    document.getElementById('tab-live').style.border = tabName === 'live' ? 'none' : '1px solid #334155';
+
+    document.getElementById('tab-upcoming').style.background = tabName === 'upcoming' ? '#00ffcc' : '#131b2e';
+    document.getElementById('tab-upcoming').style.color = tabName === 'upcoming' ? '#000' : 'white';
+    document.getElementById('tab-upcoming').style.border = tabName === 'upcoming' ? 'none' : '1px solid #334155';
+
+    document.getElementById('tab-finished').style.background = tabName === 'finished' ? '#00ffcc' : '#131b2e';
+    document.getElementById('tab-finished').style.color = tabName === 'finished' ? '#000' : 'white';
+    document.getElementById('tab-finished').style.border = tabName === 'finished' ? 'none' : '1px solid #334155';
+
+    // Data render karein
+    let matchesToRender = [];
+    if (tabName === 'live') matchesToRender = liveMatches;
+    if (tabName === 'upcoming') matchesToRender = upcomingMatches;
+    if (tabName === 'finished') matchesToRender = finishedMatches;
+
+    renderMatches(matchesToRender);
+}
+
 // --- RENDER MATCHES ---
-function renderMatches(matches, container) {
+function renderMatches(matches) {
+    let container = document.getElementById("matches-container");
+    
     if (!matches || matches.length === 0) {
-        container.innerHTML = `<div style="background: #131b2e; padding: 15px; border-radius: 12px; border: 1px solid #00ffcc;">
+        container.innerHTML = `<div style="background: #131b2e; padding: 15px; border-radius: 12px; border: 1px solid #00ffcc; text-align: center;">
             <h3 style="color: #00ffcc; margin: 0;">No Matches Found</h3>
-            <p style="color: #94a3b8; margin: 0;">Filhal koi live ya aane wala (T20, Int'l ODI/Test) match available nahi hai. Thodi der baad check karein.</p>
+            <p style="color: #94a3b8; margin: 5px 0 0 0;">Is category mein filhal koi match available nahi hai.</p>
         </div>`;
         return;
     }
 
-    let htmlContent = `<h3 style="color: #00ffcc; margin-bottom: 12px;">🏏 Live & Upcoming Matches</h3>`;
+    let htmlContent = "";
     
     matches.forEach(match => {
         if (!match.teams || match.teams.length < 2) return;
@@ -99,16 +148,24 @@ function renderMatches(matches, container) {
         const team1 = match.teams[0];
         const team2 = match.teams[1];
         const venue = match.venue || "Unknown Venue";
-        
         let matchType = match.matchType ? match.matchType.toUpperCase() : "T20";
-        let statusText = match.status || "Match Scheduled";
+        
+        // Status text color (Live matches ke liye red/green)
+        let statusColor = currentTab === 'live' ? '#ff4d4d' : (currentTab === 'finished' ? '#00ffcc' : '#fbbf24');
+        let statusText = match.status || (currentTab === 'upcoming' ? "Match Scheduled" : "Status Unknown");
+
+        // Agar match finished hai, toh prediction button na dikhayein (optional, par acha lagta hai)
+        let buttonHTML = "";
+        if (currentTab !== 'finished') {
+            buttonHTML = `<button onclick="openPredictModal('${team1}', '${team2}', '${venue}', '${matchType}')" style="background: #00ffcc; color: #000; padding: 8px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px;">🔮 Predict Winner</button>`;
+        }
 
         htmlContent += `
-            <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.4);">
+            <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
                 <h4 style="color: #ffffff; margin: 0 0 8px 0; font-size: 1.1rem;">${team1} vs ${team2}</h4>
-                <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem;">${statusText}</p>
-                <p style="color: #94a3b8; margin: 0 0 10px 0; font-size: 0.85rem;">Format: ${matchType} | Venue: ${venue}</p>
-                <button onclick="openPredictModal('${team1}', '${team2}', '${venue}', '${matchType}')" style="background: #00ffcc; color: #000; padding: 8px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%;">🔮 Predict Winner</button>
+                <p style="color: ${statusColor}; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${statusText}</p>
+                <p style="color: #94a3b8; margin: 0; font-size: 0.85rem;">Format: ${matchType} | Venue: ${venue}</p>
+                ${buttonHTML}
             </div>
         `;
     });
