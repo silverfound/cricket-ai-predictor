@@ -3,49 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket AI Predictor</title>
+    <title>Cricket AI Predictor - Pro</title>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; }
-        .card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        h2 { color: #38bdf8; text-align: center; }
-        label { display: block; margin-top: 10px; font-size: 14px; color: #94a3b8; }
-        input, select { width: 100%; padding: 12px; margin-top: 5px; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; background: #2563eb; color: #fff; border: none; padding: 14px; margin-top: 20px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        button:hover { background: #1d4ed8; }
-        #result { margin-top: 20px; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; display: none; }
+        :root {
+            --bg-color: #090d16;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-glow: #38bdf8;
+            --success-color: #4ade80;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg-color);
+            background-image: radial-gradient(circle at top right, #1e1b4b, var(--bg-color));
+            color: var(--text-main);
+            margin: 0;
+            padding: 16px;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        header h1 {
+            font-size: 24px;
+            color: var(--accent-glow);
+            margin: 0 0 4px 0;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+        }
+        header p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            color: var(--text-main);
+            border-radius: 10px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-glow);
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+        }
+        .row {
+            display: flex;
+            gap: 12px;
+        }
+        .col {
+            flex: 1;
+        }
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        #resultCard {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .result-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .winner-box {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--success-color);
+            background: rgba(74, 222, 128, 0.1);
+            border: 1px dashed rgba(74, 222, 128, 0.3);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+        pre {
+            background: #090d16;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #cbd5e1;
+            overflow-x: auto;
+            border: 1px solid #1e293b;
+            margin: 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>🏏 Cricket AI Predictor</h2>
-        <form id="predictForm">
-            <label>Match Type</label>
-            <input type="text" id="match_type" value="T20" required>
+    <div class="container">
+        <header>
+            <h1>🏏 Cricket AI Pro</h1>
+            <p>Smart Match Outcome Predictor</p>
+        </header>
 
-            <label>Team 1</label>
-            <input type="text" id="team1" value="Pakistan" required>
+        <div class="card">
+            <form id="predictForm">
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Match Type</label>
+                        <input type="text" id="match_type" value="T20" required>
+                    </div>
+                    <div class="col form-group">
+                        <label>Venue</label>
+                        <input type="text" id="venue" value="Lahore" required>
+                    </div>
+                </div>
 
-            <label>Team 2</label>
-            <input type="text" id="team2" value="Australia" required>
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Team 1</label>
+                        <input type="text" id="team1" value="Pakistan" required>
+                    </div>
+                    <div class="col form-group">
+                        <label>Team 2</label>
+                        <input type="text" id="team2" value="Australia" required>
+                    </div>
+                </div>
 
-            <label>Venue</label>
-            <input type="text" id="venue" value="Lahore" required>
+                <div class="row">
+                    <div class="col form-group">
+                        <label>Toss Winner</label>
+                        <input type="text" id="toss_winner" value="Pakistan" required>
+                    </div>
+                    <div class="col form-group">
+                        <label>Toss Decision</label>
+                        <select id="toss_decision">
+                            <option value="bat">Bat</option>
+                            <option value="bowl">Bowl</option>
+                        </select>
+                    </div>
+                </div>
 
-            <label>Toss Winner</label>
-            <input type="text" id="toss_winner" value="Pakistan" required>
+                <button type="submit" id="submitBtn">PREDICT MATCH</button>
+            </form>
+        </div>
 
-            <label>Toss Decision</label>
-            <select id="toss_decision">
-                <option value="bat">Bat</option>
-                <option value="bowl">Bowl</option>
-            </select>
-
-            <button type="submit">Predict Match Outcome</button>
-        </form>
-
-        <div id="result">
-            <h3>Prediction Result:</h3>
-            <p id="outputText" style="font-size: 18px; color: #4ade80; font-weight: bold;"></p>
+        <div class="card" id="resultCard">
+            <div class="result-title">AI Prediction Analysis</div>
+            <div class="winner-box" id="winnerText">Processing...</div>
+            <pre id="rawOutput"></pre>
         </div>
     </div>
 
@@ -53,6 +200,17 @@
         document.getElementById('predictForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const btn = document.getElementById('submitBtn');
+            const resultCard = document.getElementById('resultCard');
+            const winnerText = document.getElementById('winnerText');
+            const rawOutput = document.getElementById('rawOutput');
+            
+            btn.innerText = "Analyzing Match...";
+            btn.disabled = true;
+            resultCard.style.display = 'block';
+            winnerText.innerText = "Connecting to Render AI...";
+            rawOutput.innerText = "Fetching live probabilities...";
+
             const data = {
                 match_type: document.getElementById('match_type').value,
                 team1: document.getElementById('team1').value,
@@ -62,12 +220,6 @@
                 toss_decision: document.getElementById('toss_decision').value
             };
 
-            const resultDiv = document.getElementById('result');
-            const outputText = document.getElementById('outputText');
-            
-            resultDiv.style.display = 'block';
-            outputText.innerText = "Connecting to AI model...";
-
             try {
                 const response = await fetch('https://cricket-ai-predictor-ciat.onrender.com/predict', {
                     method: 'POST',
@@ -75,9 +227,15 @@
                     body: JSON.stringify(data)
                 });
                 const result = await response.json();
-                outputText.innerText = JSON.stringify(result, null, 2);
+                
+                winnerText.innerText = "Prediction Successful!";
+                rawOutput.innerText = JSON.stringify(result, null, 2);
             } catch (error) {
-                outputText.innerText = "Error connecting to server. Please try again.";
+                winnerText.innerText = "Connection Failed";
+                rawOutput.innerText = "Error: Unable to reach backend server.";
+            } finally {
+                btn.innerText = "PREDICT MATCH";
+                btn.disabled = false;
             }
         });
     </script>
