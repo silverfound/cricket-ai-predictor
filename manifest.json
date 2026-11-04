@@ -1,0 +1,9 @@
+{
+  "name": "Cricket AI Pro",
+  "short_name": "CricketAI",
+  "start_url": "/cricket-ai-predictor/",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#00f0ff",
+  "icons": []
+}
