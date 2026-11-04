@@ -1,10 +1,12 @@
-// Cricket AI Pro - Pure Live API Fetch Script
-const API_KEY = "Oc_live_6j4o4fJnnWL0NRrjzdpVL3SZCX2Zk4Jx";
-const BASE_URL = "https://api.opencricketcodes.com/v1";
+// Cricket AI Pro - Updated Live API Fetch Script (New API)
+
+// Yahan apni Nayi API Key paste karein (jo aapne Colab mein use ki thi)
+const API_KEY = "oc_live_6j4o4fJnnWL0NRrjzdpVL3SZCX2Zk4Jx"; 
+const BASE_URL = "https://opencricketapi.com/v1";
 
 const headers = {
     "Authorization": `Bearer ${API_KEY}`, 
-    "Content-Type": "application/json"
+    "Accept": "application/json"
 };
 
 async function fetchRealApiMatches() {
@@ -14,7 +16,9 @@ async function fetchRealApiMatches() {
     container.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Live Matches from API...</h3>`;
 
     try {
+        // API call
         const response = await fetch(`${BASE_URL}/matches`, { headers });
+        
         if (!response.ok) {
             throw new Error(`API Error: ${response.status}`);
         }
@@ -37,7 +41,8 @@ async function fetchRealApiMatches() {
 }
 
 function renderRealMatches(data, container) {
-    const matches = Array.isArray(data) ? data : (data.matches || data.data || []);
+    // Nayi API ka data array format check kar rahe hain
+    const matches = Array.isArray(data) ? data : (data.data || data.matches || []);
     
     if (matches.length === 0) {
         container.innerHTML = `
@@ -49,14 +54,25 @@ function renderRealMatches(data, container) {
         return;
     }
 
-    let htmlContent = `<h3 style="color: #00ffcc; margin-bottom: 12px;">🏏 Live & Upcoming Fixtures (API Feed)</h3>`;
+    let htmlContent = `<h3 style="color: #00ffcc; margin-bottom: 12px;">🏏 Live & Upcoming Fixtures</h3>`;
     
     matches.forEach(match => {
+        // Nayi API ke data fields extract kar rahe hain (Colab output ke hisaab se)
+        const team1 = match.teams && match.teams[0] ? match.teams[0].name : "Team 1";
+        const team2 = match.teams && match.teams[1] ? match.teams[1].name : "Team 2";
+        const competition = match.competition ? match.competition.name : "Cricket Match";
+        const stage = match.stage || "";
+        const matchDate = match.date || "TBD";
+        const matchFormat = match.format || "T20";
+        const matchResult = match.result || "Match Scheduled / Pending";
+
+        // Card design
         htmlContent += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.4);">
-                <h4 style="color: #ffffff; margin: 0 0 8px 0; font-size: 1.1rem;">${match.name || match.title || match.match_name || 'Cricket Match'}</h4>
-                <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.95rem;">Status: <strong>${match.status || 'Scheduled'}</strong></p>
-                <p style="color: #94a3b8; margin: 0; font-size: 0.85rem;">Format: ${match.format || 'T20 / ODI'}</p>
+                <h4 style="color: #ffffff; margin: 0 0 8px 0; font-size: 1.1rem;">${team1} vs ${team2}</h4>
+                <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.95rem;">Result/Status: <strong>${matchResult}</strong></p>
+                <p style="color: #94a3b8; margin: 0 0 5px 0; font-size: 0.85rem;">Tournament: ${competition} ${stage ? '('+stage+')' : ''}</p>
+                <p style="color: #94a3b8; margin: 0; font-size: 0.85rem;">Format: ${matchFormat} | Date: ${matchDate}</p>
             </div>
         `;
     });
