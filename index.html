@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket AI Predictor</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; }
+        .card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        h2 { color: #38bdf8; text-align: center; }
+        label { display: block; margin-top: 10px; font-size: 14px; color: #94a3b8; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; background: #0f172a; border: 1px solid #334155; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; background: #2563eb; color: #fff; border: none; padding: 14px; margin-top: 20px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        button:hover { background: #1d4ed8; }
+        #result { margin-top: 20px; background: #0f172a; padding: 15px; border-radius: 8px; border: 1px solid #334155; display: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>🏏 Cricket AI Predictor</h2>
+        <form id="predictForm">
+            <label>Match Type</label>
+            <input type="text" id="match_type" value="T20" required>
+
+            <label>Team 1</label>
+            <input type="text" id="team1" value="Pakistan" required>
+
+            <label>Team 2</label>
+            <input type="text" id="team2" value="Australia" required>
+
+            <label>Venue</label>
+            <input type="text" id="venue" value="Lahore" required>
+
+            <label>Toss Winner</label>
+            <input type="text" id="toss_winner" value="Pakistan" required>
+
+            <label>Toss Decision</label>
+            <select id="toss_decision">
+                <option value="bat">Bat</option>
+                <option value="bowl">Bowl</option>
+            </select>
+
+            <button type="submit">Predict Match Outcome</button>
+        </form>
+
+        <div id="result">
+            <h3>Prediction Result:</h3>
+            <p id="outputText" style="font-size: 18px; color: #4ade80; font-weight: bold;"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('predictForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const data = {
+                match_type: document.getElementById('match_type').value,
+                team1: document.getElementById('team1').value,
+                team2: document.getElementById('team2').value,
+                venue: document.getElementById('venue').value,
+                toss_winner: document.getElementById('toss_winner').value,
+                toss_decision: document.getElementById('toss_decision').value
+            };
+
+            const resultDiv = document.getElementById('result');
+            const outputText = document.getElementById('outputText');
+            
+            resultDiv.style.display = 'block';
+            outputText.innerText = "Connecting to AI model...";
+
+            try {
+                const response = await fetch('https://cricket-ai-predictor-ciat.onrender.com/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                outputText.innerText = JSON.stringify(result, null, 2);
+            } catch (error) {
+                outputText.innerText = "Error connecting to server. Please try again.";
+            }
+        });
+    </script>
+</body>
+</html>
