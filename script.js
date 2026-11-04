@@ -1,9 +1,10 @@
 // --- CONFIGURATION ---
 const CRICAPI_KEY = "198b0b48-1026-4588-b420-fe70695ed472"; 
+// Hum currentMatches use kar rahe hain live aur aane wale matches ke liye
 const CRICAPI_URL = `https://api.cricapi.com/v1/currentMatches?apikey=${CRICAPI_KEY}&offset=0`;
 const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com"; 
 
-// --- POPUP HTML (Toss select karne ke liye) ---
+// --- POPUP HTML ---
 const popupHTML = `
 <div id="prediction-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#131b2e; padding:20px; border-radius:12px; width:90%; max-width:400px; border:1px solid #00ffcc;">
@@ -33,25 +34,44 @@ async function fetchUpcomingMatches() {
     let container = document.getElementById("dynamic-prediction-area");
     if (!container) return;
 
-    container.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Live & Upcoming Matches...</h3>`;
+    container.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Matches...</h3>`;
 
     try {
         const response = await fetch(CRICAPI_URL);
         if (!response.ok) throw new Error(`API Error: ${response.status}`);
         
         const data = await response.json();
-        console.log("CricAPI Data:", data);
         
         if (data.status === "success" && data.data) {
-            // Filter: Sirf woh matches dikhayein jo khatam nahi hue (matchEnded === false)
-            let activeMatches = data.data.filter(match => match.matchEnded === false);
-            renderMatches(activeMatches, container);
+            // ==========================================
+            // SMART FILTER YAHAN LAGAYA HAI
+            // ==========================================
+            let filteredMatches = data.data.filter(match => {
+                // 1. Khelay ja chuke (finished) matches hata dein
+                if (match.matchEnded) return false;
+
+                let type = match.matchType ? match.matchType.toLowerCase() : "";
+                let name = match.name ? match.name.toLowerCase() : "";
+
+                // 2. Domestic ODI/Test ko pehchaanne ke liye keywords
+                let domesticKeywords = ['county', 'shield', 'one day cup', 'odi cup', 'first class', 'ranji', 'duleep', 'super50', 'ford trophy'];
+                let isDomestic = domesticKeywords.some(kw => name.includes(kw));
+
+                // 3. Logic:
+                if (type === 't20') {
+                    return true; // Saare T20 (Int'l + Domestic Leagues) allow hain
+                } else if (type === 'odi' || type === 'test') {
+                    return !isDomestic; // ODI/Test sirf tab allow hain jab domestic na hon
+                }
+                return false; // Baaki formats (jaise The Hundred) hata dein
+            });
+
+            renderMatches(filteredMatches, container);
         } else {
             throw new Error(data.reason || "Data not found");
         }
 
     } catch (error) {
-        console.error("Fetch error:", error);
         container.innerHTML = `
             <div style="background: #131b2e; padding: 15px; border-radius: 12px; border: 1px solid #ff4d4d;">
                 <h3 style="color: #ff4d4d; margin: 0 0 5px 0;">API Connection Notice</h3>
@@ -65,13 +85,13 @@ async function fetchUpcomingMatches() {
 function renderMatches(matches, container) {
     if (!matches || matches.length === 0) {
         container.innerHTML = `<div style="background: #131b2e; padding: 15px; border-radius: 12px; border: 1px solid #00ffcc;">
-            <h3 style="color: #00ffcc; margin: 0;">No Active Matches</h3>
-            <p style="color: #94a3b8; margin: 0;">Abhi koi live ya aane wala match available nahi hai.</p>
+            <h3 style="color: #00ffcc; margin: 0;">No Matches Found</h3>
+            <p style="color: #94a3b8; margin: 0;">Filhal koi live ya aane wala (T20, Int'l ODI/Test) match available nahi hai. Thodi der baad check karein.</p>
         </div>`;
         return;
     }
 
-    let htmlContent = `<h3 style="color: #00ffcc; margin-bottom: 12px;">🏏 Live & Upcoming Fixtures</h3>`;
+    let htmlContent = `<h3 style="color: #00ffcc; margin-bottom: 12px;">🏏 Live & Upcoming Matches</h3>`;
     
     matches.forEach(match => {
         if (!match.teams || match.teams.length < 2) return;
@@ -80,12 +100,7 @@ function renderMatches(matches, container) {
         const team2 = match.teams[1];
         const venue = match.venue || "Unknown Venue";
         
-        // Format set karna
         let matchType = match.matchType ? match.matchType.toUpperCase() : "T20";
-        if (matchType.includes("T20")) matchType = "T20";
-        if (matchType.includes("ODI")) matchType = "ODI";
-        if (matchType.includes("TEST")) matchType = "Test";
-
         let statusText = match.status || "Match Scheduled";
 
         htmlContent += `
@@ -116,7 +131,7 @@ function openPredictModal(team1, team2, venue, matchType) {
         const resultDiv = document.getElementById('prediction-result');
         
         resultDiv.style.color = "#00ffcc";
-        resultDiv.innerText = "Server is waking up... Please wait up to 50 seconds."; 
+        resultDiv.innerText = "Calculating... (Server wake up may take 50s)";
 
         try {
             const response = await fetch(`${BACKEND_URL}/predict`, {
@@ -134,13 +149,20 @@ function openPredictModal(team1, team2, venue, matchType) {
             
             const prediction = await response.json();
             
-            if(prediction.success) {
+            if(response.ok && prediction.success) {
                 const p1 = prediction.predictions[team1] || "N/A";
                 const p2 = prediction.predictions[team2] || "N/A";
-                resultDiv.innerHTML = `<span style="color:#00ffcc;">${team1}: ${p1}</span><br><span style="color:#ff4d4d;">${team2}: ${p2}</span>`;
+                
+                let html = `<span style="color:#00ffcc;">${team1}: ${p1}</span><br><span style="color:#ff4d4d;">${team2}: ${p2}</span>`;
+                
+                if (prediction.is_default) {
+                    html += `<br><br><span style="color:#fbbf24; font-size:12px;">⚠️ Warning: Model ko is team/venue ka data nahi pata, isliye 50-50% prediction hai.</span>`;
+                }
+                
+                resultDiv.innerHTML = html;
             } else {
                 resultDiv.style.color = "#ff4d4d";
-                resultDiv.innerText = "Prediction error.";
+                resultDiv.innerText = `Error: ${prediction.detail || "Prediction failed"}`;
             }
         } catch (error) {
             resultDiv.style.color = "#ff4d4d";
