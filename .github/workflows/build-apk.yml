@@ -17,13 +17,15 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Capacitor & Build App
+      - name: Install Dependencies & Capacitor
         run: |
-          npm init -y
+          npm install
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Cricket AI Pro" "com.cricketai.pro" --web-dir .
+
+      - name: Initialize Capacitor
+        run: |
+          npx cap init "Cricket AI Pro" "com.cricketai.pro" --web-dir . --yes || true
           npx cap add android
-          npx cap sync android
 
       - name: Setup Java
         uses: actions/setup-java@v4
