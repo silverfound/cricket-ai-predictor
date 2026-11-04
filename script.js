@@ -9,7 +9,7 @@ let upcomingMatches = [];
 let finishedMatches = [];
 let currentTab = 'live'; // Default Tab
 
-// --- POPUP HTML ---
+// --- POPUP HTML (Toss Select Karne Ke Liye) ---
 const popupHTML = `
 <div id="prediction-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#131b2e; padding:20px; border-radius:12px; width:90%; max-width:400px; border:1px solid #00ffcc;">
@@ -64,7 +64,7 @@ async function fetchUpcomingMatches() {
             liveMatches = []; upcomingMatches = []; finishedMatches = [];
 
             data.data.forEach(match => {
-                // SMART FILTER (T20 sab, ODI/Test sirf international)
+                // SMART FILTER: T20 sab allow, ODI/Test sirf International allow
                 let type = match.matchType ? match.matchType.toLowerCase() : "";
                 let name = match.name ? match.name.toLowerCase() : "";
                 let domesticKeywords = ['county', 'shield', 'one day cup', 'odi cup', 'first class', 'ranji', 'duleep', 'super50', 'ford trophy'];
@@ -128,7 +128,7 @@ function switchTab(tabName) {
     renderMatches(matchesToRender);
 }
 
-// --- RENDER MATCHES ---
+// --- RENDER MATCHES (WITH LOCAL TIME) ---
 function renderMatches(matches) {
     let container = document.getElementById("matches-container");
     
@@ -150,20 +150,38 @@ function renderMatches(matches) {
         const venue = match.venue || "Unknown Venue";
         let matchType = match.matchType ? match.matchType.toUpperCase() : "T20";
         
-        // Status text color (Live matches ke liye red/green)
+        // USER KE LOCAL TIME KA LOGIC
+        let localDateTime = "Time TBA";
+        if (match.dateTimeGMT) {
+            // API se aane wala time uthaya
+            const dateObj = new Date(match.dateTimeGMT);
+            // toLocaleString() automatically user ke mobile (Pakistan, India, Dubai etc) ka timezone apply kar deta hai
+            localDateTime = dateObj.toLocaleString(undefined, {
+                weekday: 'short', 
+                day: 'numeric', 
+                month: 'short', 
+                hour: '2-digit', 
+                minute: '2-digit'
+            });
+        } else if (match.date) {
+            localDateTime = match.date;
+        }
+        
+        // Status text color
         let statusColor = currentTab === 'live' ? '#ff4d4d' : (currentTab === 'finished' ? '#00ffcc' : '#fbbf24');
         let statusText = match.status || (currentTab === 'upcoming' ? "Match Scheduled" : "Status Unknown");
 
-        // Agar match finished hai, toh prediction button na dikhayein (optional, par acha lagta hai)
         let buttonHTML = "";
         if (currentTab !== 'finished') {
             buttonHTML = `<button onclick="openPredictModal('${team1}', '${team2}', '${venue}', '${matchType}')" style="background: #00ffcc; color: #000; padding: 8px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px;">🔮 Predict Winner</button>`;
         }
 
+        // Card design jisme local time aur date shamil hai
         htmlContent += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
                 <h4 style="color: #ffffff; margin: 0 0 8px 0; font-size: 1.1rem;">${team1} vs ${team2}</h4>
                 <p style="color: ${statusColor}; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${statusText}</p>
+                <p style="color: #fbbf24; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">📅 ${localDateTime}</p>
                 <p style="color: #94a3b8; margin: 0; font-size: 0.85rem;">Format: ${matchType} | Venue: ${venue}</p>
                 ${buttonHTML}
             </div>
