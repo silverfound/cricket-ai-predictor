@@ -1,10 +1,20 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import joblib
 import pandas as pd
 import numpy as np
 from pydantic import BaseModel
 
 app = FastAPI(title="Cricket Match Predictor API")
+
+# --- CORS Configuration (Zaroori hai frontend se connect karne ke liye) ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Kisi bhi website ko allow karein
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # 1. Saved Models aur Elo Ratings Load Karein
 models = joblib.load('cricket_ensemble_modern.joblib')
@@ -14,10 +24,10 @@ DEFAULT_ELO = 1500
 
 class MatchRequest(BaseModel):
     match_type: str        # 'T20', 'ODI', 'Test'
-    team1: str             # e.g., 'Pakistan'
-    team2: str             # e.g., 'Australia'
-    venue: str             # ground name
-    toss_winner: str       # e.g., 'Pakistan'
+    team1: str             
+    team2: str             
+    venue: str             
+    toss_winner: str       
     toss_decision: str     # 'bat' ya 'field'
 
 def get_elo(team_name: str) -> float:
@@ -75,4 +85,3 @@ def predict_match(match: MatchRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-      
