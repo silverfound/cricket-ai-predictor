@@ -12,28 +12,91 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
-      - name: Build Android Project Directly
+      - name: Create Simple App APK
         run: |
-          mkdir -p android/app/build/outputs/apk/debug/
-          cd android
-          if [ ! -f "gradlew" ]; then
-            gradle wrapper
-          fi
-          chmod +x gradlew || true
-          ./gradlew assembleDebug || echo "Build fallback"
-          # Aik dummy APK file bana kar rakh dete hain taake artifact fail na ho
-          cd app/build/outputs/apk/debug/
-          echo "dummy apk" > app-debug.apk
+          mkdir -p myapp/app/src/main/java/com/cricketai/pro
+          mkdir -p myapp/app/src/main/res/layout
+          mkdir -p myapp/app/src/main/values
+
+          # AndroidManifest.xml
+          cat << 'EOF' > myapp/app/src/main/AndroidManifest.xml
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+              package="com.cricketai.pro">
+              <application
+                  android:label="Cricket AI Pro"
+                  android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+                  <activity android:name=".MainActivity"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          # MainActivity.java
+          cat << 'EOF' > myapp/app/src/main/java/com/cricketai/pro/MainActivity.java
+          package com.cricketai.pro;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.WebView;
+          public class MainActivity extends Activity {
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  WebView webView = new WebView(this);
+                  webView.getSettings().setJavaScriptEnabled(true);
+                  webView.loadUrl("https://silverfound.github.io/cricket-ai-predictor/");
+                  setContentView(webView);
+              }
+          }
+          EOF
+
+          # build.gradle files
+          echo "rootProject.name = 'CricketAI'" > myapp/settings.gradle
+          
+          cat << 'EOF' > myapp/build.gradle
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:7.4.2'
+              }
+          }
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          EOF
+
+          cat << 'EOF' > myapp/app/build.gradle
+          apply plugin: 'com.android.application'
+          android {
+              compileSdkVersion 33
+              defaultConfig {
+                  applicationId "com.cricketai.pro"
+                  minSdkVersion 21
+                  targetSdkVersion 33
+                  versionCode 1
+                  versionName "1.0"
+              }
+          }
+          dependencies {}
+          EOF
+
+          cd myapp
+          gradle wrapper
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Cricket-AI-Native-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          
+          path: myapp/app/build/outputs/apk/debug/app-debug.apk
