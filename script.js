@@ -1,10 +1,6 @@
 // --- CONFIGURATION ---
-// 1. Aapki CricAPI Key
 const CRICAPI_KEY = "198b0b48-1026-4588-b420-fe70695ed472"; 
-// Hum currentMatches use kar rahe hain (jo live aur aane wale matches dono deta hai)
 const CRICAPI_URL = `https://api.cricapi.com/v1/currentMatches?apikey=${CRICAPI_KEY}&offset=0`;
-
-// 2. Aapka AI Backend (Render wala link)
 const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com"; 
 
 // --- POPUP HTML (Toss select karne ke liye) ---
@@ -47,7 +43,9 @@ async function fetchUpcomingMatches() {
         console.log("CricAPI Data:", data);
         
         if (data.status === "success" && data.data) {
-            renderMatches(data.data, container);
+            // Filter: Sirf woh matches dikhayein jo khatam nahi hue (matchEnded === false)
+            let activeMatches = data.data.filter(match => match.matchEnded === false);
+            renderMatches(activeMatches, container);
         } else {
             throw new Error(data.reason || "Data not found");
         }
@@ -67,7 +65,7 @@ async function fetchUpcomingMatches() {
 function renderMatches(matches, container) {
     if (!matches || matches.length === 0) {
         container.innerHTML = `<div style="background: #131b2e; padding: 15px; border-radius: 12px; border: 1px solid #00ffcc;">
-            <h3 style="color: #00ffcc; margin: 0;">No Matches Found</h3>
+            <h3 style="color: #00ffcc; margin: 0;">No Active Matches</h3>
             <p style="color: #94a3b8; margin: 0;">Abhi koi live ya aane wala match available nahi hai.</p>
         </div>`;
         return;
@@ -76,25 +74,24 @@ function renderMatches(matches, container) {
     let htmlContent = `<h3 style="color: #00ffcc; margin-bottom: 12px;">🏏 Live & Upcoming Fixtures</h3>`;
     
     matches.forEach(match => {
-        // CricAPI se teams nikalna (Agar teams nahi hain toh skip karein)
         if (!match.teams || match.teams.length < 2) return;
 
         const team1 = match.teams[0];
         const team2 = match.teams[1];
         const venue = match.venue || "Unknown Venue";
         
-        // Format set karna (backend 'T20' ya 'ODI' expect kar raha hai)
+        // Format set karna
         let matchType = match.matchType ? match.matchType.toUpperCase() : "T20";
         if (matchType.includes("T20")) matchType = "T20";
         if (matchType.includes("ODI")) matchType = "ODI";
         if (matchType.includes("TEST")) matchType = "Test";
 
-        const status = match.status || "Match Scheduled";
+        let statusText = match.status || "Match Scheduled";
 
         htmlContent += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.4);">
                 <h4 style="color: #ffffff; margin: 0 0 8px 0; font-size: 1.1rem;">${team1} vs ${team2}</h4>
-                <p style="color: #94a3b8; margin: 0 0 5px 0; font-size: 0.85rem;">${status}</p>
+                <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem;">${statusText}</p>
                 <p style="color: #94a3b8; margin: 0 0 10px 0; font-size: 0.85rem;">Format: ${matchType} | Venue: ${venue}</p>
                 <button onclick="openPredictModal('${team1}', '${team2}', '${venue}', '${matchType}')" style="background: #00ffcc; color: #000; padding: 8px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%;">🔮 Predict Winner</button>
             </div>
@@ -119,7 +116,7 @@ function openPredictModal(team1, team2, venue, matchType) {
         const resultDiv = document.getElementById('prediction-result');
         
         resultDiv.style.color = "#00ffcc";
-        resultDiv.innerText = "Calculating... (Server wake up may take 50s)";
+        resultDiv.innerText = "Server is waking up... Please wait up to 50 seconds."; 
 
         try {
             const response = await fetch(`${BACKEND_URL}/predict`, {
