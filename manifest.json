@@ -1,9 +1,12 @@
 {
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
   "name": "Cricket AI Pro",
+  "orientation": "any",
+  "scope": "/cricket-ai-predictor/",
   "short_name": "CricketAI",
   "start_url": "/cricket-ai-predictor/",
-  "display": "standalone",
-  "background_color": "#0b0f19",
-  "theme_color": "#00f0ff",
-  "icons": []
+  "theme_color": "#ffffff",
+  "description": "Cricket AI Predictor Dashboard"
 }
