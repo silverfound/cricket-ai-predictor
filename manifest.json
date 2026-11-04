@@ -1,12 +1,18 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
-  "display": "standalone",
   "name": "Cricket AI Pro",
-  "orientation": "any",
-  "scope": "/cricket-ai-predictor/",
-  "short_name": "CricketAI",
+  "short_name": "Cricket AI",
   "start_url": "/cricket-ai-predictor/",
-  "theme_color": "#ffffff",
-  "description": "Cricket AI Predictor Dashboard"
+  "scope": "/cricket-ai-predictor/",
+  "display": "standalone",
+  "background_color": "#0b0f19",
+  "theme_color": "#00ffcc",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/cricket-ai-predictor/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
