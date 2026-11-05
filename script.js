@@ -156,6 +156,8 @@ function switchTab(tab) {
     renderMatches(matchesToRender);
 }
 
+// ... (Upar ka code waisa hi rahega)
+
 function renderMatches(matches) {
     let container = document.getElementById("matches-container");
     if (!matches.length) {
@@ -173,10 +175,15 @@ function renderMatches(matches) {
         
         let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
         
-        // Agar Finished hai, toh API ka note (jeetne ka margin) dikhayein
         if (currentTab === 'finished' && m.status_note) {
             statusText = `<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${m.status_note}</p>`;
         }
+
+        // YAHAN FIX KIYA HAI: JSON.stringify use kiya hai taake apostrophe (') se code na toote
+        let safeTeam1 = JSON.stringify(m.teama.name);
+        let safeTeam2 = JSON.stringify(m.teamb.name);
+        let safeVenue = JSON.stringify(m.venue?.name || '');
+        let safeType = JSON.stringify(matchType);
 
         html += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
@@ -185,11 +192,13 @@ function renderMatches(matches) {
                 <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0 0 5px 0;">🏟️ ${m.venue?.name || 'Unknown'}</p>
                 ${statusText}
                 <p style="color: #fbbf24; font-size: 0.85rem; margin: 0 0 10px 0;">📅 ${time}</p>
-                ${currentTab !== 'finished' ? `<button onclick="openPredictModal('${m.teama.name}', '${m.teamb.name}', '${m.venue?.name || ''}', '${matchType}')" style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : ''}
+                ${currentTab !== 'finished' ? `<button onclick='openPredictModal(${safeTeam1}, ${safeTeam2}, ${safeVenue}, ${safeType})' style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : ''}
             </div>`;
     });
     container.innerHTML = html;
 }
+
+// ... (Neeche ka baaki code waisa hi rahega)
 
 async function openPredictModal(t1, t2, venue, type) {
     document.getElementById('prediction-modal').style.display = 'flex';
