@@ -11,6 +11,12 @@ const popupHTML = `
         <h3 style="color:#00ffcc; margin-top:0;">Match Prediction</h3>
         <p id="modal-match-name" style="color:white; font-weight:bold;"></p>
         <p id="modal-venue" style="color:#94a3b8; font-size:12px; margin-top:-10px; margin-bottom:15px;"></p>
+        
+        <!-- LIVE WARNING -->
+        <div id="live-warning" style="display:none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 8px; border-radius: 6px; margin-bottom: 15px;">
+            <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match is Live! This prediction will NOT be saved for accuracy.</p>
+        </div>
+
         <div id="pre-toss-area" style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
             <p style="color: #fbbf24; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">📊 Pre-Toss Neutral Prediction</p>
             <div id="pre-toss-result" style="color: white; font-size: 14px;">Calculating...</div>
@@ -41,7 +47,7 @@ function getFormattedDate(offset) {
 
 // --- PREDICTION HISTORY & ACCURACY FUNCTIONS ---
 function savePrediction(matchId, team1, team2, predictedTeam, prob) {
-    let history = JSON.parse(localStorage.getItem('ai_prediction_history_v1') || '[]');
+    let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
     history = history.filter(h => h.matchId !== matchId);
     history.push({
         matchId: matchId,
@@ -51,11 +57,11 @@ function savePrediction(matchId, team1, team2, predictedTeam, prob) {
         probability: prob,
         date: new Date().toISOString()
     });
-    localStorage.setItem('ai_prediction_history_v1', JSON.stringify(history));
+    localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history));
 }
 
 function getAccuracyStats() {
-    let history = JSON.parse(localStorage.getItem('ai_prediction_history_v1') || '[]');
+    let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
     let evaluated = history.filter(h => h.isCorrect !== undefined);
     let correct = evaluated.filter(h => h.isCorrect === true).length;
     return { total: evaluated.length, correct: correct };
@@ -98,8 +104,8 @@ async function fetchMatches(forceRefresh = false) {
     matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v15_${today}`; 
-    const cacheKeyTomorrow = `cricket_data_v15_${tomorrow}`;
+    const cacheKeyToday = `cricket_data_v16_${today}`; 
+    const cacheKeyTomorrow = `cricket_data_v16_${tomorrow}`;
     const cacheExpiry = 10 * 60 * 1000;
 
     let allMatches = [];
@@ -198,7 +204,7 @@ function renderMatches(matches) {
         return;
     }
     let html = "";
-    let history = JSON.parse(localStorage.getItem('ai_prediction_history_v1') || '[]');
+    let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
     
     matches.forEach((m, index) => {
         let fmt = m.format_str || "T20";
@@ -210,7 +216,6 @@ function renderMatches(matches) {
         
         let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
         
-        // --- FINISHED MATCH RESULT CHECK ---
         if (currentTab === 'finished' && m.status_note) {
             let note = m.status_note;
             statusText = `<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${note}</p>`;
@@ -236,7 +241,7 @@ function renderMatches(matches) {
                 
                 if (savedPred.isCorrect === undefined) {
                      savedPred.isCorrect = isCorrect;
-                     localStorage.setItem('ai_prediction_history_v1', JSON.stringify(history));
+                     localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history));
                 }
             } else {
                 statusText += `<p style="color: #94a3b8; margin: 5px 0 0 0; font-size: 0.75rem; font-style: italic;">AI prediction not recorded for this match.</p>`;
@@ -271,19 +276,26 @@ function renderMatches(matches) {
                 let v = match.venue && match.venue.name ? match.venue.name : '';
                 let safeVenue = v.replace(/'/g, ""); 
                 let matchId = match.match_id ? match.match_id : match.timestamp_start;
+                let isLive = currentTab === 'live'; 
 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId);
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, isLive);
             }
         });
     });
 }
 
-async function openPredictModal(t1, t2, venue, type, matchId) {
+async function openPredictModal(t1, t2, venue, type, matchId, isLiveMatch) {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
     document.getElementById('post-toss-area').style.display = 'none';
     document.getElementById('toss-winner').innerHTML = `<option value="${t1}">${t1}</option><option value="${t2}">${t2}</option>`;
+    
+    if (isLiveMatch) {
+        document.getElementById('live-warning').style.display = 'block';
+    } else {
+        document.getElementById('live-warning').style.display = 'none';
+    }
 
     let preDiv = document.getElementById('pre-toss-result');
     preDiv.innerText = "Calculating Neutral Baseline...";
@@ -299,10 +311,12 @@ async function openPredictModal(t1, t2, venue, type, matchId) {
             window.prePred = pred.predictions;
             preDiv.innerHTML = `<div style="display:flex; justify-content:space-between;"><span style="color:#00ffcc;">${t1}: <b>${pred.predictions[t1]}</b></span><span style="color:#ff4d4d;">${t2}: <b>${pred.predictions[t2]}</b></span></div>`;
             
-            let p1 = parseFloat(pred.predictions[t1]);
-            let p2 = parseFloat(pred.predictions[t2]);
-            let winner = p1 > p2 ? t1 : t2;
-            savePrediction(matchId, t1, t2, winner, Math.max(p1, p2));
+            if (!isLiveMatch) {
+                let p1 = parseFloat(pred.predictions[t1]);
+                let p2 = parseFloat(pred.predictions[t2]);
+                let winner = p1 > p2 ? t1 : t2;
+                savePrediction(matchId, t1, t2, winner, Math.max(p1, p2));
+            }
         }
     } catch (e) { preDiv.innerText = "Error loading prediction."; }
 
@@ -324,10 +338,12 @@ async function openPredictModal(t1, t2, venue, type, matchId) {
                 const p1 = pred.predictions[t1], p2 = pred.predictions[t2];
                 let html = `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="color:#00ffcc;">${t1}: <b>${p1}</b></span><span style="color:#ff4d4d;">${t2}: <b>${p2}</b></span></div>`;
                 
-                let n1 = parseFloat(p1);
-                let n2 = parseFloat(p2);
-                let winner = n1 > n2 ? t1 : t2;
-                savePrediction(matchId, t1, t2, winner, Math.max(n1, n2));
+                if (!isLiveMatch) {
+                    let n1 = parseFloat(p1);
+                    let n2 = parseFloat(p2);
+                    let winner = n1 > n2 ? t1 : t2;
+                    savePrediction(matchId, t1, t2, winner, Math.max(n1, n2));
+                }
 
                 if (window.prePred) {
                     const d1 = (parseFloat(p1) - parseFloat(window.prePred[t1])).toFixed(1);
