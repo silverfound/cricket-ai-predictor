@@ -4,6 +4,7 @@ const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com";
 
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
 
+// --- POPUP HTML ---
 const popupHTML = `
 <div id="prediction-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#131b2e; padding:20px; border-radius:12px; width:90%; max-width:400px; border:1px solid #00ffcc; max-height: 90vh; overflow-y: auto;">
@@ -41,12 +42,13 @@ function getFormattedDate(offset) {
 async function fetchMatches(forceRefresh = false) {
     let container = document.getElementById("dynamic-prediction-area");
     
-    // Refresh Button ka logic
+    // 3 Tabs wapas add kar diye hain
     let tabsHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <div style="display: flex; gap: 10px;">
                 <button id="tab-live" onclick="switchTab('live')" style="padding: 8px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; background: #00ffcc; color: #000;">🔴 Live</button>
                 <button id="tab-upcoming" onclick="switchTab('upcoming')" style="padding: 8px 15px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">⏳ Upcoming</button>
+                <button id="tab-finished" onclick="switchTab('finished')" style="padding: 8px 15px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">✅ Finished</button>
             </div>
             <button onclick="fetchMatches(true)" style="background: transparent; color: #00ffcc; border: 1px solid #00ffcc; padding: 8px 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">🔄 Refresh</button>
         </div>
@@ -57,12 +59,12 @@ async function fetchMatches(forceRefresh = false) {
     }
 
     let matchesContainer = document.getElementById("matches-container");
-    matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Live Data...</h3>`;
+    matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v5_${today}`; // Version change kiya
-    const cacheKeyTomorrow = `cricket_data_v5_${tomorrow}`;
-    const cacheExpiry = 1 * 60 * 60 * 1000; // 1 ghante ka cache
+    const cacheKeyToday = `cricket_data_v7_${today}`; 
+    const cacheKeyTomorrow = `cricket_data_v7_${tomorrow}`;
+    const cacheExpiry = 10 * 60 * 1000; // 10 minutes cache
 
     let allMatches = [];
 
@@ -86,10 +88,9 @@ async function fetchMatches(forceRefresh = false) {
             }
             
             if (fetchNeeded) {
-                // Yahan Cache Buster (?_t=time) laga diya hai taake browser purana data na de
-                const res = await fetch(`https://${RAPIDAPI_HOST}/matches?date=${date}&_t=${Date.now()}`, {
+                const res = await fetch(`https://${RAPIDAPI_HOST}/matches?date=${date}&_nocache=${Date.now()}`, {
                     headers: { "X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST },
-                    cache: "no-store" // Yeh line browser ko bolti hai ke cache use mat karo
+                    cache: "no-store"
                 });
                 
                 if(res.ok) {
@@ -115,10 +116,16 @@ async function fetchMatches(forceRefresh = false) {
             if (seen.has(m.timestamp_start + m.teama.name + m.teamb.name)) return;
             seen.add(m.timestamp_start + m.teama.name + m.teamb.name);
 
+            // WAHI SUBAH WALA PURE API STATUS LOGIC (Koi time guess nahi)
             let status = (m.status_str || '').toLowerCase();
-            if (status.includes('live') || status.includes('progress') || status.includes('break') || status.includes('stumps')) liveMatches.push(m);
-            else if (status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw')) finishedMatches.push(m);
-            else upcomingMatches.push(m);
+            
+            if (status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw')) {
+                finishedMatches.push(m);
+            } else if (status.includes('live') || status.includes('progress') || status.includes('break') || status.includes('stumps')) {
+                liveMatches.push(m);
+            } else {
+                upcomingMatches.push(m);
+            }
         });
 
         upcomingMatches.sort((a,b) => a.timestamp_start - b.timestamp_start);
@@ -131,14 +138,20 @@ async function fetchMatches(forceRefresh = false) {
 
 function switchTab(tab) {
     currentTab = tab;
-    ['live','upcoming'].forEach(t => {
+    ['live','upcoming','finished'].forEach(t => {
         let el = document.getElementById('tab-'+t);
         if(!el) return;
         el.style.background = t === tab ? '#00ffcc' : '#131b2e';
         el.style.color = t === tab ? '#000' : 'white';
         el.style.border = t === tab ? 'none' : '1px solid #334155';
     });
-    renderMatches(tab === 'live' ? liveMatches : upcomingMatches);
+    
+    let matchesToRender = [];
+    if (tab === 'live') matchesToRender = liveMatches;
+    if (tab === 'upcoming') matchesToRender = upcomingMatches;
+    if (tab === 'finished') matchesToRender = finishedMatches;
+    
+    renderMatches(matchesToRender);
 }
 
 function renderMatches(matches) {
@@ -156,11 +169,14 @@ function renderMatches(matches) {
 
         let time = new Date(m.timestamp_start * 1000).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         
+        let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
+
         html += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
                 <p style="color: #00ffcc; font-size: 0.8rem; margin: 0 0 5px 0;">${m.competition?.title.toUpperCase() || 'MATCH'} | ${matchType}</p>
                 <h4 style="color: #fff; margin: 0 0 5px 0;">${m.teama.name} vs ${m.teamb.name}</h4>
                 <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0 0 5px 0;">🏟️ ${m.venue?.name || 'Unknown'}</p>
+                ${statusText}
                 <p style="color: #fbbf24; font-size: 0.85rem; margin: 0 0 10px 0;">📅 ${time}</p>
                 ${currentTab !== 'finished' ? `<button onclick="openPredictModal('${m.teama.name}', '${m.teamb.name}', '${m.venue?.name || ''}', '${matchType}')" style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : ''}
             </div>`;
