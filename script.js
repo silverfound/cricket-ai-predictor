@@ -61,9 +61,9 @@ async function fetchMatches(forceRefresh = false) {
     matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v9_${today}`; 
-    const cacheKeyTomorrow = `cricket_data_v9_${tomorrow}`;
-    const cacheExpiry = 10 * 60 * 1000; 
+    const cacheKeyToday = `cricket_data_v12_${today}`; 
+    const cacheKeyTomorrow = `cricket_data_v12_${tomorrow}`;
+    const cacheExpiry = 10 * 60 * 1000; // 10 minutes cache
 
     let allMatches = [];
 
@@ -115,7 +115,6 @@ async function fetchMatches(forceRefresh = false) {
             if (seen.has(m.timestamp_start + m.teama.name + m.teamb.name)) return;
             seen.add(m.timestamp_start + m.teama.name + m.teamb.name);
 
-            // --- FIX: API KE EXACT STATUS KE MUTABIQ ---
             let status = (m.status_str || '').toLowerCase();
             
             if (status.includes('completed') || status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw') || status.includes('abandon')) {
@@ -123,7 +122,6 @@ async function fetchMatches(forceRefresh = false) {
             } else if (status.includes('live') || status.includes('progress') || status.includes('break') || status.includes('stumps') || status.includes('innings')) {
                 liveMatches.push(m);
             } else {
-                // Scheduled ya Not Started
                 upcomingMatches.push(m);
             }
         });
@@ -156,8 +154,6 @@ function switchTab(tab) {
     renderMatches(matchesToRender);
 }
 
-// ... (Upar ka code waisa hi rahega)
-
 function renderMatches(matches) {
     let container = document.getElementById("matches-container");
     if (!matches.length) {
@@ -165,7 +161,8 @@ function renderMatches(matches) {
         return;
     }
     let html = "";
-    matches.forEach(m => {
+    
+    matches.forEach((m, index) => {
         let fmt = m.format_str || "T20";
         let matchType = "T20";
         if (fmt.toLowerCase().includes("test") || fmt.toLowerCase().includes("first class")) matchType = "Test";
@@ -179,12 +176,7 @@ function renderMatches(matches) {
             statusText = `<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${m.status_note}</p>`;
         }
 
-        // YAHAN FIX KIYA HAI: JSON.stringify use kiya hai taake apostrophe (') se code na toote
-        let safeTeam1 = JSON.stringify(m.teama.name);
-        let safeTeam2 = JSON.stringify(m.teamb.name);
-        let safeVenue = JSON.stringify(m.venue?.name || '');
-        let safeType = JSON.stringify(matchType);
-
+        // Yahan direct onclick hata kar data-index use kiya gaya hai
         html += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
                 <p style="color: #00ffcc; font-size: 0.8rem; margin: 0 0 5px 0;">${m.competition?.title.toUpperCase() || 'MATCH'} | ${matchType}</p>
@@ -192,13 +184,35 @@ function renderMatches(matches) {
                 <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0 0 5px 0;">🏟️ ${m.venue?.name || 'Unknown'}</p>
                 ${statusText}
                 <p style="color: #fbbf24; font-size: 0.85rem; margin: 0 0 10px 0;">📅 ${time}</p>
-                ${currentTab !== 'finished' ? `<button onclick='openPredictModal(${safeTeam1}, ${safeTeam2}, ${safeVenue}, ${safeType})' style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : ''}
+                ${currentTab !== 'finished' ? `<button class="predict-btn" data-index="${index}" style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : ''}
             </div>`;
     });
     container.innerHTML = html;
-}
 
-// ... (Neeche ka baaki code waisa hi rahega)
+    // Event Listener se click handle karna
+    let buttons = container.querySelectorAll('.predict-btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            let idx = parseInt(this.getAttribute('data-index'));
+            let match = matches[idx];
+            if (match) {
+                let fmt = match.format_str || "T20";
+                let matchType = "T20";
+                if (fmt.toLowerCase().includes("test") || fmt.toLowerCase().includes("first class")) matchType = "Test";
+                else if (fmt.toLowerCase().includes("odi") || fmt.toLowerCase().includes("list a")) matchType = "ODI";
+                
+                let t1 = match.teama ? match.teama.name : '';
+                let t2 = match.teamb ? match.teamb.name : '';
+                let v = match.venue && match.venue.name ? match.venue.name : '';
+                
+                // Venue se apostrophe (') hata dena taake koi masla na ho
+                let safeVenue = v.replace(/'/g, "");
+
+                openPredictModal(t1, t2, safeVenue, matchType);
+            }
+        });
+    });
+}
 
 async function openPredictModal(t1, t2, venue, type) {
     document.getElementById('prediction-modal').style.display = 'flex';
