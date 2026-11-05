@@ -26,7 +26,8 @@ const urduTeams = {
     "Zimbabwe": "زمبابوے", "Ireland": "آئرلینڈ", "Netherlands": "نیدرلینڈز", "Nepal": "نیپال",
     "India Women": "انڈیا ویمن", "Australia Women": "آسٹریلیا ویمن", "England Women": "انگلینڈ ویمن",
     "Adelaide Strikers Women": "ایڈیلیڈ سٹرائیکرز ویمن", "Brisbane Heat Women": "برسبین ہیٹ ویمن",
-    "Melbourne Stars Women": "ملبورن اسٹارز ویمن", "Sydney Sixers Women": "سڈنی سکسرز ویمن"
+    "Melbourne Stars Women": "ملبورن اسٹارز ویمن", "Sydney Sixers Women": "سڈنی سکسرز ویمن",
+    "Eastern Storm": "ایسٹرن سٹارم", "Dolphins": "ڈولفنز"
 };
 
 const urduCaptains = {
@@ -38,7 +39,7 @@ const urduVenues = {
     "Wankhede Stadium": "وانکھیڈے اسٹیڈیم", "Melbourne Cricket Ground": "ملبورن کرکٹ گراؤنڈ",
     "Eden Gardens": "ایڈن گارڈنز", "Narendra Modi Stadium": "نریندر مودی اسٹیڈیم",
     "Drummoyne Oval": "ڈرموئن اوول", "Sylhet International Cricket Stadium": "سلہٹ انٹرنیشنل کرکٹ اسٹیڈیم",
-    "Junction Oval": "جنکشن اوول"
+    "Junction Oval": "جنکشن اوول", "Willowmoore Park": "وِلوْمور پارک"
 };
 
 const teamCaptains = {
@@ -87,14 +88,22 @@ function numberToUrdu(num) {
     return urduNumbers[th] + " ہزار" + (h > 0 ? " " + urduNumbers[h] + " سو" : "") + (r > 0 ? " " + (urduNumbers[r] || r) : "");
 }
 
+// ==========================================
+// FIXED: ALADHAN API (With Timezone & Exact Date)
+// ==========================================
 async function fetchMaghribTime(city, country, dateStr) {
     try {
         let url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=4`;
         let res = await fetch(url);
         let data = await res.json();
-        if (data.code === 200) return data.data.timings.Maghrib;
+        if (data.code === 200) {
+            return { 
+                maghrib: data.data.timings.Maghrib, 
+                timezone: data.data.meta.timezone // Ground ka timezone (e.g. Australia/Melbourne)
+            };
+        }
     } catch (e) { console.log("Aladhan API error:", e); }
-    return "18:00"; 
+    return { maghrib: "18:00", timezone: "UTC" }; 
 }
 
 // ==========================================
@@ -203,8 +212,8 @@ async function fetchMatches(forceRefresh = false) {
     matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v20_${today}`; 
-    const cacheKeyTomorrow = `cricket_data_v20_${tomorrow}`;
+    const cacheKeyToday = `cricket_data_v23_${today}`; 
+    const cacheKeyTomorrow = `cricket_data_v23_${tomorrow}`;
     const cacheExpiry = 10 * 60 * 1000;
 
     let allMatches = [];
@@ -290,6 +299,7 @@ function renderMatches(matches) {
         if (fmt.toLowerCase().includes("test") || fmt.toLowerCase().includes("first class")) matchType = "Test";
         else if (fmt.toLowerCase().includes("odi") || fmt.toLowerCase().includes("list a")) matchType = "ODI";
 
+        // Yahan match ka time mobile ke local timezone ke hisaab se show ho raha hai (Bilkul Sahi hai)
         let time = new Date(m.timestamp_start * 1000).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         
         let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
@@ -352,7 +362,7 @@ function renderMatches(matches) {
 }
 
 // ==========================================
-// MAIN PREDICTION MODAL LOGIC
+// MAIN PREDICTION MODAL LOGIC (FIXED: Ground Time & Exact Date)
 // ==========================================
 async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country) {
     document.getElementById('prediction-modal').style.display = 'flex';
@@ -365,7 +375,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     if (isLiveMatch) { document.getElementById('live-warning').style.display = 'block'; } 
     else { document.getElementById('live-warning').style.display = 'none'; }
 
-    // 1. AI PRE-TOSS CALCULATION
+    // 1. AI PRE-TOSS CALCULATION (Yeh bilkul waisa hi hai)
     let preDiv = document.getElementById('pre-toss-result');
     preDiv.innerText = "Calculating Neutral Baseline...";
     window.prePred = null;
@@ -397,36 +407,49 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let yearStr = d.getFullYear();
     let apiDate = `${dayStr}-${monthStr}-${yearStr}`;
 
-    let maghribTime = await fetchMaghribTime(city, country, apiDate);
-    let matchTimeStr = d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    let apiData = await fetchMaghribTime(city, country, apiDate);
+    let maghribTime = apiData.maghrib;
+    let venueTimezone = apiData.timezone || "UTC";
+
+    // FIX: Match time ko Ground ke timezone mein convert karein
+    let matchTimeStr = d.toLocaleTimeString('en-US', { timeZone: venueTimezone, hour12: false, hour: '2-digit', minute: '2-digit' });
 
     let dateObj = new Date(startTime * 1000);
     if (matchTimeStr >= maghribTime) { dateObj.setDate(dateObj.getDate() + 1); }
 
-    let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
-    let parts = formatter.formatToParts(dateObj);
-    let hijriDay = parseInt(parts.find(p => p.type === 'day').value);
-    let hijriMonth = parseInt(parts.find(p => p.type === 'month').value);
-    let hijriYear = parseInt(parts.find(p => p.type === 'year').value.replace(' AH', '').replace(' BC', ''));
-    
-    let dateUrduStr = `${numberToUrdu(hijriDay)} ${urduMonths[hijriMonth - 1]} ${numberToUrdu(hijriYear)}`;
-    let dayUrdu = urduDays[dateObj.getDay()];
+    // FIX: Final date ko gToH API se Hijri mein convert karein
+    let finalGregorianDate = dateObj.toLocaleDateString('en-CA', { timeZone: venueTimezone }); 
+    let hijriDateStr = "";
+    try {
+        let gToHRes = await fetch(`https://api.aladhan.com/v1/gToH/${finalGregorianDate}`);
+        let gToHData = await gToHRes.json();
+        if (gToHData.code === 200) {
+            let hDate = gToHData.data.hijri;
+            hijriDateStr = `${numberToUrdu(parseInt(hDate.day))} ${urduMonths[hDate.month.number - 1]} ${numberToUrdu(parseInt(hDate.year))}`;
+        }
+    } catch (e) { console.log("gToH API Error:", e); }
 
-    // Dictionaries
+    // Fallback agar gToH API fail ho jaye
+    if (!hijriDateStr) {
+        let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
+        let parts = formatter.formatToParts(dateObj);
+        hijriDateStr = `${numberToUrdu(parseInt(parts.find(p => p.type === 'day').value))} ${urduMonths[parseInt(parts.find(p => p.type === 'month').value) - 1]} ${numberToUrdu(parseInt(parts.find(p => p.type === 'year').value.replace(' AH', '').replace(' BC', '')))}`;
+    }
+
+    let dayUrdu = urduDays[new Date(finalGregorianDate).getDay()];
+
     let urduT1 = urduTeams[t1] || "نامعلوم";
     let urduT2 = urduTeams[t2] || "نامعلوم";
     let urduVenue = urduVenues[venue] || "نامعلوم";
     
-    // Captain Logic
     let capT1_Name = teamCaptains[t1] || "";
     let capT2_Name = teamCaptains[t2] || "";
     let urduCap1 = urduCaptains[capT1_Name] || "";
     let urduCap2 = urduCaptains[capT2_Name] || "";
 
-    // Base & Context
     let baseA = calculateAbjad(urduT1) + calculateAbjad(urduCap1); 
     let baseB = calculateAbjad(urduT2) + calculateAbjad(urduCap2); 
-    let contextAdad = calculateAbjad(urduVenue) + calculateAbjad(dateUrduStr) + calculateAbjad(dayUrdu);
+    let contextAdad = calculateAbjad(urduVenue) + calculateAbjad(hijriDateStr) + calculateAbjad(dayUrdu);
     
     let timeDigits = matchTimeStr.replace(':', '');
     let timeAdad = reduceToSingle(parseInt(timeDigits)); 
@@ -442,9 +465,9 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
     let ilmiHtml = `
         <div style="margin-bottom: 10px; font-size: 12px; color: #cbd5e1;">
-            📅 <span class="urdu-text">${dateUrduStr}</span> | 🗓️ <span class="urdu-text">${dayUrdu}</span>
+            📅 <span class="urdu-text">${hijriDateStr}</span> | 🗓️ <span class="urdu-text">${dayUrdu}</span>
         </div>
-        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">(Maghrib Time: ${maghribTime})</div>
+        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">(Ground Time: ${matchTimeStr} | Maghrib: ${maghribTime})</div>
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
             <tr>
                 <td style="color:#00ffcc; padding: 4px 0;">${t1} <br><span style="font-size:10px;color:#94a3b8;">(${capT1_Name || 'Unknown'})</span></td>
