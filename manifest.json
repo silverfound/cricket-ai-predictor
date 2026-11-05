@@ -2,16 +2,20 @@
   "name": "Cricket AI Pro",
   "short_name": "Cricket AI",
   "start_url": "/cricket-ai-predictor/",
-  "scope": "/cricket-ai-predictor/",
   "display": "standalone",
-  "background_color": "#0b0f19",
-  "theme_color": "#00ffcc",
+  "background_color": "#0a0f1a",
+  "theme_color": "#0a0f1a",
+  "description": "AI-powered cricket prediction app",
   "icons": [
     {
-      "src": "https://img.icons8.com/color/512/cricket.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/5028/5028066.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/5028/5028066.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
