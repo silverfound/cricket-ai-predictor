@@ -16,6 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Models load karein
 models = joblib.load('cricket_ensemble_modern.joblib')
 elo_ratings = joblib.load('latest_elo_ratings.joblib')
 
@@ -32,20 +33,18 @@ class MatchRequest(BaseModel):
 def get_elo(team_name: str) -> float:
     return elo_ratings.get(team_name, DEFAULT_ELO)
 
-@app.get("/")
-def home():
-    return {"status": "Online", "message": "Cricket AI Win Predictor API Active"}
-
 def calculate_single_prediction(match, t_winner, t_decision):
     t1_elo = get_elo(match.team1)
     t2_elo = get_elo(match.team2)
     toss_win_t1 = 1 if t_winner == match.team1 else 0
     
+    venue_name = match.venue if match.venue not in ["Venue TBA", "Unknown", ""] else "Unknown Venue"
+
     input_data = pd.DataFrame([{
         'match_type': str(match.match_type),
         'team1': str(match.team1),
         'team2': str(match.team2),
-        'venue': str(match.venue),
+        'venue': str(venue_name),
         'toss_decision': str(t_decision),
         'team1_elo': float(t1_elo),
         'team2_elo': float(t2_elo),
@@ -61,57 +60,62 @@ def calculate_single_prediction(match, t_winner, t_decision):
     for col in cat_cols:
         input_data[col] = input_data[col].astype(str)
 
-    cat_p = models['cat'].predict_proba(input_data)[0]
-    xgb_p = models['xgb'].predict_proba(input_data)[0]
-    lgb_p = models['lgb'].predict_proba(input_data)[0]
+    try:
+        # AI Model se prediction
+        cat_p = models['cat'].predict_proba(input_data)[0]
+        xgb_p = models['xgb'].predict_proba(input_data)[0]
+        lgb_p = models['lgb'].predict_proba(input_data)[0]
 
-    final_probs = (cat_p + xgb_p + lgb_p) / 3.0
-    return float(final_probs[1]), float(final_probs[0]) 
+        final_probs = (cat_p + xgb_p + lgb_p) / 3.0
+        return float(final_probs[1]), float(final_probs[0])
+        
+    except Exception as e:
+        # Agar AI model crash ho (naya ground/team), to Elo rating se calculate karein
+        print(f"Model Error (falling back to Elo): {e}")
+        exp_t1 = 1 / (1 + 10**((t2_elo - t1_elo) / 400))
+        return exp_t1, (1 - exp_t1)
+
+@app.get("/")
+def home():
+    return {"status": "Online", "message": "Cricket AI Win Predictor API Active"}
 
 @app.post("/predict")
 def predict_match(match: MatchRequest):
-    try:
-        if not match.toss_winner or not match.toss_decision:
-            t1_wins, t2_wins = [], []
-            scenarios = [
-                (match.team1, 'bat'), (match.team1, 'field'),
-                (match.team2, 'bat'), (match.team2, 'field')
-            ]
+    # Outer try-except hatadiya hai taake 50-50 error na aaye
+    
+    if not match.toss_winner or not match.toss_decision:
+        # Pre-Toss (Neutral) Prediction
+        t1_wins, t2_wins = [], []
+        scenarios = [
+            (match.team1, 'bat'), (match.team1, 'field'),
+            (match.team2, 'bat'), (match.team2, 'field')
+        ]
+        
+        for winner, decision in scenarios:
+            w1, w2 = calculate_single_prediction(match, winner, decision)
+            t1_wins.append(w1)
+            t2_wins.append(w2)
             
-            for winner, decision in scenarios:
-                w1, w2 = calculate_single_prediction(match, winner, decision)
-                t1_wins.append(w1)
-                t2_wins.append(w2)
-                
-            avg_t1 = np.mean(t1_wins)
-            avg_t2 = np.mean(t2_wins)
-            
-            return {
-                "success": True,
-                "is_default": False,
-                "predictions": {
-                    match.team1: f"{round(avg_t1 * 100, 2)}%",
-                    match.team2: f"{round(avg_t2 * 100, 2)}%"
-                }
-            }
-
-        else:
-            t1_win, t2_win = calculate_single_prediction(match, match.toss_winner, match.toss_decision)
-            return {
-                "success": True,
-                "is_default": False,
-                "predictions": {
-                    match.team1: f"{round(t1_win * 100, 2)}%",
-                    match.team2: f"{round(t2_win * 100, 2)}%"
-                }
-            }
-            
-    except Exception as e:
+        avg_t1 = np.mean(t1_wins)
+        avg_t2 = np.mean(t2_wins)
+        
         return {
             "success": True,
-            "is_default": True,
+            "is_default": False,
             "predictions": {
-                match.team1: "50.0%",
-                match.team2: "50.0%"
+                match.team1: f"{round(avg_t1 * 100, 2)}%",
+                match.team2: f"{round(avg_t2 * 100, 2)}%"
+            }
+        }
+
+    else:
+        # Post-Toss Prediction
+        t1_win, t2_win = calculate_single_prediction(match, match.toss_winner, match.toss_decision)
+        return {
+            "success": True,
+            "is_default": False,
+            "predictions": {
+                match.team1: f"{round(t1_win * 100, 2)}%",
+                match.team2: f"{round(t2_win * 100, 2)}%"
             }
         }
