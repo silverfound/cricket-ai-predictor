@@ -4,69 +4,133 @@ const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com";
 
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
 
-// --- POPUP HTML ---
+// ==========================================
+// ILMI DATA (DICTIONARY & CONSTANTS)
+// ==========================================
+const abjadValues = {
+    'ا': 1, 'ب': 2, 'ج': 3, 'د': 4, 'ہ': 5, 'و': 6, 'ز': 7, 'ح': 8, 'ط': 9,
+    'ی': 10, 'ک': 20, 'ل': 30, 'م': 40, 'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90,
+    'ق': 100, 'ر': 200, 'ش': 300, 'ت': 400, 'پ': 2, 'چ': 3, 'ٹ': 400, 'ڈ': 4, 'ڑ': 200, 'ژ': 7, 'گ': 20, 'ے': 10, 'آ': 1, 'ھ': 5, 'ؤ': 6, 'ئ': 10, 'ۃ': 5
+};
+
+const urduNumbers = { 0:"صفر",1:"ایک",2:"دو",3:"تین",4:"چار",5:"پانچ",6:"چھ",7:"سات",8:"آٹھ",9:"نو",10:"دس",11:"گیارہ",12:"بارہ",13:"تیرہ",14:"چودہ",15:"پندرہ",16:"سولہ",17:"سترہ",18:"اٹھارہ",19:"انیس",20:"بیس",21:"اکیس",22:"بائیس",23:"تیئیس",24:"چوبیس",25:"پچیس",26:"چھبیس",27:"ستائیس",28:"اٹھائیس",29:"انتیس",30:"تیس",40:"چالیس",50:"پچاس",60:"ساٹھ",70:"ستر",80:"اسی",90:"نوے",100:"سو" };
+
+const urduMonths = ["محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانی", "رجب", "شعبان", "رمضان", "شوال", "ذیقعد", "ذی الحج"];
+const urduDays = { 0: "اتوار", 1: "پیر", 2: "منگل", 3: "بدھ", 4: "جمعرات", 5: "جمعہ", 6: "ہفتہ" };
+
+// Aap yahan apni dictionary expand kar sakte hain
+const urduDictionary = {
+    "India": "انڈیا", "Australia": "آسٹریلیا", "Pakistan": "پاکستان", "England": "انگلینڈ",
+    "New Zealand": "نیوزی لینڈ", "South Africa": "جنوبی افریقہ", "Sri Lanka": "سری لنکا",
+    "Bangladesh": "بنگلہ دیش", "Afghanistan": "افغانستان", "West Indies": "ویسٹ انڈیز",
+    "Zimbabwe": "زمبابوے", "Ireland": "آئرلینڈ", "Netherlands": "نیدرلینڈز", "Nepal": "نیپال",
+    "India Women": "انڈیا ویمن", "Australia Women": "آسٹریلیا ویمن", "England Women": "انگلینڈ ویمن",
+    "Adelaide Strikers Women": "ایڈیلیڈ سٹرائیکرز ویمن", "Brisbane Heat Women": "برسبین ہیٹ ویمن",
+    "Rohit Sharma": "روہت شرما", "Pat Cummins": "پیٹ کمنز", "Babar Azam": "بابر اعظم",
+    "Wankhede Stadium": "وانکھیڈے اسٹیڈیم", "Melbourne Cricket Ground": "ملبورن کرکٹ گراؤنڈ",
+    "Eden Gardens": "ایڈن گارڈنز", "Narendra Modi Stadium": "نریندر مودی اسٹیڈیم",
+    "Drummoyne Oval": "ڈرموئن اوول", "Sylhet International Cricket Stadium": "سلہٹ انٹرنیشنل کرکٹ اسٹیڈیم"
+};
+
+const friendshipMatrix = {
+    1: { friends: [1, 2, 3, 9], enemies: [6, 8] }, 2: { friends: [1, 2, 5], enemies: [4, 8, 9] },
+    3: { friends: [1, 2, 3, 9], enemies: [5, 6] }, 4: { friends: [1, 5, 6, 7], enemies: [2, 8, 9] },
+    5: { friends: [1, 4, 5, 6], enemies: [] }, 6: { friends: [4, 5, 6, 7], enemies: [1, 2, 3, 9] },
+    7: { friends: [4, 6, 7], enemies: [1, 2, 9] }, 8: { friends: [4, 5, 6], enemies: [1, 2, 9] },
+    9: { friends: [1, 2, 3, 9], enemies: [4, 6, 8] }
+};
+
+function calculateAbjad(word) {
+    let total = 0;
+    for (let char of word) { if (abjadValues[char]) total += abjadValues[char]; }
+    return total;
+}
+
+function reduceToSingle(num) {
+    while (num > 9) { num = num.toString().split('').reduce((sum, digit) => sum + parseInt(digit), 0); }
+    return num;
+}
+
+function getMultiplier(teamNum, contextNum) {
+    let team = reduceToSingle(teamNum);
+    let context = reduceToSingle(contextNum);
+    let contextRules = friendshipMatrix[context] || { friends: [], enemies: [] };
+    if (contextRules.friends.includes(team)) return 1.15; 
+    if (contextRules.enemies.includes(team)) return 0.85; 
+    return 1.0;
+}
+
+function numberToUrdu(num) { return urduNumbers[num] || num; }
+
+// ==========================================
+// POPUP HTML
+// ==========================================
 const popupHTML = `
 <div id="prediction-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#131b2e; padding:20px; border-radius:12px; width:90%; max-width:400px; border:1px solid #00ffcc; max-height: 90vh; overflow-y: auto;">
+        
         <h3 style="color:#00ffcc; margin-top:0;">Match Prediction</h3>
-        <p id="modal-match-name" style="color:white; font-weight:bold;"></p>
+        <p id="modal-match-name" style="color:white; font-weight:bold; font-size: 16px;"></p>
         <p id="modal-venue" style="color:#94a3b8; font-size:12px; margin-top:-10px; margin-bottom:15px;"></p>
         
-        <!-- LIVE WARNING -->
         <div id="live-warning" style="display:none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 8px; border-radius: 6px; margin-bottom: 15px;">
             <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match is Live! This prediction will NOT be saved for accuracy.</p>
         </div>
 
-        <div id="pre-toss-area" style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
+        <!-- AI PREDICTION BOX -->
+        <div style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
             <p style="color: #fbbf24; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">📊 Pre-Toss Neutral Prediction</p>
             <div id="pre-toss-result" style="color: white; font-size: 14px;">Calculating...</div>
         </div>
+
+        <!-- TOSS INPUTS -->
         <label style="color:#94a3b8; font-size:14px;">Toss Winner:</label>
         <select id="toss-winner" style="width:100%; padding:8px; margin-bottom:10px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;"></select>
         <label style="color:#94a3b8; font-size:14px;">Toss Decision:</label>
         <select id="toss-decision" style="width:100%; padding:8px; margin-bottom:15px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;">
             <option value="bat">Bat First</option><option value="field">Field First</option>
         </select>
+
         <button id="get-prediction-btn" style="width:100%; padding:10px; background:#00ffcc; color:black; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">Calculate Post-Toss Impact</button>
-        <button onclick="document.getElementById('prediction-modal').style.display='none'" style="width:100%; padding:10px; background:transparent; color:#ff4d4d; border:none; margin-top:10px; cursor:pointer;">Cancel</button>
+        
+        <!-- POST TOSS AI RESULT -->
         <div id="post-toss-area" style="display:none; margin-top:15px; padding: 10px; border-radius: 8px; border: 1px solid #00ffcc; background: #0b1120;">
             <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">🎯 Post-Toss Prediction & Impact</p>
             <div id="prediction-result" style="color:white; text-align:center; font-weight:bold;"></div>
         </div>
+
+        <!-- ILMI INSIGHT BOX -->
+        <div id="ilmi-area" style="display:none; margin-top:15px; padding: 15px; border-radius: 8px; border: 1px solid #d946ef; background: #1a1525;">
+            <h4 style="color:#d946ef; margin: 0 0 5px 0; font-size: 16px;">🔮 Ilmi Insight</h4>
+            <span style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 10px;">Based on Abjad + Compatibility</span>
+            <div id="ilmi-content" style="font-size: 13px;"></div>
+        </div>
+
+        <button onclick="document.getElementById('prediction-modal').style.display='none'" style="width:100%; padding:10px; background:transparent; color:#ff4d4d; border:none; margin-top:15px; cursor:pointer;">Close</button>
     </div>
 </div>`;
 document.body.insertAdjacentHTML('beforeend', popupHTML);
 
-function wakeUpBackend() {
-    fetch(`${BACKEND_URL}/`).catch(() => {});
-}
+function wakeUpBackend() { fetch(`${BACKEND_URL}/`).catch(() => {}); }
+function getFormattedDate(offset) { let d = new Date(); d.setDate(d.getDate() + offset); return d.toISOString().split('T')[0]; }
 
-function getFormattedDate(offset) {
-    let d = new Date(); d.setDate(d.getDate() + offset); return d.toISOString().split('T')[0];
-}
-
-// --- PREDICTION HISTORY & ACCURACY FUNCTIONS ---
+// Accuracy / History Logic
 function savePrediction(matchId, team1, team2, predictedTeam, prob) {
     let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
     history = history.filter(h => h.matchId !== matchId);
-    history.push({
-        matchId: matchId,
-        team1: team1,
-        team2: team2,
-        predictedTeam: predictedTeam,
-        probability: prob,
-        date: new Date().toISOString()
-    });
+    history.push({ matchId, team1, team2, predictedTeam, probability: prob, date: new Date().toISOString() });
     localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history));
 }
 
 function getAccuracyStats() {
     let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
     let evaluated = history.filter(h => h.isCorrect !== undefined);
+    let pending = history.filter(h => h.isCorrect === undefined);
     let correct = evaluated.filter(h => h.isCorrect === true).length;
-    return { total: evaluated.length, correct: correct };
+    return { total: evaluated.length, correct: correct, pending: pending.length };
 }
 
+// Fetch Matches
 async function fetchMatches(forceRefresh = false) {
     let container = document.getElementById("dynamic-prediction-area");
     
@@ -76,7 +140,8 @@ async function fetchMatches(forceRefresh = false) {
         <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
             <div style="color: #94a3b8; font-size: 13px;">🤖 <b>AI Accuracy:</b></div>
             <div style="color: #00ffcc; font-weight: bold; font-size: 14px;">
-                ${stats.correct} / ${stats.total} Correct (${accPercent}%)
+                ${stats.correct} / ${stats.total} Correct (${accPercent}%) 
+                <span style="color: #fbbf24; font-size: 11px;">| ${stats.pending} Pending</span>
             </div>
         </div>
     `;
@@ -93,9 +158,8 @@ async function fetchMatches(forceRefresh = false) {
         </div>
         <div id="matches-container"></div>`;
     
-    if (!document.getElementById('tab-live')) {
-        container.innerHTML = tabsHTML;
-    } else {
+    if (!document.getElementById('tab-live')) { container.innerHTML = tabsHTML; } 
+    else {
         let dash = container.querySelector('div[style*="border: 1px solid #334155"]');
         if(dash) dash.outerHTML = dashboardHTML;
     }
@@ -104,17 +168,14 @@ async function fetchMatches(forceRefresh = false) {
     matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v16_${today}`; 
-    const cacheKeyTomorrow = `cricket_data_v16_${tomorrow}`;
+    const cacheKeyToday = `cricket_data_v18_${today}`; 
+    const cacheKeyTomorrow = `cricket_data_v18_${tomorrow}`;
     const cacheExpiry = 10 * 60 * 1000;
 
     let allMatches = [];
 
     try {
-        if (forceRefresh) {
-            localStorage.removeItem(cacheKeyToday);
-            localStorage.removeItem(cacheKeyTomorrow);
-        }
+        if (forceRefresh) { localStorage.removeItem(cacheKeyToday); localStorage.removeItem(cacheKeyTomorrow); }
 
         for (let date of [today, tomorrow]) {
             let cacheKey = date === today ? cacheKeyToday : cacheKeyTomorrow;
@@ -123,25 +184,17 @@ async function fetchMatches(forceRefresh = false) {
 
             if (cachedData && !forceRefresh) {
                 let parsed = JSON.parse(cachedData);
-                if (Date.now() - parsed.time < cacheExpiry && parsed.data.length > 0) {
-                    allMatches.push(...parsed.data);
-                    fetchNeeded = false;
-                }
+                if (Date.now() - parsed.time < cacheExpiry && parsed.data.length > 0) { allMatches.push(...parsed.data); fetchNeeded = false; }
             }
             
             if (fetchNeeded) {
                 const res = await fetch(`https://${RAPIDAPI_HOST}/matches?date=${date}&_nocache=${Date.now()}`, {
-                    headers: { "X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST },
-                    cache: "no-store"
+                    headers: { "X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST }, cache: "no-store"
                 });
-                
                 if(res.ok) {
                     const data = await res.json();
                     const items = data.response?.items || [];
-                    if (items.length > 0) {
-                        allMatches.push(...items);
-                        localStorage.setItem(cacheKey, JSON.stringify({ time: Date.now(), data: items }));
-                    }
+                    if (items.length > 0) { allMatches.push(...items); localStorage.setItem(cacheKey, JSON.stringify({ time: Date.now(), data: items })); }
                 }
             }
         }
@@ -159,24 +212,16 @@ async function fetchMatches(forceRefresh = false) {
             seen.add(m.timestamp_start + m.teama.name + m.teamb.name);
 
             let status = (m.status_str || '').toLowerCase();
-            
-            if (status.includes('completed') || status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw') || status.includes('abandon')) {
-                finishedMatches.push(m);
-            } else if (status.includes('live') || status.includes('progress') || status.includes('break') || status.includes('stumps') || status.includes('innings')) {
-                liveMatches.push(m);
-            } else {
-                upcomingMatches.push(m);
-            }
+            if (status.includes('completed') || status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw') || status.includes('abandon')) { finishedMatches.push(m); }
+            else if (status.includes('live') || status.includes('progress') || status.includes('break') || status.includes('stumps') || status.includes('innings')) { liveMatches.push(m); }
+            else { upcomingMatches.push(m); }
         });
 
         upcomingMatches.sort((a,b) => a.timestamp_start - b.timestamp_start);
         finishedMatches.sort((a,b) => b.timestamp_start - a.timestamp_start);
-        
         switchTab(liveMatches.length > 0 ? 'live' : 'upcoming');
         
-    } catch (e) {
-        matchesContainer.innerHTML = `<div style="color:red; text-align:center;">Error: ${e.message}</div>`;
-    }
+    } catch (e) { matchesContainer.innerHTML = `<div style="color:red; text-align:center;">Error: ${e.message}</div>`; }
 }
 
 function switchTab(tab) {
@@ -188,12 +233,10 @@ function switchTab(tab) {
         el.style.color = t === tab ? '#000' : 'white';
         el.style.border = t === tab ? 'none' : '1px solid #334155';
     });
-    
     let matchesToRender = [];
     if (tab === 'live') matchesToRender = liveMatches;
     if (tab === 'upcoming') matchesToRender = upcomingMatches;
     if (tab === 'finished') matchesToRender = finishedMatches;
-    
     renderMatches(matchesToRender);
 }
 
@@ -219,33 +262,20 @@ function renderMatches(matches) {
         if (currentTab === 'finished' && m.status_note) {
             let note = m.status_note;
             statusText = `<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${note}</p>`;
-            
             let savedPred = history.find(h => h.matchId === m.match_id);
             if (savedPred) {
                 let predictedTeam = savedPred.predictedTeam;
                 let isCorrect = note.toLowerCase().includes(predictedTeam.toLowerCase()) && note.toLowerCase().includes("won");
-                
-                if (note.toLowerCase().includes("draw") || note.toLowerCase().includes("tie") || note.toLowerCase().includes("abandon")) {
-                    isCorrect = false; 
-                }
-
+                if (note.toLowerCase().includes("draw") || note.toLowerCase().includes("tie") || note.toLowerCase().includes("abandon")) isCorrect = false; 
                 let badgeColor = isCorrect ? '#22c55e' : '#ef4444';
                 let badgeText = isCorrect ? '✅ Prediction Correct' : '❌ Prediction Wrong';
-                
                 statusText += `
                     <div style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px dashed ${badgeColor};">
                         <p style="color: #cbd5e1; margin: 0 0 4px 0; font-size: 0.75rem;">AI predicted: <b>${predictedTeam}</b></p>
                         <p style="color: ${badgeColor}; margin: 0; font-size: 0.8rem; font-weight: bold;">${badgeText}</p>
-                    </div>
-                `;
-                
-                if (savedPred.isCorrect === undefined) {
-                     savedPred.isCorrect = isCorrect;
-                     localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history));
-                }
-            } else {
-                statusText += `<p style="color: #94a3b8; margin: 5px 0 0 0; font-size: 0.75rem; font-style: italic;">AI prediction not recorded for this match.</p>`;
-            }
+                    </div>`;
+                if (savedPred.isCorrect === undefined) { savedPred.isCorrect = isCorrect; localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history)); }
+            } else { statusText += `<p style="color: #94a3b8; margin: 5px 0 0 0; font-size: 0.75rem; font-style: italic;">AI prediction not recorded.</p>`; }
         }
 
         html += `
@@ -276,27 +306,28 @@ function renderMatches(matches) {
                 let v = match.venue && match.venue.name ? match.venue.name : '';
                 let safeVenue = v.replace(/'/g, ""); 
                 let matchId = match.match_id ? match.match_id : match.timestamp_start;
-                let isLive = currentTab === 'live'; 
-
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, isLive);
+                
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live');
             }
         });
     });
 }
 
-async function openPredictModal(t1, t2, venue, type, matchId, isLiveMatch) {
+// ==========================================
+// MAIN PREDICTION & ILMI LOGIC
+// ==========================================
+async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch) {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
     document.getElementById('post-toss-area').style.display = 'none';
+    document.getElementById('ilmi-area').style.display = 'none'; 
     document.getElementById('toss-winner').innerHTML = `<option value="${t1}">${t1}</option><option value="${t2}">${t2}</option>`;
-    
-    if (isLiveMatch) {
-        document.getElementById('live-warning').style.display = 'block';
-    } else {
-        document.getElementById('live-warning').style.display = 'none';
-    }
 
+    if (isLiveMatch) { document.getElementById('live-warning').style.display = 'block'; } 
+    else { document.getElementById('live-warning').style.display = 'none'; }
+
+    // 1. AI PRE-TOSS CALCULATION
     let preDiv = document.getElementById('pre-toss-result');
     preDiv.innerText = "Calculating Neutral Baseline...";
     window.prePred = null;
@@ -310,16 +341,75 @@ async function openPredictModal(t1, t2, venue, type, matchId, isLiveMatch) {
         if (pred.success) {
             window.prePred = pred.predictions;
             preDiv.innerHTML = `<div style="display:flex; justify-content:space-between;"><span style="color:#00ffcc;">${t1}: <b>${pred.predictions[t1]}</b></span><span style="color:#ff4d4d;">${t2}: <b>${pred.predictions[t2]}</b></span></div>`;
-            
             if (!isLiveMatch) {
-                let p1 = parseFloat(pred.predictions[t1]);
-                let p2 = parseFloat(pred.predictions[t2]);
-                let winner = p1 > p2 ? t1 : t2;
-                savePrediction(matchId, t1, t2, winner, Math.max(p1, p2));
+                let p1 = parseFloat(pred.predictions[t1]), p2 = parseFloat(pred.predictions[t2]);
+                savePrediction(matchId, t1, t2, (p1 > p2 ? t1 : t2), Math.max(p1, p2));
             }
         }
     } catch (e) { preDiv.innerText = "Error loading prediction."; }
 
+    // 2. ILMI CALCULATION (Added here so it loads with the modal)
+    document.getElementById('ilmi-area').style.display = 'block';
+    let ilmiDiv = document.getElementById('ilmi-content');
+    ilmiDiv.innerHTML = "Calculating Ilmi Insight...";
+
+    // Get Maghrib time (Using mock for now, in production use Aladhan API)
+    let maghribTime = "17:45"; 
+    
+    // Get Match Time (HH:MM)
+    let matchTimeStr = new Date(startTime * 1000).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    
+    // Date logic with Maghrib adjustment
+    let dateObj = new Date(startTime * 1000);
+    if (matchTimeStr >= maghribTime) { dateObj.setDate(dateObj.getDate() + 1); }
+
+    let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
+    let parts = formatter.formatToParts(dateObj);
+    let hijriDay = parseInt(parts.find(p => p.type === 'day').value);
+    let hijriMonth = parseInt(parts.find(p => p.type === 'month').value);
+    let hijriYear = parseInt(parts.find(p => p.type === 'year').value.replace(' AH', '').replace(' BC', ''));
+    
+    let dateUrduStr = `${numberToUrdu(hijriDay)} ${urduMonths[hijriMonth - 1]} ${numberToUrdu(hijriYear)}`;
+    let dayUrdu = urduDays[dateObj.getDay()];
+
+    // Dictionary Check
+    let urduT1 = urduDictionary[t1] || "نامعلوم";
+    let urduT2 = urduDictionary[t2] || "نامعلوم";
+    let urduVenue = urduDictionary[venue] || "نامعلوم";
+
+    // Base & Context
+    let baseA = calculateAbjad(urduT1); 
+    let baseB = calculateAbjad(urduT2);
+    let contextAdad = calculateAbjad(urduVenue) + calculateAbjad(dateUrduStr) + calculateAbjad(dayUrdu);
+    
+    // Toss Time (Mod 9)
+    let timeDigits = matchTimeStr.replace(':', '');
+    let timeAdad = reduceToSingle(parseInt(timeDigits)); 
+
+    let contextMultA = getMultiplier(baseA, contextAdad);
+    let contextMultB = getMultiplier(baseB, contextAdad);
+    let timeMultA = getMultiplier(baseA, timeAdad);
+    let timeMultB = getMultiplier(baseB, timeAdad);
+
+    let finalA = baseA * contextMultA * timeMultA;
+    let finalB = baseB * contextMultB * timeMultB;
+    let winnerText = finalA > finalB ? t1 : (finalB > finalA ? t2 : "Tie");
+
+    let ilmiHtml = `
+        <div style="margin-bottom: 10px; font-size: 12px; color: #cbd5e1;">
+            📅 <span class="urdu-text">${dateUrduStr}</span> | 🗓️ <span class="urdu-text">${dayUrdu}</span>
+        </div>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+            <tr><td style="color:#00ffcc; padding: 4px 0;">${t1}</td><td style="text-align:right; font-weight:bold; color:#00ffcc;">${finalA.toFixed(1)}</td></tr>
+            <tr><td style="color:#ef4444; padding: 4px 0;">${t2}</td><td style="text-align:right; font-weight:bold; color:#ef4444;">${finalB.toFixed(1)}</td></tr>
+        </table>
+        <div style="text-align: center; margin-top: 10px; color: #d946ef; font-weight: bold; font-size: 14px;">
+            🌟 ${winnerText} Ka Pala Bhari Hai!
+        </div>
+    `;
+    ilmiDiv.innerHTML = ilmiHtml;
+
+    // 3. POST-TOSS AI CALCULATION
     document.getElementById('get-prediction-btn').onclick = async () => {
         const tw = document.getElementById('toss-winner').value;
         const td = document.getElementById('toss-decision').value;
@@ -339,10 +429,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, isLiveMatch) {
                 let html = `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="color:#00ffcc;">${t1}: <b>${p1}</b></span><span style="color:#ff4d4d;">${t2}: <b>${p2}</b></span></div>`;
                 
                 if (!isLiveMatch) {
-                    let n1 = parseFloat(p1);
-                    let n2 = parseFloat(p2);
-                    let winner = n1 > n2 ? t1 : t2;
-                    savePrediction(matchId, t1, t2, winner, Math.max(n1, n2));
+                    let n1 = parseFloat(p1), n2 = parseFloat(p2);
+                    savePrediction(matchId, t1, t2, (n1 > n2 ? t1 : t2), Math.max(n1, n2));
                 }
 
                 if (window.prePred) {
@@ -360,7 +448,4 @@ async function openPredictModal(t1, t2, venue, type, matchId, isLiveMatch) {
     };
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    wakeUpBackend(); 
-    fetchMatches();
-});
+document.addEventListener("DOMContentLoaded", () => { wakeUpBackend(); fetchMatches(); });
