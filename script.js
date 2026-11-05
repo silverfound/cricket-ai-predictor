@@ -42,13 +42,12 @@ function getFormattedDate(offset) {
 async function fetchMatches(forceRefresh = false) {
     let container = document.getElementById("dynamic-prediction-area");
     
-    // 3 Tabs wapas add kar diye hain
     let tabsHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-            <div style="display: flex; gap: 10px;">
-                <button id="tab-live" onclick="switchTab('live')" style="padding: 8px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; background: #00ffcc; color: #000;">🔴 Live</button>
-                <button id="tab-upcoming" onclick="switchTab('upcoming')" style="padding: 8px 15px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">⏳ Upcoming</button>
-                <button id="tab-finished" onclick="switchTab('finished')" style="padding: 8px 15px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">✅ Finished</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; gap: 5px;">
+                <button id="tab-live" onclick="switchTab('live')" style="padding: 8px 12px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; background: #00ffcc; color: #000;">🔴 Live</button>
+                <button id="tab-upcoming" onclick="switchTab('upcoming')" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">⏳ Upcoming</button>
+                <button id="tab-finished" onclick="switchTab('finished')" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">✅ Finished</button>
             </div>
             <button onclick="fetchMatches(true)" style="background: transparent; color: #00ffcc; border: 1px solid #00ffcc; padding: 8px 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">🔄 Refresh</button>
         </div>
@@ -62,9 +61,9 @@ async function fetchMatches(forceRefresh = false) {
     matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v7_${today}`; 
-    const cacheKeyTomorrow = `cricket_data_v7_${tomorrow}`;
-    const cacheExpiry = 10 * 60 * 1000; // 10 minutes cache
+    const cacheKeyToday = `cricket_data_v9_${today}`; 
+    const cacheKeyTomorrow = `cricket_data_v9_${tomorrow}`;
+    const cacheExpiry = 10 * 60 * 1000; 
 
     let allMatches = [];
 
@@ -116,19 +115,22 @@ async function fetchMatches(forceRefresh = false) {
             if (seen.has(m.timestamp_start + m.teama.name + m.teamb.name)) return;
             seen.add(m.timestamp_start + m.teama.name + m.teamb.name);
 
-            // WAHI SUBAH WALA PURE API STATUS LOGIC (Koi time guess nahi)
+            // --- FIX: API KE EXACT STATUS KE MUTABIQ ---
             let status = (m.status_str || '').toLowerCase();
             
-            if (status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw')) {
+            if (status.includes('completed') || status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw') || status.includes('abandon')) {
                 finishedMatches.push(m);
-            } else if (status.includes('live') || status.includes('progress') || status.includes('break') || status.includes('stumps')) {
+            } else if (status.includes('live') || status.includes('progress') || status.includes('break') || status.includes('stumps') || status.includes('innings')) {
                 liveMatches.push(m);
             } else {
+                // Scheduled ya Not Started
                 upcomingMatches.push(m);
             }
         });
 
         upcomingMatches.sort((a,b) => a.timestamp_start - b.timestamp_start);
+        finishedMatches.sort((a,b) => b.timestamp_start - a.timestamp_start);
+        
         switchTab(liveMatches.length > 0 ? 'live' : 'upcoming');
         
     } catch (e) {
@@ -170,6 +172,11 @@ function renderMatches(matches) {
         let time = new Date(m.timestamp_start * 1000).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         
         let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
+        
+        // Agar Finished hai, toh API ka note (jeetne ka margin) dikhayein
+        if (currentTab === 'finished' && m.status_note) {
+            statusText = `<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${m.status_note}</p>`;
+        }
 
         html += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
