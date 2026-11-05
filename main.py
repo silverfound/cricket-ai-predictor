@@ -1,25 +1,16 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import joblib
-import pandas as pd
-import numpy as np
+import joblib, pandas as pd, numpy as np
 from pydantic import BaseModel
 from typing import Optional
 
-app = FastAPI(title="Cricket Match Predictor API")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app = FastAPI(title="Cricket AI Win Predictor API")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 # Models load karein
 models = joblib.load('cricket_ensemble_modern.joblib')
 elo_ratings = joblib.load('latest_elo_ratings.joblib')
-
+cat_mappings = joblib.load('category_mappings.joblib') # Naya mappings file load kiya
 DEFAULT_ELO = 1500
 
 class MatchRequest(BaseModel):
@@ -31,49 +22,46 @@ class MatchRequest(BaseModel):
     toss_decision: Optional[str] = None 
 
 def get_elo(team_name: str) -> float:
-    return elo_ratings.get(team_name, DEFAULT_ELO)
+    if team_name in elo_ratings: return elo_ratings[team_name]
+    for k in elo_ratings:
+        if k.lower() == team_name.lower(): return elo_ratings[k]
+    return DEFAULT_ELO
 
-def calculate_single_prediction(match, t_winner, t_decision):
+def calculate_prediction(match, t_winner, t_decision):
     t1_elo = get_elo(match.team1)
     t2_elo = get_elo(match.team2)
     toss_win_t1 = 1 if t_winner == match.team1 else 0
-    
-    venue_name = match.venue if match.venue not in ["Venue TBA", "Unknown", ""] else "Unknown Venue"
+    venue_clean = str(match.venue).split(',')[0].strip()
 
-    input_data = pd.DataFrame([{
-        'match_type': str(match.match_type),
-        'team1': str(match.team1),
-        'team2': str(match.team2),
-        'venue': str(venue_name),
-        'toss_decision': str(t_decision),
-        'team1_elo': float(t1_elo),
-        'team2_elo': float(t2_elo),
+    base_data = {
+        'match_type': str(match.match_type), 'team1': str(match.team1), 'team2': str(match.team2),
+        'venue': str(venue_clean), 'toss_decision': str(t_decision),
+        'team1_elo': float(t1_elo), 'team2_elo': float(t2_elo),
         'toss_win_team1': int(toss_win_t1),
-        'team1_form': 0.60,
-        'team2_form': 0.60,
-        'h2h_team1_ratio': 0.50,
-        'venue_form_t1': 0.50,
-        'venue_form_t2': 0.50
-    }])
+        'team1_form': 0.60, 'team2_form': 0.60, 'h2h_team1_ratio': 0.50
+    }
     
-    cat_cols = ['match_type', 'team1', 'team2', 'venue', 'toss_decision']
-    for col in cat_cols:
-        input_data[col] = input_data[col].astype(str)
-
     try:
-        # AI Model se prediction
-        cat_p = models['cat'].predict_proba(input_data)[0]
-        xgb_p = models['xgb'].predict_proba(input_data)[0]
-        lgb_p = models['lgb'].predict_proba(input_data)[0]
+        input_df = pd.DataFrame([base_data])
+        cat_cols = ['match_type', 'team1', 'team2', 'venue', 'toss_decision']
+        
+        # --- SMART UNKNOWN HANDLING (Crash-proof) ---
+        for col in cat_cols:
+            if input_df[col].iloc[0] not in cat_mappings[col]:
+                input_df[col] = "__UNKNOWN__"
+            input_df[col] = pd.Categorical(input_df[col], categories=cat_mappings[col])
 
-        final_probs = (cat_p + xgb_p + lgb_p) / 3.0
-        return float(final_probs[1]), float(final_probs[0])
+        # Sirf CatBoost aur LightGBM (No XGBoost)
+        cat_p = models['cat'].predict_proba(input_df)[0]
+        lgb_p = models['lgb'].predict_proba(input_df)[0]
+        
+        final_probs = (cat_p + lgb_p) / 2.0
+        return float(final_probs[1]), float(final_probs[0]), False
         
     except Exception as e:
-        # Agar AI model crash ho (naya ground/team), to Elo rating se calculate karein
-        print(f"Model Error (falling back to Elo): {e}")
+        print(f"Fallback to Elo: {e}")
         exp_t1 = 1 / (1 + 10**((t2_elo - t1_elo) / 400))
-        return exp_t1, (1 - exp_t1)
+        return exp_t1, (1 - exp_t1), True
 
 @app.get("/")
 def home():
@@ -81,41 +69,13 @@ def home():
 
 @app.post("/predict")
 def predict_match(match: MatchRequest):
-    # Outer try-except hatadiya hai taake 50-50 error na aaye
-    
     if not match.toss_winner or not match.toss_decision:
-        # Pre-Toss (Neutral) Prediction
-        t1_wins, t2_wins = [], []
-        scenarios = [
-            (match.team1, 'bat'), (match.team1, 'field'),
-            (match.team2, 'bat'), (match.team2, 'field')
-        ]
-        
-        for winner, decision in scenarios:
-            w1, w2 = calculate_single_prediction(match, winner, decision)
-            t1_wins.append(w1)
-            t2_wins.append(w2)
-            
-        avg_t1 = np.mean(t1_wins)
-        avg_t2 = np.mean(t2_wins)
-        
-        return {
-            "success": True,
-            "is_default": False,
-            "predictions": {
-                match.team1: f"{round(avg_t1 * 100, 2)}%",
-                match.team2: f"{round(avg_t2 * 100, 2)}%"
-            }
-        }
-
+        t1_wins, t2_wins, is_fb = [], [], False
+        for w, d in [(match.team1, 'bat'), (match.team1, 'field'), (match.team2, 'bat'), (match.team2, 'field')]:
+            w1, w2, fb = calculate_prediction(match, w, d)
+            t1_wins.append(w1); t2_wins.append(w2)
+            if fb: is_fb = True
+        return {"success": True, "is_default": is_fb, "predictions": {match.team1: f"{round(np.mean(t1_wins)*100, 2)}%", match.team2: f"{round(np.mean(t2_wins)*100, 2)}%"}}
     else:
-        # Post-Toss Prediction
-        t1_win, t2_win = calculate_single_prediction(match, match.toss_winner, match.toss_decision)
-        return {
-            "success": True,
-            "is_default": False,
-            "predictions": {
-                match.team1: f"{round(t1_win * 100, 2)}%",
-                match.team2: f"{round(t2_win * 100, 2)}%"
-            }
-        }
+        t1_win, t2_win, is_fb = calculate_prediction(match, match.toss_winner, match.toss_decision)
+        return {"success": True, "is_default": is_fb, "predictions": {match.team1: f"{round(t1_win*100, 2)}%", match.team2: f"{round(t2_win*100, 2)}%"}}
