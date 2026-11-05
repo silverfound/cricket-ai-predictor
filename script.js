@@ -13,7 +13,8 @@ const abjadValues = {
     'ق': 100, 'ر': 200, 'ش': 300, 'ت': 400, 'پ': 2, 'چ': 3, 'ٹ': 400, 'ڈ': 4, 'ڑ': 200, 'ژ': 7, 'گ': 20, 'ے': 10, 'آ': 1, 'ھ': 5, 'ؤ': 6, 'ئ': 10, 'ۃ': 5
 };
 
-const urduNumbers = { 0:"صفر",1:"ایک",2:"دو",3:"تین",4:"چار",5:"پانچ",6:"چھ",7:"سات",8:"آٹھ",9:"نو",10:"دس",11:"گیارہ",12:"بارہ",13:"تیرہ",14:"چودہ",15:"پندرہ",16:"سولہ",17:"سترہ",18:"اٹھارہ",19:"انیس",20:"بیس",21:"اکیس",22:"بائیس",23:"تیئیس",24:"چوبیس",25:"پچیس",26:"چھبیس",27:"ستائیس",28:"اٹھائیس",29:"انتیس",30:"تیس",40:"چالیس",50:"پچاس",60:"ساٹھ",70:"ستر",80:"اسی",90:"نوے",100:"سو" };
+// Complete Urdu Numbers 1-100
+const urduNumbers = { 0:"صفر",1:"ایک",2:"دو",3:"تین",4:"چار",5:"پانچ",6:"چھ",7:"سات",8:"آٹھ",9:"نو",10:"دس",11:"گیارہ",12:"بارہ",13:"تیرہ",14:"چودہ",15:"پندرہ",16:"سولہ",17:"سترہ",18:"اٹھارہ",19:"انیس",20:"بیس",21:"اکیس",22:"بائیس",23:"تیئیس",24:"چوبیس",25:"پچیس",26:"چھبیس",27:"ستائیس",28:"اٹھائیس",29:"انتیس",30:"تیس",31:"اکتیس",32:"بتیس",33:"تینتیس",34:"چونتیس",35:"پینتیس",36:"چھتیس",37:"سینتیس",38:"اڑتیس",39:"انتالیس",40:"چالیس",41:"اکتالیس",42:"بیالیس",43:"تینتالیس",44:"چوالیس",45:"پینتالیس",46:"چھیالیس",47:"سینتالیس",48:"اڑتالیس",49:"انچاس",50:"پچاس",51:"اکاون",52:"باون",53:"ترپن",54:"چون",55:"پچپن",56:"چھپن",57:"ستاون",58:"اٹھاون",59:"انسٹھ",60:"ساٹھ",61:"اکسٹھ",62:"باسٹھ",63:"تریسٹھ",64:"چونسٹھ",65:"پینسٹھ",66:"چھیاسٹھ",67:"سڑسٹھ",68:"اڑسٹھ",69:"انہتر",70:"ستر",71:"اکہتر",72:"بہتر",73:"تہتر",74:"چوہتر",75:"پچہتر",76:"چھہتر",77:"ستتر",78:"اٹھہتر",79:"اناسی",80:"اسی",81:"اکاسی",82:"بیاسی",83:"تراسی",84:"چوراسی",85:"پچاسی",86:"چھیاسی",87:"ستاسی",88:"اٹھاسی",89:"نواسی",90:"نوے",91:"اکانوے",92:"بانوے",93:"ترانوے",94:"چورانوے",95:"پچانوے",96:"چھیانوے",97:"ستانوے",98:"اٹھانوے",99:"ننانوے",100:"سو" };
 
 const urduMonths = ["محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانی", "رجب", "شعبان", "رمضان", "شوال", "ذیقعد", "ذی الحج"];
 const urduDays = { 0: "اتوار", 1: "پیر", 2: "منگل", 3: "بدھ", 4: "جمعرات", 5: "جمعہ", 6: "ہفتہ" };
@@ -29,7 +30,8 @@ const urduDictionary = {
     "Rohit Sharma": "روہت شرما", "Pat Cummins": "پیٹ کمنز", "Babar Azam": "بابر اعظم",
     "Wankhede Stadium": "وانکھیڈے اسٹیڈیم", "Melbourne Cricket Ground": "ملبورن کرکٹ گراؤنڈ",
     "Eden Gardens": "ایڈن گارڈنز", "Narendra Modi Stadium": "نریندر مودی اسٹیڈیم",
-    "Drummoyne Oval": "ڈرموئن اوول", "Sylhet International Cricket Stadium": "سلہٹ انٹرنیشنل کرکٹ اسٹیڈیم"
+    "Drummoyne Oval": "ڈرموئن اوول", "Sylhet International Cricket Stadium": "سلہٹ انٹرنیشنل کرکٹ اسٹیڈیم",
+    "Junction Oval": "جنکشن اوول", "Melbourne Stars Women": "ملبورن اسٹارز ویمن", "Sydney Sixers Women": "سڈنی سکسرز ویمن"
 };
 
 const friendshipMatrix = {
@@ -60,7 +62,30 @@ function getMultiplier(teamNum, contextNum) {
     return 1.0;
 }
 
-function numberToUrdu(num) { return urduNumbers[num] || num; }
+// FIXED: Number to Urdu Converter (Handles 1448 properly)
+function numberToUrdu(num) {
+    if (num <= 100) return urduNumbers[num] || num;
+    if (num < 1000) {
+        let h = Math.floor(num / 100);
+        let r = num % 100;
+        let str = urduNumbers[h] + " سو";
+        if (r > 0) str += " " + (urduNumbers[r] || r);
+        return str;
+    }
+    let th = Math.floor(num / 1000);
+    let rem = num % 1000;
+    let str = urduNumbers[th] + " ہزار";
+    if (rem > 0) {
+        if (rem < 100) str += " " + (urduNumbers[rem] || rem);
+        else {
+            let h = Math.floor(rem / 100);
+            let r = rem % 100;
+            str += " " + urduNumbers[h] + " سو";
+            if (r > 0) str += " " + (urduNumbers[r] || r);
+        }
+    }
+    return str;
+}
 
 // ==========================================
 // POPUP HTML
@@ -77,13 +102,11 @@ const popupHTML = `
             <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match is Live! This prediction will NOT be saved for accuracy.</p>
         </div>
 
-        <!-- AI PREDICTION BOX -->
         <div style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
             <p style="color: #fbbf24; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">📊 Pre-Toss Neutral Prediction</p>
             <div id="pre-toss-result" style="color: white; font-size: 14px;">Calculating...</div>
         </div>
 
-        <!-- TOSS INPUTS -->
         <label style="color:#94a3b8; font-size:14px;">Toss Winner:</label>
         <select id="toss-winner" style="width:100%; padding:8px; margin-bottom:10px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;"></select>
         <label style="color:#94a3b8; font-size:14px;">Toss Decision:</label>
@@ -93,13 +116,11 @@ const popupHTML = `
 
         <button id="get-prediction-btn" style="width:100%; padding:10px; background:#00ffcc; color:black; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">Calculate Post-Toss Impact</button>
         
-        <!-- POST TOSS AI RESULT -->
         <div id="post-toss-area" style="display:none; margin-top:15px; padding: 10px; border-radius: 8px; border: 1px solid #00ffcc; background: #0b1120;">
             <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">🎯 Post-Toss Prediction & Impact</p>
             <div id="prediction-result" style="color:white; text-align:center; font-weight:bold;"></div>
         </div>
 
-        <!-- ILMI INSIGHT BOX -->
         <div id="ilmi-area" style="display:none; margin-top:15px; padding: 15px; border-radius: 8px; border: 1px solid #d946ef; background: #1a1525;">
             <h4 style="color:#d946ef; margin: 0 0 5px 0; font-size: 16px;">🔮 Ilmi Insight</h4>
             <span style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 10px;">Based on Abjad + Compatibility</span>
@@ -114,7 +135,6 @@ document.body.insertAdjacentHTML('beforeend', popupHTML);
 function wakeUpBackend() { fetch(`${BACKEND_URL}/`).catch(() => {}); }
 function getFormattedDate(offset) { let d = new Date(); d.setDate(d.getDate() + offset); return d.toISOString().split('T')[0]; }
 
-// Accuracy / History Logic
 function savePrediction(matchId, team1, team2, predictedTeam, prob) {
     let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
     history = history.filter(h => h.matchId !== matchId);
@@ -130,7 +150,24 @@ function getAccuracyStats() {
     return { total: evaluated.length, correct: correct, pending: pending.length };
 }
 
-// Fetch Matches
+// ==========================================
+// ALADHAN API (Maghrib Time)
+// ==========================================
+async function fetchMaghribTime(city, country, dateStr) {
+    try {
+        // dateStr format: DD-MM-YYYY
+        let url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=4`;
+        let res = await fetch(url);
+        let data = await res.json();
+        if (data.code === 200) {
+            return data.data.timings.Maghrib; // Returns e.g., "18:15"
+        }
+    } catch (e) {
+        console.log("Aladhan API error:", e);
+    }
+    return "18:00"; // Default fallback if API fails
+}
+
 async function fetchMatches(forceRefresh = false) {
     let container = document.getElementById("dynamic-prediction-area");
     
@@ -168,8 +205,8 @@ async function fetchMatches(forceRefresh = false) {
     matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v18_${today}`; 
-    const cacheKeyTomorrow = `cricket_data_v18_${tomorrow}`;
+    const cacheKeyToday = `cricket_data_v19_${today}`; 
+    const cacheKeyTomorrow = `cricket_data_v19_${tomorrow}`;
     const cacheExpiry = 10 * 60 * 1000;
 
     let allMatches = [];
@@ -307,16 +344,20 @@ function renderMatches(matches) {
                 let safeVenue = v.replace(/'/g, ""); 
                 let matchId = match.match_id ? match.match_id : match.timestamp_start;
                 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live');
+                // Pass city and country for Aladhan API
+                let city = match.venue?.location || "Unknown";
+                let country = match.venue?.country || "Unknown";
+
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country);
             }
         });
     });
 }
 
 // ==========================================
-// MAIN PREDICTION & ILMI LOGIC
+// MAIN PREDICTION & ILMI LOGIC (With Aladhan API)
 // ==========================================
-async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch) {
+async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country) {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
@@ -348,17 +389,24 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         }
     } catch (e) { preDiv.innerText = "Error loading prediction."; }
 
-    // 2. ILMI CALCULATION (Added here so it loads with the modal)
+    // 2. ILMI CALCULATION (With Aladhan API)
     document.getElementById('ilmi-area').style.display = 'block';
     let ilmiDiv = document.getElementById('ilmi-content');
     ilmiDiv.innerHTML = "Calculating Ilmi Insight...";
 
-    // Get Maghrib time (Using mock for now, in production use Aladhan API)
-    let maghribTime = "17:45"; 
-    
-    // Get Match Time (HH:MM)
-    let matchTimeStr = new Date(startTime * 1000).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-    
+    // Format date for Aladhan API (DD-MM-YYYY)
+    let d = new Date(startTime * 1000);
+    let dayStr = String(d.getDate()).padStart(2, '0');
+    let monthStr = String(d.getMonth() + 1).padStart(2, '0');
+    let yearStr = d.getFullYear();
+    let apiDate = `${dayStr}-${monthStr}-${yearStr}`;
+
+    // Fetch Maghrib Time
+    let maghribTime = await fetchMaghribTime(city, country, apiDate);
+
+    // Get Match Time (HH:MM) - Local Time
+    let matchTimeStr = d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+
     // Date logic with Maghrib adjustment
     let dateObj = new Date(startTime * 1000);
     if (matchTimeStr >= maghribTime) { dateObj.setDate(dateObj.getDate() + 1); }
@@ -369,6 +417,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let hijriMonth = parseInt(parts.find(p => p.type === 'month').value);
     let hijriYear = parseInt(parts.find(p => p.type === 'year').value.replace(' AH', '').replace(' BC', ''));
     
+    // FIXED: Passing through numberToUrdu logic (e.g., 1448 -> ایک ہزار چار سو اڑتالیس)
     let dateUrduStr = `${numberToUrdu(hijriDay)} ${urduMonths[hijriMonth - 1]} ${numberToUrdu(hijriYear)}`;
     let dayUrdu = urduDays[dateObj.getDay()];
 
@@ -399,6 +448,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         <div style="margin-bottom: 10px; font-size: 12px; color: #cbd5e1;">
             📅 <span class="urdu-text">${dateUrduStr}</span> | 🗓️ <span class="urdu-text">${dayUrdu}</span>
         </div>
+        <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">(Maghrib Time: ${maghribTime})</div>
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
             <tr><td style="color:#00ffcc; padding: 4px 0;">${t1}</td><td style="text-align:right; font-weight:bold; color:#00ffcc;">${finalA.toFixed(1)}</td></tr>
             <tr><td style="color:#ef4444; padding: 4px 0;">${t2}</td><td style="text-align:right; font-weight:bold; color:#ef4444;">${finalB.toFixed(1)}</td></tr>
