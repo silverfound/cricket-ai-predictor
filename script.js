@@ -16,7 +16,6 @@ const popupHTML = `
         <p id="modal-match-name" style="color:white; font-weight:bold;"></p>
         <p id="modal-venue" style="color:#94a3b8; font-size:12px; margin-top:-10px; margin-bottom:15px;"></p>
         
-        <!-- PRE-TOSS NEUTRAL PREDICTION -->
         <div id="pre-toss-area" style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
             <p style="color: #fbbf24; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">📊 Pre-Toss Neutral Prediction</p>
             <div id="pre-toss-result" style="color: white; font-size: 14px;">Calculating neutral baseline...</div>
@@ -34,7 +33,6 @@ const popupHTML = `
         <button id="get-prediction-btn" style="width:100%; padding:10px; background:#00ffcc; color:black; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">Calculate Post-Toss Impact</button>
         <button onclick="document.getElementById('prediction-modal').style.display='none'" style="width:100%; padding:10px; background:transparent; color:#ff4d4d; border:none; margin-top:10px; cursor:pointer;">Cancel</button>
         
-        <!-- POST-TOSS PREDICTION & IMPACT -->
         <div id="post-toss-area" style="display:none; margin-top:15px; padding: 10px; border-radius: 8px; border: 1px solid #00ffcc; background: #0b1120;">
             <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">🎯 Post-Toss Prediction & Impact</p>
             <div id="prediction-result" style="color:white; text-align:center; font-weight:bold;"></div>
@@ -71,9 +69,10 @@ async function fetchMatches() {
 
     const today = getFormattedDate(0);
     const tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_${today}`;
-    const cacheKeyTomorrow = `cricket_data_${tomorrow}`;
-    const cacheExpiry = 3 * 60 * 60 * 1000; // 3 ghante
+    // V3 CACHE KEY: Taake browser purana data bhool jaye
+    const cacheKeyToday = `cricket_data_v3_${today}`;
+    const cacheKeyTomorrow = `cricket_data_v3_${tomorrow}`;
+    const cacheExpiry = 2 * 60 * 60 * 1000; // 2 ghante ka cache
 
     let allMatches = [];
 
@@ -82,7 +81,7 @@ async function fetchMatches() {
         let cachedDataToday = localStorage.getItem(cacheKeyToday);
         if (cachedDataToday) {
             let parsed = JSON.parse(cachedDataToday);
-            if (Date.now() - parsed.time < cacheExpiry) {
+            if (Date.now() - parsed.time < cacheExpiry && parsed.data.length > 0) {
                 allMatches.push(...parsed.data);
             } else {
                 localStorage.removeItem(cacheKeyToday);
@@ -97,8 +96,10 @@ async function fetchMatches() {
             if(resToday.ok) {
                 const data = await resToday.json();
                 const items = data.response?.items || [];
-                allMatches.push(...items);
-                localStorage.setItem(cacheKeyToday, JSON.stringify({ time: Date.now(), data: items }));
+                if (items.length > 0) {
+                    allMatches.push(...items);
+                    localStorage.setItem(cacheKeyToday, JSON.stringify({ time: Date.now(), data: items }));
+                }
             }
         }
 
@@ -106,7 +107,7 @@ async function fetchMatches() {
         let cachedDataTomorrow = localStorage.getItem(cacheKeyTomorrow);
         if (cachedDataTomorrow) {
             let parsed = JSON.parse(cachedDataTomorrow);
-            if (Date.now() - parsed.time < cacheExpiry) {
+            if (Date.now() - parsed.time < cacheExpiry && parsed.data.length > 0) {
                 allMatches.push(...parsed.data);
             } else {
                 localStorage.removeItem(cacheKeyTomorrow);
@@ -121,8 +122,10 @@ async function fetchMatches() {
             if(resTomorrow.ok) {
                 const data = await resTomorrow.json();
                 const items = data.response?.items || [];
-                allMatches.push(...items);
-                localStorage.setItem(cacheKeyTomorrow, JSON.stringify({ time: Date.now(), data: items }));
+                if (items.length > 0) {
+                    allMatches.push(...items);
+                    localStorage.setItem(cacheKeyTomorrow, JSON.stringify({ time: Date.now(), data: items }));
+                }
             }
         }
 
@@ -133,36 +136,38 @@ async function fetchMatches() {
         allMatches.forEach(match => {
             if (!match.teama || !match.teamb) return;
             
-            // Filter: Domestic First Class/ODI hatao, T20 aur International rakho
             let format = match.format_str ? match.format_str.toLowerCase() : "";
             let isDomestic = match.domestic === "1";
             
-            // Agar First Class hai aur domestic hai (jaise Ranji Trophy) toh skip karo
             if (format.includes('first class') && isDomestic) return; 
-            // Agar ODI hai aur domestic hai toh skip karo
             if (format.includes('odi') && isDomestic) return;
 
-            // Duplicate key
             const matchKey = match.timestamp_start + "-" + [match.teama.name, match.teamb.name].sort().join("-");
             if (seenMatches.has(matchKey)) return;
             seenMatches.add(matchKey);
 
-            // Categorize
+            // STATUS LOGIC (Colab Test ke mutabiq)
             let status = match.status_str ? match.status_str.toLowerCase() : "";
-            if (status.includes("live") || status.includes("innings break") || status.includes("stumps")) {
+            
+            if (status.includes("live") || status.includes("progress") || status.includes("innings break") || status.includes("stumps")) {
                 liveMatches.push(match);
-            } else if (status.includes("not started") || status.includes("upcoming") || status.includes("toss")) {
-                upcomingMatches.push(match);
-            } else if (status.includes("finished") || status.includes("result") || status.includes("won")) {
+            } else if (status.includes("finished") || status.includes("result") || status.includes("won") || status.includes("draw")) {
                 finishedMatches.push(match);
+            } else {
+                // "Scheduled", "Not Started", etc sab Upcoming mein jayenge
+                upcomingMatches.push(match);
             }
         });
 
-        // Sort by time
         upcomingMatches.sort((a, b) => a.timestamp_start - b.timestamp_start);
         finishedMatches.sort((a, b) => b.timestamp_start - a.timestamp_start);
 
-        switchTab('live'); 
+        // Default tab
+        if (liveMatches.length > 0) {
+            switchTab('live');
+        } else {
+            switchTab('upcoming'); // Agar live nahi hai toh direct upcoming khule
+        }
 
     } catch (error) {
         matchesContainer.innerHTML = `
@@ -219,7 +224,6 @@ function renderMatches(matches) {
         const matchType = match.format_str || "T20";
         const venue = match.venue?.name || "Venue TBA";
         
-        // Local Time conversion from Unix Timestamp
         let localDateTime = "Time TBA";
         if (match.timestamp_start) {
             const dateObj = new Date(match.timestamp_start * 1000);
@@ -261,7 +265,6 @@ async function openPredictModal(team1, team2, venue, matchType) {
     const tossSelect = document.getElementById('toss-winner');
     tossSelect.innerHTML = `<option value="${team1}">${team1}</option><option value="${team2}">${team2}</option>`;
 
-    // 1. NEUTRAL PRE-TOSS
     let preResultDiv = document.getElementById('pre-toss-result');
     preResultDiv.innerHTML = "Calculating Neutral Baseline...";
     window.neutralPred = null;
@@ -292,7 +295,6 @@ async function openPredictModal(team1, team2, venue, matchType) {
         preResultDiv.innerText = "Error loading initial prediction.";
     }
 
-    // 2. POST-TOSS
     document.getElementById('get-prediction-btn').onclick = async () => {
         const tossWinner = tossSelect.value;
         const tossDecision = document.getElementById('toss-decision').value;
@@ -351,7 +353,7 @@ async function openPredictModal(team1, team2, venue, matchType) {
                 }
 
                 if (prediction.is_default) {
-                    html += `<div style="color:#fbbf24; font-size:12px; margin-top:10px;">⚠️ Approximate prediction (Model lacks exact venue data)</div>`;
+                    html += `<div style="color:#fbbf24; font-size:12px; margin-top:10px;">⚠️ Approximate prediction</div>`;
                 }
                 
                 resultDiv.innerHTML = html;
