@@ -4,14 +4,12 @@ const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com";
 
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
 
-// --- POPUP HTML ---
 const popupHTML = `
 <div id="prediction-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#131b2e; padding:20px; border-radius:12px; width:90%; max-width:400px; border:1px solid #00ffcc; max-height: 90vh; overflow-y: auto;">
         <h3 style="color:#00ffcc; margin-top:0;">Match Prediction</h3>
         <p id="modal-match-name" style="color:white; font-weight:bold;"></p>
         <p id="modal-venue" style="color:#94a3b8; font-size:12px; margin-top:-10px; margin-bottom:15px;"></p>
-        
         <div id="pre-toss-area" style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
             <p style="color: #fbbf24; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">📊 Pre-Toss Neutral Prediction</p>
             <div id="pre-toss-result" style="color: white; font-size: 14px;">Calculating...</div>
@@ -32,22 +30,18 @@ const popupHTML = `
 </div>`;
 document.body.insertAdjacentHTML('beforeend', popupHTML);
 
-// --- NAYA: RENDER SERVER KO JAGANE KA FUNCTION ---
 function wakeUpBackend() {
-    // Background mein server ko ping bhejte hain taake wo jaag jaye
     fetch(`${BACKEND_URL}/`).catch(() => {});
 }
 
-// --- DATE & CACHE HELPER ---
 function getFormattedDate(offset) {
     let d = new Date(); d.setDate(d.getDate() + offset); return d.toISOString().split('T')[0];
 }
 
-// --- API CALL & TABS ---
 async function fetchMatches(forceRefresh = false) {
     let container = document.getElementById("dynamic-prediction-area");
     
-    // Naya Header with Refresh Button
+    // Refresh Button ka logic
     let tabsHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <div style="display: flex; gap: 10px;">
@@ -63,18 +57,16 @@ async function fetchMatches(forceRefresh = false) {
     }
 
     let matchesContainer = document.getElementById("matches-container");
-    matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Matches...</h3>`;
+    matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Live Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    // Cache v4 (Naya version taake purana cache clear ho jaye)
-    const cacheKeyToday = `cricket_data_v4_${today}`;
-    const cacheKeyTomorrow = `cricket_data_v4_${tomorrow}`;
-    const cacheExpiry = 2 * 60 * 60 * 1000; 
+    const cacheKeyToday = `cricket_data_v5_${today}`; // Version change kiya
+    const cacheKeyTomorrow = `cricket_data_v5_${tomorrow}`;
+    const cacheExpiry = 1 * 60 * 60 * 1000; // 1 ghante ka cache
 
     let allMatches = [];
 
     try {
-        // Force refresh hone par cache clear karein
         if (forceRefresh) {
             localStorage.removeItem(cacheKeyToday);
             localStorage.removeItem(cacheKeyTomorrow);
@@ -94,9 +86,12 @@ async function fetchMatches(forceRefresh = false) {
             }
             
             if (fetchNeeded) {
-                const res = await fetch(`https://${RAPIDAPI_HOST}/matches?date=${date}`, {
-                    headers: { "X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST }
+                // Yahan Cache Buster (?_t=time) laga diya hai taake browser purana data na de
+                const res = await fetch(`https://${RAPIDAPI_HOST}/matches?date=${date}&_t=${Date.now()}`, {
+                    headers: { "X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST },
+                    cache: "no-store" // Yeh line browser ko bolti hai ke cache use mat karo
                 });
+                
                 if(res.ok) {
                     const data = await res.json();
                     const items = data.response?.items || [];
@@ -128,6 +123,7 @@ async function fetchMatches(forceRefresh = false) {
 
         upcomingMatches.sort((a,b) => a.timestamp_start - b.timestamp_start);
         switchTab(liveMatches.length > 0 ? 'live' : 'upcoming');
+        
     } catch (e) {
         matchesContainer.innerHTML = `<div style="color:red; text-align:center;">Error: ${e.message}</div>`;
     }
@@ -148,7 +144,7 @@ function switchTab(tab) {
 function renderMatches(matches) {
     let container = document.getElementById("matches-container");
     if (!matches.length) {
-        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Koi match nahi mila. Refresh dabayein.</div>`;
+        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Is category mein filhal koi match nahi hai. Refresh dabayein.</div>`;
         return;
     }
     let html = "";
@@ -228,8 +224,7 @@ async function openPredictModal(t1, t2, venue, type) {
     };
 }
 
-// --- INITIALIZE ---
 document.addEventListener("DOMContentLoaded", () => {
-    wakeUpBackend(); // Backend ko jagane ke liye
+    wakeUpBackend(); 
     fetchMatches();
 });
