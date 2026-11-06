@@ -79,32 +79,83 @@ const urduTeams = {
     "Melbourne Stars Women": "میلبرن اسٹارز ویمن"
 };
 
-// --- CAPTAINS DICTIONARY ---
+// --- CAPTAINS DICTIONARY (Urdu spellings for international captains) ---
 const urduCaptains = {
-    "Rohit Sharma": "روہت شرما",
-    "Pat Cummins": "پیٹ کمنز",
-    "Babar Azam": "بابر اعظم",
     "Rahmat Shah": "رحمت شاہ",
     "Rahmanullah Gurbaz": "رحمٰن اللہ گرباز",
     "Ibrahim Zadran": "ابراہیم زدران",
+    "Pat Cummins": "پیٹ کمنز",
+    "Mitchell Marsh": "مچل مارش",
+    "Najmul Hossain Shanto": "نجمل حسین شانتو",
+    "Mehidy Hasan Miraz": "مہدی حسن میراز",
+    "Litton Das": "لٹن داس",
+    "Tawhid Hridoy": "توحید ہردوئے",
+    "Joe Root": "جو روٹ",
+    "Harry Brook": "ہیری بروک",
+    "Jacob Bethell": "جیکب بیتھل",
     "Shubman Gill": "شبمن گل",
     "Shreyas Iyer": "شریاس ائیر",
-    "Mitchell Marsh": "مچل مارش"
+    "Andrew Balbirnie": "اینڈریو بالبرنی",
+    "Paul Stirling": "پال اسٹرلنگ",
+    "Lorcan Tucker": "لورکن ٹکر",
+    "Tom Latham": "ٹام لیتھم",
+    "Mitchell Santner": "مچل سینٹنر",
+    "Babar Azam": "بابر اعظم",
+    "Shaheen Afridi": "شاہین آفریدی",
+    "Sahibzada Farhan": "صاحبزادہ فرحان",
+    "Temba Bavuma": "ٹیمبا باووما",
+    "Aiden Markram": "ایڈن مارکرم",
+    "Kusal Mendis": "کوشل مینڈس",
+    "Dasun Shanaka": "داسن شناکا",
+    "Roston Chase": "روسٹن چیز",
+    "Shai Hope": "شائی ہوپ",
+    "Richard Ngarava": "رچرڈ نگاروا",
+    "Sikandar Raza": "سکندر رضا",
+    "Harpreet Singh": "ہربریت سنگھ",
+    "Muhammad Waseem": "محمد وسیم",
+    "Vinayak Shukla": "ونائیک شکلا"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
+// Default captain is the T20I captain (or latest documented captain where T20I
+// captaincy is not listed). Format-specific values are selected below.
 const teamCaptains = {
-    "India": "Rohit Sharma", "Australia": "Pat Cummins", "Pakistan": "Babar Azam",
-    "Afghanistan": "Rahmat Shah"
-    // Yahan aap team to captain map karenge
+    "Afghanistan": "Ibrahim Zadran",
+    "Australia": "Mitchell Marsh",
+    "Bangladesh": "Litton Das",
+    "England": "Jacob Bethell",
+    "India": "Shreyas Iyer",
+    "Ireland": "Lorcan Tucker",
+    "New Zealand": "Mitchell Santner",
+    "Pakistan": "Sahibzada Farhan",
+    "South Africa": "Aiden Markram",
+    "Sri Lanka": "Dasun Shanaka",
+    "West Indies": "Shai Hope",
+    "Zimbabwe": "Sikandar Raza",
+    "United Arab Emirates": "Muhammad Waseem",
+    "UAE": "Muhammad Waseem",
+    "Oman": "Vinayak Shukla"
 };
 
-// International Teams Format-wise Captains
+// International men's teams: format-wise captains.
+// If a format has no separately confirmed captain in the latest available
+// captain listing, the most recently documented captain is used as fallback.
 const internationalCaptains = {
     "Afghanistan": { "Test": "Rahmat Shah", "ODI": "Rahmanullah Gurbaz", "T20": "Ibrahim Zadran" },
+    "Australia": { "Test": "Pat Cummins", "ODI": "Mitchell Marsh", "T20": "Mitchell Marsh" },
+    "Bangladesh": { "Test": "Najmul Hossain Shanto", "ODI": "Litton Das", "T20": "Litton Das" },
+    "England": { "Test": "Joe Root", "ODI": "Harry Brook", "T20": "Jacob Bethell" },
     "India": { "Test": "Shubman Gill", "ODI": "Shreyas Iyer", "T20": "Shreyas Iyer" },
-    "Australia": { "Test": "Pat Cummins", "ODI": "Mitchell Marsh", "T20": "Mitchell Marsh" }
-    // Yahan baaki international captains add honge
+    "Ireland": { "Test": "Andrew Balbirnie", "ODI": "Paul Stirling", "T20": "Lorcan Tucker" },
+    "New Zealand": { "Test": "Tom Latham", "ODI": "Mitchell Santner", "T20": "Mitchell Santner" },
+    "Pakistan": { "Test": "Babar Azam", "ODI": "Shaheen Afridi", "T20": "Sahibzada Farhan" },
+    "South Africa": { "Test": "Temba Bavuma", "ODI": "Temba Bavuma", "T20": "Aiden Markram" },
+    "Sri Lanka": { "Test": "Kusal Mendis", "ODI": "Dasun Shanaka", "T20": "Dasun Shanaka" },
+    "West Indies": { "Test": "Roston Chase", "ODI": "Shai Hope", "T20": "Shai Hope" },
+    "Zimbabwe": { "Test": "Richard Ngarava", "ODI": "Sikandar Raza", "T20": "Sikandar Raza" },
+    "United Arab Emirates": { "Test": "Muhammad Waseem", "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
+    "UAE": { "Test": "Muhammad Waseem", "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
+    "Oman": { "Test": "Vinayak Shukla", "ODI": "Vinayak Shukla", "T20": "Vinayak Shukla" }
 };
 
 const friendshipMatrix = {
