@@ -313,6 +313,50 @@ const ilmiWordUrdu = {
     "biratnagar":"بیرات نگر","lumbini":"لمبینی","janakpur":"جنک پور","ranchi":"رانچی",
     ...{"adelaide":"ایڈیلیڈ","abu":"ابو","dhabi":"ظہبی","antigua":"انٹیگوا","hawksbills":"ہاکس بلز","barbados":"بارباڈوس","barisal":"باریسال","birmingham":"برمنگھم","brisbane":"برسبین","cape":"کیپ","town":"ٹاؤن","chattogram":"چٹگرام","chittagong":"چٹاگانگ","chennai":"چنئی","chitwan":"چتوان","colombo":"کولمبو","comilla":"کومیلا","cumilla":"کومیلا","dambulla":"دمبولا","deccan":"دکن","delhi":"دہلی","desert":"ڈیزرٹ","dhaka":"ڈھاکہ","dubai":"دبئی","dublin":"ڈبلن","durban":"ڈربن","durbar":"دربار","durdanto":"درونتو","duronto":"درونتو","edinburgh":"ایڈنبرا","fortune":"فارچون","galle":"گال","gujarat":"گجرات","gulf":"گلف","guyana":"گیانا","hobart":"ہوبارٹ","hyderabad":"حیدرآباد","islamabad":"اسلام آباد","jaffna":"جافنا","jamaica":"جمیکا","janakpur":"جنک پور","joburg":"جوبرگ","jozi":"جوزی","kandy":"کینڈی","karachi":"کراچی","karnali":"کرنالی","kathmandu":"کھٹمنڈو","khulna":"کھلنا","kolkata":"کولکتہ","lahore":"لاہور","london":"لندن","lucknow":"لکھنؤ","lumbini":"لمبنی","manchester":"مانچسٹر","melbourne":"میلبرن","minister":"منسٹر","multan":"ملتان","mumbai":"ممبئی","nelson":"نیلسن","noakhali":"نوکھالی","northern":"ناردرن","oval":"اوول","paarl":"پارل","perth":"پرتھ","peshawar":"پشاور","pokhara":"پوکھرا","pretoria":"پریٹوریا","pune":"پونے","punjab":"پنجاب","quetta":"کوئٹہ","rajasthan":"راجستھان","rajshahi":"راجشاہی","rangpur":"رنگپور","rawalpindiz":"راولپنڈیز","rising":"رائزنگ","rotterdam":"روٹرڈیم","san":"سان","francisco":"فرانسسکو","seattle":"سیئٹل","sharjah":"شارجہ","sud ur":"سدر","sudur":"سدر","paschim":"پشچم","sunrisers":"سن رائزرز","sylhet":"سلهٹ","texas":"ٹیکساس","tornadoes":"ٹورنیڈوز","trent":"ٹرینٹ","trinidad":"ٹرینیڈاڈ","tshwane":"تشوانے","warriors":"وارئیرز","washington":"واشنگٹن","welsh":"ویلش","phoenix":"فینکس","spirit":"اسپرٹ","brave":"بریو","rockets":"راکٹس","invincibles":"اِنونسبلز","giants":"جائنٹس","royals":"رائلز","qalandars":"قلندرز","sultans":"سلطانز","zalmi":"زلمی","gladiators":"گلیڈی ایٹرز","scorchers":"اسکارچرز","hurricanes":"ہریکینز","renegades":"رینیگیڈز","sixers":"سکسرز","strikers":"اسٹرائیکرز","knight":"نائٹ","riders":"رائیڈرز","kings":"کنگز","capitals":"کیپیٹلز","titans":"ٹائٹنز","challengers":"چیلنجرز","warriorz":"وارئیرز","vipers":"وائپرز","unicorns":"یونی کورنز","orcas":"اورکاز","falcons":"فالکنز","sapphires":"سیفائرز","empress":"ایمپریس","supergiants":"سپر جائنٹس","super":"سپر","blitz":"بلٹز","heat":"ہیٹ","stars":"اسٹارز","thunder":"تھنڈر","originals":"اوریجنلز","fire":"فائر","warrior":"وارئیر"}
 };
+const ilmiCaptainWordUrdu = {
+    "the":"دی","and":"اور","of":"آف","international":"انٹرنیشنل","national":"نیشنل",
+    "cricket":"کرکٹ","stadium":"اسٹیڈیم","ground":"گراؤنڈ","oval":"اوول","park":"پارک",
+    "field":"فیلڈ","centre":"سینٹر","center":"سینٹر","sports":"اسپورٹس","sportspark":"اسپورٹس پارک",
+    "club":"کلب","university":"یونیورسٹی","academy":"اکیڈمی","arena":"ایرینا","council":"کونسل",
+    "super":"سپر","kings":"کنگز","king":"کنگ","queens":"کوئنز","knight":"نائٹ","riders":"رائیڈرز",
+    "royals":"رائلز","royal":"رائل","warriors":"وارئیرز","strikers":"اسٹرائیکرز","heat":"ہیٹ",
+    "stars":"اسٹارز","thunder":"تھنڈر","sixers":"سکسرز","scorchers":"اسکارچرز","hurricanes":"ہریکینز",
+    "renegades":"رینیگیڈز","capitals":"کیپیٹلز","titans":"ٹائٹنز","challengers":"چیلنجرز",
+    "falcons":"فالکنز","tigers":"ٹائیگرز","lions":"لائنز","eagles":"ایگلز","phoenix":"فینکس",
+    "fire":"فائر","spirit":"اسپرٹ","brave":"بریو","rockets":"راکٹس","invincibles":"اِنونسبلز",
+    "women":"ویمن","men":"مین","city":"سٹی","bay":"بے","mount":"ماؤنٹ","new":"نیو","old":"اولڈ",
+    "abu":"ابو","dhabi":"دبئی","dubai":"دبئی","karachi":"کراچی","lahore":"لاہور","islamabad":"اسلام آباد",
+    "peshawar":"پشاور","quetta":"کوئٹہ","multan":"ملتان","mumbai":"ممبئی","chennai":"چنئی",
+    "kolkata":"کولکتہ","delhi":"دہلی","bengaluru":"بنگلورو","hyderabad":"حیدرآباد","jaipur":"جے پور",
+    "adelaide":"ایڈیلیڈ","brisbane":"برسبین","melbourne":"میلبرن","sydney":"سڈنی","perth":"پرتھ",
+    "hobart":"ہوبارٹ","london":"لندن","birmingham":"برمنگھم","manchester":"مانچسٹر","cardiff":"کارڈف",
+    "auckland":"آکلینڈ","wellington":"ویلنگٹن","canterbury":"کینٹربری","otago":"اوٹاگو","kandy":"کینڈی",
+    "colombo":"کولمبو","galle":"گال","dambulla":"دمبولا","jaffna":"جافنا","cape":"کیپ","town":"ٹاؤن",
+    "durban":"ڈربن","pretoria":"پریٹوریا","paarl":"پارل","joburg":"جوبرگ","washington":"واشنگٹن",
+    "texas":"ٹیکساس","seattle":"سیٹل","california":"کیلیفورنیا","san":"سان","francisco":"فرانسسکو",
+    "los":"لاس","angeles":"اینجلس","nepal":"نیپال","kathmandu":"کھٹمنڈو","pokhara":"پکھرا",
+    "biratnagar":"بیرات نگر","lumbini":"لمبینی","janakpur":"جنک پور","ranchi":"رانچی"
+};
+function transliterateIlmiCaptainWord(word) {
+    const w = String(word || "").toLowerCase();
+    if (ilmiCaptainWordUrdu[w]) return ilmiCaptainWordUrdu[w];
+    const clusters = {"tch":"چ","sh":"ش","ch":"چ","kh":"خ","gh":"غ","ph":"ف","th":"تھ","dh":"دھ","zh":"ژ","oo":"و","ee":"ی","aa":"ا","ai":"ے","au":"او","ou":"او","ng":"نگ","ck":"ک","qu":"کو","wh":"و"};
+    const letters = {a:"ا",b:"ب",c:"ک",d:"ڈ",e:"ے",f:"ف",g:"گ",h:"ہ",i:"ی",j:"ج",k:"ک",l:"ل",m:"م",n:"ن",o:"و",p:"پ",q:"ق",r:"ر",s:"س",t:"ٹ",u:"و",v:"و",w:"و",x:"کس",y:"ی",z:"ز"};
+    let out="";
+    for (let i=0;i<w.length;) {
+        let matched=false;
+        for (const n of [3,2]) { const part=w.slice(i,i+n); if (clusters[part]) { out+=clusters[part]; i+=n; matched=true; break; } }
+        if (matched) continue;
+        out+=letters[w[i]] || w[i]; i++;
+    }
+    return out;
+}
+function transliterateIlmiCaptainName(value) {
+    return String(value || "").trim().split(/([\\s,.'’()&/-]+)/).map(part => {
+        if (!part || /^[\\s,.'’()&/-]+$/.test(part)) return part;
+        return transliterateIlmiCaptainWord(part);
+    }).join("");
+}
 function transliterateIlmiWord(word) {
     const w = String(word || "").toLowerCase();
     if (ilmiWordUrdu[w]) return ilmiWordUrdu[w];
@@ -1076,8 +1120,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     capT1_Name = captainFor(t1);
     capT2_Name = captainFor(t2);
 
-    let urduCap1 = urduCaptains[capT1_Name] || (capT1_Name ? transliterateIlmiName(capT1_Name) : "");
-    let urduCap2 = urduCaptains[capT2_Name] || (capT2_Name ? transliterateIlmiName(capT2_Name) : "");
+    let urduCap1 = urduCaptains[capT1_Name] || (capT1_Name ? transliterateIlmiCaptainName(capT1_Name) : "");
+    let urduCap2 = urduCaptains[capT2_Name] || (capT2_Name ? transliterateIlmiCaptainName(capT2_Name) : "");
 
     let baseA = calculateAbjad(urduT1) + calculateAbjad(urduCap1); 
     let baseB = calculateAbjad(urduT2) + calculateAbjad(urduCap2); 
