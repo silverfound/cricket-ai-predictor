@@ -351,6 +351,34 @@ function transliterateIlmiCaptainWord(word) {
     }
     return out;
 }
+
+// --- USER-EDITABLE URDU CAPTAIN OVERRIDES (Ilmi Prediction only) ---
+function getIlmiCaptainOverride(teamName) {
+    try { const saved = JSON.parse(localStorage.getItem("ilmi_urdu_captain_overrides_v1") || "{}"); return String(saved[normalizeIlmiName(teamName)] || "").trim(); }
+    catch (e) { return ""; }
+}
+function saveIlmiCaptainOverride(teamName, inputId) {
+    const value = String(document.getElementById(inputId)?.value || "").trim();
+    if (!value || /[A-Za-z]/.test(value) || !/[\u0600-\u06FF]/.test(value)) { alert("Captain ka naam sirf Urdu mein likhein."); return; }
+    try { const saved = JSON.parse(localStorage.getItem("ilmi_urdu_captain_overrides_v1") || "{}"); saved[normalizeIlmiName(teamName)] = value; localStorage.setItem("ilmi_urdu_captain_overrides_v1", JSON.stringify(saved)); alert("Urdu captain name save ho gaya. Match band karke dobara kholein."); }
+    catch (e) { alert("Captain name save nahi ho saka."); }
+}
+function resetIlmiCaptainOverride(teamName) {
+    try { const saved = JSON.parse(localStorage.getItem("ilmi_urdu_captain_overrides_v1") || "{}"); delete saved[normalizeIlmiName(teamName)]; localStorage.setItem("ilmi_urdu_captain_overrides_v1", JSON.stringify(saved)); alert("Manual Urdu correction reset ho gayi. Match dobara kholein."); }
+    catch (e) { alert("Correction reset nahi ho saki."); }
+}
+function renderIlmiCaptainEditor(team1, team2, value1 = "", value2 = "") {
+    const urduTeam1 = getUrduTeamName(team1) || team1, urduTeam2 = getUrduTeamName(team2) || team2;
+    const safe1 = String(value1 || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const safe2 = String(value2 || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const esc1 = String(team1).replace(/'/g,"\\'"), esc2 = String(team2).replace(/'/g,"\\'");
+    return '<details style="margin-top:14px;padding:10px;border:1px solid #475569;border-radius:8px;background:#0f172a;"><summary style="cursor:pointer;color:#e2e8f0;font-weight:bold;">✍️ کپتان کا اردو نام درست کریں</summary><p style="font-size:11px;color:#94a3b8;">صرف اردو میں نام لکھیں۔ یہ تبدیلی صرف Ilmi Prediction کے لیے اس browser میں محفوظ ہوگی۔</p>' +
+    '<label style="display:block;color:#00ffcc;margin:8px 0 4px;">'+urduTeam1+' — کپتان</label><input id="ilmiCaptainUrdu1" dir="rtl" lang="ur" value="'+safe1+'" placeholder="کپتان کا نام اردو میں" style="width:100%;box-sizing:border-box;padding:9px;border-radius:6px;background:#1e293b;color:white;font-size:16px;">' +
+    '<div style="display:flex;gap:8px;margin:7px 0 12px;"><button onclick="saveIlmiCaptainOverride(\''+esc1+'\',\'ilmiCaptainUrdu1\')" style="flex:1;padding:8px;background:#0d9488;color:white;border:0;border-radius:5px;">محفوظ کریں</button><button onclick="resetIlmiCaptainOverride(\''+esc1+'\')" style="padding:8px;background:#475569;color:white;border:0;border-radius:5px;">ری سیٹ</button></div>' +
+    '<label style="display:block;color:#ff4d4d;margin:8px 0 4px;">'+urduTeam2+' — کپتان</label><input id="ilmiCaptainUrdu2" dir="rtl" lang="ur" value="'+safe2+'" placeholder="کپتان کا نام اردو میں" style="width:100%;box-sizing:border-box;padding:9px;border-radius:6px;background:#1e293b;color:white;font-size:16px;">' +
+    '<div style="display:flex;gap:8px;margin:7px 0 0;"><button onclick="saveIlmiCaptainOverride(\''+esc2+'\',\'ilmiCaptainUrdu2\')" style="flex:1;padding:8px;background:#0d9488;color:white;border:0;border-radius:5px;">محفوظ کریں</button><button onclick="resetIlmiCaptainOverride(\''+esc2+'\')" style="padding:8px;background:#475569;color:white;border:0;border-radius:5px;">ری سیٹ</button></div></details>';
+}
+
 function transliterateIlmiCaptainName(value) {
     return String(value || "").trim().split(/([\\s,.'’()&/-]+)/).map(part => {
         if (!part || /^[\\s,.'’()&/-]+$/.test(part)) return part;
@@ -1175,16 +1203,13 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     };
     capT1_Name = captainFor(t1);
     capT2_Name = captainFor(t2);
-
-    if (!capT1_Name || !capT2_Name) {
-        const missingCaptains = [
-            !capT1_Name ? t1 : "",
-            !capT2_Name ? t2 : ""
-        ].filter(Boolean);
-        ilmiDiv.innerHTML = `<div style="color:#fbbf24;">Captain data missing for: ${missingCaptains.join(", ")}. Verified captain mapping add karna zaroori hai; incomplete captain data par Ilmi score nahi banaya gaya.</div>`;
+    const manualUrduCap1 = getIlmiCaptainOverride(t1), manualUrduCap2 = getIlmiCaptainOverride(t2);
+    if ((!capT1_Name && !manualUrduCap1) || (!capT2_Name && !manualUrduCap2)) {
+        const missingCaptains = [(!capT1_Name && !manualUrduCap1) ? t1 : "", (!capT2_Name && !manualUrduCap2) ? t2 : ""].filter(Boolean);
+        ilmiDiv.innerHTML = `<div style="color:#fbbf24;">Captain data missing for: ${missingCaptains.join(", ")}. Neeche Urdu mein manually captain name enter karke save karein.</div>` + renderIlmiCaptainEditor(t1,t2,manualUrduCap1,manualUrduCap2);
     } else {
-    let urduCap1 = urduCaptains[capT1_Name] || transliterateIlmiCaptainName(capT1_Name);
-    let urduCap2 = urduCaptains[capT2_Name] || transliterateIlmiCaptainName(capT2_Name);
+    let urduCap1 = manualUrduCap1 || urduCaptains[capT1_Name] || transliterateIlmiCaptainName(capT1_Name);
+    let urduCap2 = manualUrduCap2 || urduCaptains[capT2_Name] || transliterateIlmiCaptainName(capT2_Name);
 
     let baseA = calculateAbjad(urduT1) + calculateAbjad(urduCap1); 
     let baseB = calculateAbjad(urduT2) + calculateAbjad(urduCap2); 
@@ -1221,7 +1246,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             🌟 ${winnerText} Ka Pala Bhari Hai!
         </div>
     `;
-    ilmiDiv.innerHTML = ilmiHtml;
+    ilmiDiv.innerHTML = ilmiHtml + renderIlmiCaptainEditor(t1,t2,manualUrduCap1,manualUrduCap2);
     }
     }
 
