@@ -1370,11 +1370,11 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         </div>
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
             <tr>
-                <td style="color:#00ffcc; padding: 4px 0;">${t1} <br><span style="font-size:10px;color:#94a3b8;">(${capT1_Name || 'Unknown'})</span></td>
+                <td style="color:#00ffcc; padding: 4px 0;">${t1} <br><span style="font-size:10px;color:#94a3b8;">(${urduCap1 || 'نام دستیاب نہیں'})</span></td>
                 <td style="text-align:right; font-weight:bold; color:#00ffcc;">${finalA.toFixed(1)}</td>
             </tr>
             <tr>
-                <td style="color:#ef4444; padding: 4px 0;">${t2} <br><span style="font-size:10px;color:#94a3b8;">(${capT2_Name || 'Unknown'})</span></td>
+                <td style="color:#ef4444; padding: 4px 0;">${t2} <br><span style="font-size:10px;color:#94a3b8;">(${urduCap2 || 'نام دستیاب نہیں'})</span></td>
                 <td style="text-align:right; font-weight:bold; color:#ef4444;">${finalB.toFixed(1)}</td>
             </tr>
         </table>
