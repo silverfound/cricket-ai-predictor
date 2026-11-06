@@ -724,7 +724,7 @@ async function fetchMaghribTime(city, country, dateStr) {
         let data = await res.json();
         if (data.code === 200) {
             const rawMaghrib = String(data.data?.timings?.Maghrib || "");
-            const timeMatch = rawMaghrib.match(/^(\\d{2}:\\d{2})/);
+            const timeMatch = rawMaghrib.match(/^(\d{2}:\d{2})/);
             const timezone = data.data?.meta?.timezone || null;
             if (timeMatch && timezone) return { maghrib: timeMatch[1], timezone, ok: true };
         }
