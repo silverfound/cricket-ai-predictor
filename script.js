@@ -715,14 +715,36 @@ function numberToUrdu(num) {
 
 async function fetchMaghribTime(city, country, dateStr) {
     try {
+        if (!city || !country || city === "Unknown" || country === "Unknown") {
+            return { maghrib: null, timezone: null, ok: false };
+        }
         let url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=4`;
         let res = await fetch(url);
+        if (!res.ok) return { maghrib: null, timezone: null, ok: false };
         let data = await res.json();
         if (data.code === 200) {
-            return { maghrib: data.data.timings.Maghrib, timezone: data.data.meta.timezone };
+            const rawMaghrib = String(data.data?.timings?.Maghrib || "");
+            const timeMatch = rawMaghrib.match(/^(\\d{2}:\\d{2})/);
+            const timezone = data.data?.meta?.timezone || null;
+            if (timeMatch && timezone) return { maghrib: timeMatch[1], timezone, ok: true };
         }
     } catch (e) { console.log("Aladhan API error:", e); }
-    return { maghrib: "18:00", timezone: "UTC" }; 
+    return { maghrib: null, timezone: null, ok: false };
+}
+
+function getDatePartsInTimezone(date, timeZone) {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone, year: "numeric", month: "2-digit", day: "2-digit"
+    }).formatToParts(date);
+    const values = Object.fromEntries(parts.filter(p => p.type !== "literal").map(p => [p.type, p.value]));
+    return { year: values.year, month: values.month, day: values.day,
+        iso: `${values.year}-${values.month}-${values.day}` };
+}
+
+function addOneIsoDay(isoDate) {
+    const date = new Date(`${isoDate}T12:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + 1);
+    return date.toISOString().slice(0, 10);
 }
 
 // ==========================================
@@ -997,8 +1019,9 @@ function renderMatches(matches) {
                 
                 let city = match.venue?.location || "Unknown";
                 let country = match.venue?.country || "Unknown";
+                let venueTimezoneHint = match.venue?.timezone || match.venue?.time_zone || match.venue?.tz || "";
 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '');
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '', venueTimezoneHint);
             }
         });
     });
@@ -1007,7 +1030,7 @@ function renderMatches(matches) {
 // ==========================================
 // MAIN PREDICTION MODAL LOGIC
 // ==========================================
-async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '') {
+async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '') {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
@@ -1059,38 +1082,60 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
     ilmiDiv.innerHTML = "Calculating Ilmi Insight...";
 
-    let d = new Date(startTime * 1000);
-    let dayStr = String(d.getDate()).padStart(2, '0');
-    let monthStr = String(d.getMonth() + 1).padStart(2, '0');
-    let yearStr = d.getFullYear();
-    let apiDate = `${dayStr}-${monthStr}-${yearStr}`;
+    const matchInstant = new Date(Number(startTime) * 1000);
+    if (!Number.isFinite(matchInstant.getTime())) {
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Match ka valid start time available nahi; Ilmi calculation roki gayi hai.</div>';
+        return;
+    }
 
-    let apiData = await fetchMaghribTime(city, country, apiDate);
-    let maghribTime = apiData.maghrib;
-    let venueTimezone = apiData.timezone || "UTC";
+    // Resolve venue timezone first; UTC date is used only to obtain timezone metadata.
+    const utcDate = matchInstant.toISOString().slice(0, 10);
+    const [utcYear, utcMonth, utcDay] = utcDate.split("-");
+    const timezoneProbe = await fetchMaghribTime(city, country, `${utcDay}-${utcMonth}-${utcYear}`);
+    const venueTimezone = timezoneProbe.timezone || venueTimezoneHint;
+    if (!venueTimezone) {
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue timezone confirm nahi ho saka. Ghalat local time ya Hijri date se bachne ke liye Ilmi calculation roki gayi hai.</div>';
+        return;
+    }
 
-    let matchTimeStr = d.toLocaleTimeString('en-US', { timeZone: venueTimezone, hour12: false, hour: '2-digit', minute: '2-digit' });
-    let dateObj = new Date(startTime * 1000);
-    if (matchTimeStr >= maghribTime) { dateObj.setDate(dateObj.getDate() + 1); }
+    const venueDateParts = getDatePartsInTimezone(matchInstant, venueTimezone);
+    const venueDateApi = `${venueDateParts.day}-${venueDateParts.month}-${venueDateParts.year}`;
+    const maghribData = await fetchMaghribTime(city, country, venueDateApi);
+    const maghribTime = maghribData.maghrib;
+    if (!maghribTime) {
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue ka Maghrib time verify nahi ho saka. Incorrect date ke saath Ilmi calculation chalane ke bajaye rok di gayi hai.</div>';
+        return;
+    }
 
-    let finalGregorianDate = dateObj.toLocaleDateString('en-CA', { timeZone: venueTimezone }); 
+    const matchTimeStr = matchInstant.toLocaleTimeString('en-GB', {
+        timeZone: venueTimezone, hour12: false, hour: '2-digit', minute: '2-digit'
+    });
+    const finalGregorianDate = matchTimeStr >= maghribTime
+        ? addOneIsoDay(venueDateParts.iso)
+        : venueDateParts.iso;
+    const hijriReferenceDate = new Date(`${finalGregorianDate}T12:00:00Z`);
+
     let hijriDateStr = "";
     try {
         let gToHRes = await fetch(`https://api.aladhan.com/v1/gToH/${finalGregorianDate}`);
-        let gToHData = await gToHRes.json();
-        if (gToHData.code === 200) {
-            let hDate = gToHData.data.hijri;
-            hijriDateStr = `${numberToUrdu(parseInt(hDate.day))} ${urduMonths[hDate.month.number - 1]} ${numberToUrdu(parseInt(hDate.year))}`;
+        if (gToHRes.ok) {
+            let gToHData = await gToHRes.json();
+            if (gToHData.code === 200) {
+                let hDate = gToHData.data.hijri;
+                hijriDateStr = `${numberToUrdu(parseInt(hDate.day))} ${urduMonths[hDate.month.number - 1]} ${numberToUrdu(parseInt(hDate.year))}`;
+            }
         }
     } catch (e) { console.log("gToH API Error:", e); }
 
     if (!hijriDateStr) {
-        let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
-        let parts = formatter.formatToParts(dateObj);
+        let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic', {
+            timeZone: 'UTC', day: 'numeric', month: 'numeric', year: 'numeric'
+        });
+        let parts = formatter.formatToParts(hijriReferenceDate);
         hijriDateStr = `${numberToUrdu(parseInt(parts.find(p => p.type === 'day').value))} ${urduMonths[parseInt(parts.find(p => p.type === 'month').value) - 1]} ${numberToUrdu(parseInt(parts.find(p => p.type === 'year').value.replace(' AH', '').replace(' BC', '')))}`;
     }
 
-    // Parse the venue-local calendar date at UTC noon to avoid browser timezone day-shifts.
+    // Weekday follows the final venue-local calendar date.
     const [localYear, localMonth, localDay] = finalGregorianDate.split("-").map(Number);
     let dayUrdu = urduDays[new Date(Date.UTC(localYear, localMonth - 1, localDay, 12)).getUTCDay()];
 
@@ -1112,16 +1157,34 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let capT2_Name = "";
 
     const captainFor = name => {
-        const base = String(name || "").replace(/\s+women$/i, "").trim();
-        const key = teamCaptains[name] ? name : (teamCaptains[base] ? base : name);
-        if (internationalCaptains[key]) return internationalCaptains[key][type] || internationalCaptains[key]["T20"] || "";
-        return teamCaptains[key] || "";
+        const exactName = String(name || "").trim();
+        const normalizedName = normalizeIlmiName(exactName);
+        const internationalKey = Object.keys(internationalCaptains)
+            .find(key => normalizeIlmiName(key) === normalizedName);
+        if (internationalKey) {
+            return internationalCaptains[internationalKey][type] ||
+                internationalCaptains[internationalKey]["T20"] || "";
+        }
+
+        const franchiseKey = Object.keys(teamCaptains)
+            .find(key => normalizeIlmiName(key) === normalizedName);
+        if (franchiseKey) return teamCaptains[franchiseKey];
+
+        // Never substitute a men's captain for a women's national side.
+        return "";
     };
     capT1_Name = captainFor(t1);
     capT2_Name = captainFor(t2);
 
-    let urduCap1 = urduCaptains[capT1_Name] || (capT1_Name ? transliterateIlmiCaptainName(capT1_Name) : "");
-    let urduCap2 = urduCaptains[capT2_Name] || (capT2_Name ? transliterateIlmiCaptainName(capT2_Name) : "");
+    if (!capT1_Name || !capT2_Name) {
+        const missingCaptains = [
+            !capT1_Name ? t1 : "",
+            !capT2_Name ? t2 : ""
+        ].filter(Boolean);
+        ilmiDiv.innerHTML = `<div style="color:#fbbf24;">Captain data missing for: ${missingCaptains.join(", ")}. Verified captain mapping add karna zaroori hai; incomplete captain data par Ilmi score nahi banaya gaya.</div>`;
+    } else {
+    let urduCap1 = urduCaptains[capT1_Name] || transliterateIlmiCaptainName(capT1_Name);
+    let urduCap2 = urduCaptains[capT2_Name] || transliterateIlmiCaptainName(capT2_Name);
 
     let baseA = calculateAbjad(urduT1) + calculateAbjad(urduCap1); 
     let baseB = calculateAbjad(urduT2) + calculateAbjad(urduCap2); 
@@ -1159,6 +1222,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         </div>
     `;
     ilmiDiv.innerHTML = ilmiHtml;
+    }
     }
 
     // 3. POST-TOSS AI CALCULATION
