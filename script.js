@@ -733,7 +733,7 @@ function getMultiplier(teamNum, contextNum) {
 
 // Toss Time is a separate Ilmi factor; it does not replace the existing match-time factor.
 function getIlmiTossTimeNumber(timeValue) {
-    const match = String(timeValue || "").match(/^([01]\\d|2[0-3]):([0-5]\\d)$/);
+    const match = String(timeValue || "").match(/^([01]\d|2[0-3]):([0-5]\d)$/);
     if (!match) return null;
     const digitSum = String(timeValue).replace(":", "").split("")
         .reduce((sum, digit) => sum + Number(digit), 0);
