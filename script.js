@@ -280,6 +280,7 @@ const urduCaptains = {
     "Richard Ngarava": "رچرڈ نگاروا",
     "Sikandar Raza": "سکندر رضا",
     "Vinayak Shukla": "ونائیک شکلا",
+    "Muhammad Waseem": "محمد وسیم",
     "Ruturaj Gaikwad": "رتوراج گائیکواڑ",
     "Axar Patel": "اکشر پٹیل",
     "Shubman Gill": "شبمن گل",
