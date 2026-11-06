@@ -168,8 +168,8 @@ function getUrduTeamName(value) {
     const key = Object.keys(urduTeams).find(k => normalizeIlmiName(k) === normalized);
     if (key) return urduTeams[key];
     const raw = String(value || "").trim();
-    if (/\\s+women$/i.test(raw)) {
-        const base = raw.replace(/\\s+women$/i, "").trim();
+    if (/\s+women$/i.test(raw)) {
+        const base = raw.replace(/\s+women$/i, "").trim();
         if (urduTeams[base]) return urduTeams[base] + " ویمن";
     }
     return "";
@@ -875,7 +875,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let capT2_Name = "";
 
     const captainFor = name => {
-        const base = String(name || "").replace(/\\s+women$/i, "").trim();
+        const base = String(name || "").replace(/\s+women$/i, "").trim();
         const key = teamCaptains[name] ? name : (teamCaptains[base] ? base : name);
         if (internationalCaptains[key]) return internationalCaptains[key][type] || internationalCaptains[key]["T20"] || "";
         return teamCaptains[key] || "";
