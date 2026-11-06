@@ -141,7 +141,7 @@ const teamCaptains = {
 // If a format has no separately confirmed captain in the latest available
 // captain listing, the most recently documented captain is used as fallback.
 const internationalCaptains = {
-    "Afghanistan": { "Test": "Rahmat Shah", "ODI": "Rahmanullah Gurbaz", "T20": "Ibrahim Zadran" },
+    "Afghanistan": { "Test": "Rahmat Shah", "ODI": "Rahmat Shah", "T20": "Ibrahim Zadran" },
     "Australia": { "Test": "Pat Cummins", "ODI": "Mitchell Marsh", "T20": "Mitchell Marsh" },
     "Bangladesh": { "Test": "Najmul Hossain Shanto", "ODI": "Litton Das", "T20": "Litton Das" },
     "England": { "Test": "Joe Root", "ODI": "Harry Brook", "T20": "Jacob Bethell" },
@@ -153,9 +153,9 @@ const internationalCaptains = {
     "Sri Lanka": { "Test": "Kusal Mendis", "ODI": "Dasun Shanaka", "T20": "Dasun Shanaka" },
     "West Indies": { "Test": "Roston Chase", "ODI": "Shai Hope", "T20": "Shai Hope" },
     "Zimbabwe": { "Test": "Richard Ngarava", "ODI": "Sikandar Raza", "T20": "Sikandar Raza" },
-    "United Arab Emirates": { "Test": "Muhammad Waseem", "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
-    "UAE": { "Test": "Muhammad Waseem", "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
-    "Oman": { "Test": "Vinayak Shukla", "ODI": "Vinayak Shukla", "T20": "Vinayak Shukla" }
+    "United Arab Emirates": { "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
+    "UAE": { "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
+    "Oman": { "ODI": "Vinayak Shukla", "T20": "Vinayak Shukla" }
 };
 
 const friendshipMatrix = {
