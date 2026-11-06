@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import joblib, pandas as pd, numpy as np
+import os, requests
 from pydantic import BaseModel
 from typing import Optional
 
@@ -85,6 +86,35 @@ def calculate_prediction(match, t_winner, t_decision):
 @app.get("/")
 def home():
     return {"status": "Online", "message": "Cricket AI Win Predictor API Active"}
+
+@app.get("/matches")
+def get_matches(date: str, per_paged: int = 10, paged: int = 1, _nocache: Optional[str] = None):
+    """Secure server-side proxy for the RapidAPI cricket matches feed."""
+    api_key = os.getenv("RAPIDAPI_KEY")
+    if not api_key:
+        raise HTTPException(status_code=503, detail="Cricket matches provider is not configured")
+
+    params = {"date": date, "per_paged": per_paged, "paged": paged}
+    if _nocache:
+        params["_nocache"] = _nocache
+
+    try:
+        response = requests.get(
+            "https://cricket-live-line-advance.p.rapidapi.com/matches",
+            params=params,
+            headers={
+                "X-RapidAPI-Key": api_key,
+                "X-RapidAPI-Host": "cricket-live-line-advance.p.rapidapi.com"
+            },
+            timeout=20
+        )
+        response.raise_for_status()
+        return response.json()
+    except requests.RequestException:
+        raise HTTPException(status_code=502, detail="Cricket matches provider request failed")
+    except ValueError:
+        raise HTTPException(status_code=502, detail="Cricket matches provider returned invalid JSON")
+
 
 @app.post("/predict")
 def predict_match(match: MatchRequest):
