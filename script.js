@@ -210,8 +210,8 @@ function transliterateIlmiWord(word) {
     return out;
 }
 function transliterateIlmiName(value) {
-    return String(value || "").trim().split(/([\\s,.'’()&/-]+)/).map(part => {
-        if (!part || /^[\\s,.'’()&/-]+$/.test(part)) return part;
+    return String(value || "").trim().split(/([\s,.'’()&/-]+)/).map(part => {
+        if (!part || /^[\s,.'’()&/-]+$/.test(part)) return part;
         return transliterateIlmiWord(part);
     }).join("");
 }
