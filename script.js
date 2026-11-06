@@ -817,7 +817,7 @@ function applyIlmiTossTimeFactor() {
     const teamRelation = getIlmiMatrixRelation(teamAdad, planetary.number);
     const captainRelation = getIlmiMatrixRelation(captainAdad, planetary.number);
     const planetMultiplier = teamRelation.multiplier === captainRelation.multiplier ? teamRelation.multiplier : 1.00;
-    const decisionAdad = reduceToSingle(calculateAbjad(tossDecision === "bat" ? "بیٹنگ" : "فیلڈنگ"));
+    const decisionAdad = reduceToSingle(calculateAbjad(tossDecision === "bat" ? "ضرب" : "دفاع"));
     const decisionRelation = getIlmiMatrixRelation(winnerBase, decisionAdad);
     const digitRelationA = getIlmiTossTimeCompatibility(state.baseA, tossTimeNumber);
     const digitRelationB = getIlmiTossTimeCompatibility(state.baseB, tossTimeNumber);
@@ -1360,9 +1360,9 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         </div>
         <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">(Ground Time: ${matchTimeStr} | Maghrib: ${maghribTime})</div>
         <div style="margin:10px 0;padding:9px;border:1px solid #6b4b86;border-radius:7px;background:#120d1b;">
-            <label for="ilmi-toss-time" style="display:block;color:#e9d5ff;font-size:12px;margin-bottom:5px;">Ilmi Toss Time (Venue Local — exact HH:MM)</label>
+            <label for="ilmi-toss-time" style="display:block;color:#e9d5ff;font-size:12px;margin-bottom:5px;">Exact Toss Time (Venue Local — HH:MM)</label>
             <input id="ilmi-toss-time" type="time" style="width:100%;box-sizing:border-box;padding:8px;background:#0f172a;color:white;border:1px solid #475569;border-radius:5px;">
-            <button id="apply-ilmi-toss-time" type="button" style="width:100%;padding:8px;margin-top:7px;background:#7e22ce;color:white;border:0;border-radius:5px;font-weight:bold;cursor:pointer;">Apply Toss Time Factor</button>
+            <button id="apply-ilmi-toss-time" type="button" style="width:100%;padding:8px;margin-top:7px;background:#7e22ce;color:white;border:0;border-radius:5px;font-weight:bold;cursor:pointer;">Apply Final Ilmi Toss + Planetary Factors</button>
             <div id="ilmi-toss-result" style="margin-top:8px;"></div>
         </div>
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
