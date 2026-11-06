@@ -42,16 +42,54 @@ const urduDays = { 0: "اتوار", 1: "پیر", 2: "منگل", 3: "بدھ", 4: 
 // --- TEAMS DICTIONARY (Inme aap saari teams add karenge jo aapne list bheji thi) ---
 // Main sirf kuch important teams yahan dikha raha hoon, aap apni bheji hui saari lists yahan add kar dein
 const urduTeams = {
-    "Afghanistan": "افغانستان", "Australia": "آسٹریلیا", "Bangladesh": "بنگلہ دیش", "England": "انگلینڈ", "India": "انڈیا", "Ireland": "آئرلینڈ", "New Zealand": "نیوزی لینڈ", "Pakistan": "پاکستان", "South Africa": "جنوبی افریقہ", "Sri Lanka": "سری لنکا", "West Indies": "ویسٹ انڈیز", "Zimbabwe": "زمبابوے",
-    "Auckland Hearts": "آکلینڈ ہارٹس", "Canterbury Magicians": "کینٹربری میجیشنز", "Otago Sparks": "اوٹاگو اسپارکس", "Wellington Blaze": "ویلنگٹن بلیز",
-    "Antigua & Barbuda Falcons": "انٹیگوا اور باربوڈا فالکنز", "St Kitts & Nevis Patriots": "سینٹ کٹس اور نیوس پیٹریاٹس"
+    // International teams
+    "Afghanistan": "افغانستان",
+    "Australia": "آسٹریلیا",
+    "Bangladesh": "بنگلہ دیش",
+    "England": "انگلینڈ",
+    "India": "بھارت",
+    "Ireland": "آئرلینڈ",
+    "New Zealand": "نیوزی لینڈ",
+    "Pakistan": "پاکستان",
+    "South Africa": "جنوبی افریقہ",
+    "Sri Lanka": "سری لنکا",
+    "West Indies": "ویسٹ انڈیز",
+    "Zimbabwe": "زمبابوے",
+    "United Arab Emirates": "متحدہ عرب امارات",
+    "UAE": "متحدہ عرب امارات",
+    "Oman": "عمان",
+
+    // Teams already referenced in the project
+    "Auckland Hearts": "آکلینڈ ہارٹس",
+    "Canterbury Magicians": "کینٹربری میجیشنز",
+    "Otago Sparks": "اوٹاگو اسپارکس",
+    "Wellington Blaze": "ویلنگٹن بلیز",
+    "Antigua & Barbuda Falcons": "انٹیگوا اور باربوڈا فالکنز",
+    "St Kitts & Nevis Patriots": "سینٹ کٹس اور نیوس پیٹریاٹس",
+    "Saint Lucia Kings": "سینٹ لوشیا کنگز",
+    "St Lucia Kings": "سینٹ لوشیا کنگز",
+    "Northern Brave": "ناردرن بریو",
+    "Northern Brave Women": "ناردرن بریو ویمن",
+    "Central Hinds": "سینٹرل ہائنڈز",
+    "Sudurpaschim Royals": "سُدور پشچم رائلز",
+    "Dolphins": "ڈولفنز",
+    "Western Province": "ویسٹرن پروونس",
+    "Hobart Hurricanes Women": "ہوبارٹ ہریکینز ویمن",
+    "Melbourne Renegades Women": "میلبرن رینیگیڈز ویمن",
+    "Melbourne Stars Women": "میلبرن اسٹارز ویمن"
 };
 
 // --- CAPTAINS DICTIONARY ---
 const urduCaptains = {
-    "Rohit Sharma": "روہت شرما", "Pat Cummins": "پیٹ کمنز", "Babar Azam": "بابر اعظم",
-    "Rahmat Shah": "رحمت شاہ", "Rahmanullah Gurbaz": "رحمٰن اللہ گرباز", "Ibrahim Zadran": "ابراہیم زدران"
-    // Yahan aap captains add karenge
+    "Rohit Sharma": "روہت شرما",
+    "Pat Cummins": "پیٹ کمنز",
+    "Babar Azam": "بابر اعظم",
+    "Rahmat Shah": "رحمت شاہ",
+    "Rahmanullah Gurbaz": "رحمٰن اللہ گرباز",
+    "Ibrahim Zadran": "ابراہیم زدران",
+    "Shubman Gill": "شبمن گل",
+    "Shreyas Iyer": "شریاس ائیر",
+    "Mitchell Marsh": "مچل مارش"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
