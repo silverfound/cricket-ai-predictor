@@ -542,8 +542,9 @@ async function fetchMatches(forceRefresh = false) {
     matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v25_${today}`; 
-    const cacheKeyTomorrow = `cricket_data_v25_${tomorrow}`;
+    // Bump cache version so older first-page-only data is not reused.
+    const cacheKeyToday = `cricket_data_v26_${today}`;
+    const cacheKeyTomorrow = `cricket_data_v26_${tomorrow}`;
     const cacheExpiry = 10 * 60 * 1000;
 
     let allMatches = [];
@@ -560,15 +561,38 @@ async function fetchMatches(forceRefresh = false) {
                 let parsed = JSON.parse(cachedData);
                 if (Date.now() - parsed.time < cacheExpiry && parsed.data.length > 0) { allMatches.push(...parsed.data); fetchNeeded = false; }
             }
-            
+
             if (fetchNeeded) {
-                const res = await fetch(`https://${RAPIDAPI_HOST}/matches?date=${date}&_nocache=${Date.now()}`, {
-                    headers: { "X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST }, cache: "no-store"
-                });
-                if(res.ok) {
-                    const data = await res.json();
-                    const items = data.response?.items || [];
-                    if (items.length > 0) { allMatches.push(...items); localStorage.setItem(cacheKey, JSON.stringify({ time: Date.now(), data: items })); }
+                // This API uses "paged" (not "page" or "offset") and reports total_pages.
+                const fetchDatePage = async (page) => {
+                    const params = new URLSearchParams({
+                        date,
+                        per_paged: "10",
+                        paged: String(page),
+                        _nocache: String(Date.now())
+                    });
+                    const res = await fetch(`https://${RAPIDAPI_HOST}/matches?${params.toString()}`, {
+                        headers: { "X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST },
+                        cache: "no-store"
+                    });
+                    if (!res.ok) throw new Error(`Matches API failed for ${date}, page ${page}: HTTP ${res.status}`);
+                    return await res.json();
+                };
+
+                const firstPageData = await fetchDatePage(1);
+                const firstResponse = firstPageData.response || {};
+                const dateItems = [...(firstResponse.items || [])];
+                const totalPages = Math.max(1, Number(firstResponse.total_pages) || 1);
+
+                for (let page = 2; page <= totalPages; page++) {
+                    const pageData = await fetchDatePage(page);
+                    const pageItems = pageData.response?.items || [];
+                    dateItems.push(...pageItems);
+                }
+
+                if (dateItems.length > 0) {
+                    allMatches.push(...dateItems);
+                    localStorage.setItem(cacheKey, JSON.stringify({ time: Date.now(), data: dateItems }));
                 }
             }
         }
