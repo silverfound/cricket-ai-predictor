@@ -5,6 +5,27 @@ const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com";
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
 
 // ==========================================
+// NAME MAPPING (API Name -> Model Name)
+// ==========================================
+const teamMapping = {
+    // Pichli mappings
+    "Saint Lucia Kings": "St Lucia Kings",
+    "Northern Brave": "Northern Districts",
+    "Northern Brave Women": "Northern Districts Women",
+    "Central Hinds": "Central Districts Women",
+    "Sudurpaschim Royals": "Sudur Paschim Royals",
+    
+    // Nayi mappings (Jo test mein mili)
+    "Antigua & Barbuda Falcons": "Antigua and Barbuda Falcons",
+    "St Kitts & Nevis Patriots": "St Kitts and Nevis Patriots",
+    "Canterbury Kings": "Canterbury",
+    "Auckland Hearts": "Auckland Women",
+    "Canterbury Magicians": "Canterbury Women",
+    "Otago Sparks": "Otago Women",
+    "Wellington Blaze": "Wellington Women"
+};
+
+// ==========================================
 // ILMI DATA (DICTIONARY & CONSTANTS)
 // ==========================================
 const abjadValues = {
@@ -18,35 +39,34 @@ const urduNumbers = { 0:"صفر",1:"ایک",2:"دو",3:"تین",4:"چار",5:"پ
 const urduMonths = ["محرم", "صفر", "ربیع الاول", "ربیع الثانی", "جمادی الاول", "جمادی الثانی", "رجب", "شعبان", "رمضان", "شوال", "ذیقعد", "ذی الحج"];
 const urduDays = { 0: "اتوار", 1: "پیر", 2: "منگل", 3: "بدھ", 4: "جمعرات", 5: "جمعہ", 6: "ہفتہ" };
 
-// --- DICTIONARIES (Jahan aap list add karenge) ---
+// --- TEAMS DICTIONARY (Inme aap saari teams add karenge jo aapne list bheji thi) ---
+// Main sirf kuch important teams yahan dikha raha hoon, aap apni bheji hui saari lists yahan add kar dein
 const urduTeams = {
-    "India": "انڈیا", "Australia": "آسٹریلیا", "Pakistan": "پاکستان", "England": "انگلینڈ",
-    "New Zealand": "نیوزی لینڈ", "South Africa": "جنوبی افریقہ", "Sri Lanka": "سری لنکا",
-    "Bangladesh": "بنگلہ دیش", "Afghanistan": "افغانستان", "West Indies": "ویسٹ انڈیز",
-    "Zimbabwe": "زمبابوے", "Ireland": "آئرلینڈ", "Netherlands": "نیدرلینڈز", "Nepal": "نیپال",
-    "India Women": "انڈیا ویمن", "Australia Women": "آسٹریلیا ویمن", "England Women": "انگلینڈ ویمن",
-    "Adelaide Strikers Women": "ایڈیلیڈ سٹرائیکرز ویمن", "Brisbane Heat Women": "برسبین ہیٹ ویمن",
-    "Melbourne Stars Women": "ملبورن اسٹارز ویمن", "Sydney Sixers Women": "سڈنی سکسرز ویمن",
-    "Eastern Storm": "ایسٹرن سٹارم", "Dolphins": "ڈولفنز"
+    "Afghanistan": "افغانستان", "Australia": "آسٹریلیا", "Bangladesh": "بنگلہ دیش", "England": "انگلینڈ", "India": "انڈیا", "Ireland": "آئرلینڈ", "New Zealand": "نیوزی لینڈ", "Pakistan": "پاکستان", "South Africa": "جنوبی افریقہ", "Sri Lanka": "سری لنکا", "West Indies": "ویسٹ انڈیز", "Zimbabwe": "زمبابوے",
+    "Auckland Hearts": "آکلینڈ ہارٹس", "Canterbury Magicians": "کینٹربری میجیشنز", "Otago Sparks": "اوٹاگو اسپارکس", "Wellington Blaze": "ویلنگٹن بلیز",
+    "Antigua & Barbuda Falcons": "انٹیگوا اور باربوڈا فالکنز", "St Kitts & Nevis Patriots": "سینٹ کٹس اور نیوس پیٹریاٹس"
 };
 
+// --- CAPTAINS DICTIONARY ---
 const urduCaptains = {
     "Rohit Sharma": "روہت شرما", "Pat Cummins": "پیٹ کمنز", "Babar Azam": "بابر اعظم",
-    "Jos Buttler": "جوس بٹلر", "Kane Williamson": "کین ولیمسن", "Temba Bavuma": "ٹیمبا باووما"
+    "Rahmat Shah": "رحمت شاہ", "Rahmanullah Gurbaz": "رحمٰن اللہ گرباز", "Ibrahim Zadran": "ابراہیم زدران"
+    // Yahan aap captains add karenge
 };
 
-const urduVenues = {
-    "Wankhede Stadium": "وانکھیڈے اسٹیڈیم", "Melbourne Cricket Ground": "ملبورن کرکٹ گراؤنڈ",
-    "Eden Gardens": "ایڈن گارڈنز", "Narendra Modi Stadium": "نریندر مودی اسٹیڈیم",
-    "Drummoyne Oval": "ڈرموئن اوول", "Sylhet International Cricket Stadium": "سلہٹ انٹرنیشنل کرکٹ اسٹیڈیم",
-    "Junction Oval": "جنکشن اوول", "Willowmoore Park": "وِلوْمور پارک"
-};
-
+// --- TEAM TO CAPTAIN MAPPING ---
 const teamCaptains = {
-    "India": "Rohit Sharma",
-    "Australia": "Pat Cummins",
-    "Pakistan": "Babar Azam",
-    "England": "Jos Buttler"
+    "India": "Rohit Sharma", "Australia": "Pat Cummins", "Pakistan": "Babar Azam",
+    "Afghanistan": "Rahmat Shah"
+    // Yahan aap team to captain map karenge
+};
+
+// International Teams Format-wise Captains
+const internationalCaptains = {
+    "Afghanistan": { "Test": "Rahmat Shah", "ODI": "Rahmanullah Gurbaz", "T20": "Ibrahim Zadran" },
+    "India": { "Test": "Shubman Gill", "ODI": "Shreyas Iyer", "T20": "Shreyas Iyer" },
+    "Australia": { "Test": "Pat Cummins", "ODI": "Mitchell Marsh", "T20": "Mitchell Marsh" }
+    // Yahan baaki international captains add honge
 };
 
 const friendshipMatrix = {
@@ -88,19 +108,13 @@ function numberToUrdu(num) {
     return urduNumbers[th] + " ہزار" + (h > 0 ? " " + urduNumbers[h] + " سو" : "") + (r > 0 ? " " + (urduNumbers[r] || r) : "");
 }
 
-// ==========================================
-// FIXED: ALADHAN API (With Timezone & Exact Date)
-// ==========================================
 async function fetchMaghribTime(city, country, dateStr) {
     try {
         let url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=4`;
         let res = await fetch(url);
         let data = await res.json();
         if (data.code === 200) {
-            return { 
-                maghrib: data.data.timings.Maghrib, 
-                timezone: data.data.meta.timezone // Ground ka timezone (e.g. Australia/Melbourne)
-            };
+            return { maghrib: data.data.timings.Maghrib, timezone: data.data.meta.timezone };
         }
     } catch (e) { console.log("Aladhan API error:", e); }
     return { maghrib: "18:00", timezone: "UTC" }; 
@@ -112,40 +126,38 @@ async function fetchMaghribTime(city, country, dateStr) {
 const popupHTML = `
 <div id="prediction-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
     <div style="background:#131b2e; padding:20px; border-radius:12px; width:90%; max-width:400px; border:1px solid #00ffcc; max-height: 90vh; overflow-y: auto;">
-        
         <h3 style="color:#00ffcc; margin-top:0;">Match Prediction</h3>
         <p id="modal-match-name" style="color:white; font-weight:bold; font-size: 16px;"></p>
         <p id="modal-venue" style="color:#94a3b8; font-size:12px; margin-top:-10px; margin-bottom:15px;"></p>
-        
         <div id="live-warning" style="display:none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 8px; border-radius: 6px; margin-bottom: 15px;">
             <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match is Live! This prediction will NOT be saved for accuracy.</p>
         </div>
-
+        
         <div style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
             <p style="color: #fbbf24; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">📊 Pre-Toss Neutral Prediction</p>
             <div id="pre-toss-result" style="color: white; font-size: 14px;">Calculating...</div>
         </div>
-
+        
         <label style="color:#94a3b8; font-size:14px;">Toss Winner:</label>
         <select id="toss-winner" style="width:100%; padding:8px; margin-bottom:10px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;"></select>
         <label style="color:#94a3b8; font-size:14px;">Toss Decision:</label>
         <select id="toss-decision" style="width:100%; padding:8px; margin-bottom:15px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;">
             <option value="bat">Bat First</option><option value="field">Field First</option>
         </select>
-
+        
         <button id="get-prediction-btn" style="width:100%; padding:10px; background:#00ffcc; color:black; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">Calculate Post-Toss Impact</button>
         
         <div id="post-toss-area" style="display:none; margin-top:15px; padding: 10px; border-radius: 8px; border: 1px solid #00ffcc; background: #0b1120;">
             <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">🎯 Post-Toss Prediction & Impact</p>
             <div id="prediction-result" style="color:white; text-align:center; font-weight:bold;"></div>
         </div>
-
+        
         <div id="ilmi-area" style="display:none; margin-top:15px; padding: 15px; border-radius: 8px; border: 1px solid #d946ef; background: #1a1525;">
             <h4 style="color:#d946ef; margin: 0 0 5px 0; font-size: 16px;">🔮 Ilmi Insight</h4>
             <span style="font-size: 11px; color: #94a3b8; display: block; margin-bottom: 10px;">Based on Abjad + Compatibility</span>
             <div id="ilmi-content" style="font-size: 13px;"></div>
         </div>
-
+        
         <button onclick="document.getElementById('prediction-modal').style.display='none'" style="width:100%; padding:10px; background:transparent; color:#ff4d4d; border:none; margin-top:15px; cursor:pointer;">Close</button>
     </div>
 </div>`;
@@ -154,9 +166,6 @@ document.body.insertAdjacentHTML('beforeend', popupHTML);
 function wakeUpBackend() { fetch(`${BACKEND_URL}/`).catch(() => {}); }
 function getFormattedDate(offset) { let d = new Date(); d.setDate(d.getDate() + offset); return d.toISOString().split('T')[0]; }
 
-// ==========================================
-// ACCURACY & HISTORY LOGIC
-// ==========================================
 function savePrediction(matchId, team1, team2, predictedTeam, prob) {
     let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
     history = history.filter(h => h.matchId !== matchId);
@@ -172,14 +181,11 @@ function getAccuracyStats() {
     return { total: evaluated.length, correct: correct, pending: pending.length };
 }
 
-// ==========================================
-// FETCH MATCHES & RENDER
-// ==========================================
 async function fetchMatches(forceRefresh = false) {
     let container = document.getElementById("dynamic-prediction-area");
-    
     let stats = getAccuracyStats();
     let accPercent = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    
     let dashboardHTML = `
         <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
             <div style="color: #94a3b8; font-size: 13px;">🤖 <b>AI Accuracy:</b></div>
@@ -212,8 +218,8 @@ async function fetchMatches(forceRefresh = false) {
     matchesContainer.innerHTML = `<h3 style="color: #00ffcc; text-align: center;">🔄 Fetching Latest Data...</h3>`;
 
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
-    const cacheKeyToday = `cricket_data_v23_${today}`; 
-    const cacheKeyTomorrow = `cricket_data_v23_${tomorrow}`;
+    const cacheKeyToday = `cricket_data_v25_${today}`; 
+    const cacheKeyTomorrow = `cricket_data_v25_${tomorrow}`;
     const cacheExpiry = 10 * 60 * 1000;
 
     let allMatches = [];
@@ -299,7 +305,6 @@ function renderMatches(matches) {
         if (fmt.toLowerCase().includes("test") || fmt.toLowerCase().includes("first class")) matchType = "Test";
         else if (fmt.toLowerCase().includes("odi") || fmt.toLowerCase().includes("list a")) matchType = "ODI";
 
-        // Yahan match ka time mobile ke local timezone ke hisaab se show ho raha hai (Bilkul Sahi hai)
         let time = new Date(m.timestamp_start * 1000).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
         
         let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
@@ -362,7 +367,7 @@ function renderMatches(matches) {
 }
 
 // ==========================================
-// MAIN PREDICTION MODAL LOGIC (FIXED: Ground Time & Exact Date)
+// MAIN PREDICTION MODAL LOGIC
 // ==========================================
 async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country) {
     document.getElementById('prediction-modal').style.display = 'flex';
@@ -375,7 +380,11 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     if (isLiveMatch) { document.getElementById('live-warning').style.display = 'block'; } 
     else { document.getElementById('live-warning').style.display = 'none'; }
 
-    // 1. AI PRE-TOSS CALCULATION (Yeh bilkul waisa hi hai)
+    // --- NAME MAPPING FOR AI ---
+    let modelT1 = teamMapping[t1] || t1;
+    let modelT2 = teamMapping[t2] || t2;
+
+    // 1. AI PRE-TOSS CALCULATION
     let preDiv = document.getElementById('pre-toss-result');
     preDiv.innerText = "Calculating Neutral Baseline...";
     window.prePred = null;
@@ -383,15 +392,22 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     try {
         const res = await fetch(`${BACKEND_URL}/predict`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ match_type: type, team1: t1, team2: t2, venue })
+            body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue })
         });
         const pred = await res.json();
+        
         if (pred.success) {
-            window.prePred = pred.predictions;
-            preDiv.innerHTML = `<div style="display:flex; justify-content:space-between;"><span style="color:#00ffcc;">${t1}: <b>${pred.predictions[t1]}</b></span><span style="color:#ff4d4d;">${t2}: <b>${pred.predictions[t2]}</b></span></div>`;
+            window.prePred = pred.predictions; 
+            preDiv.innerHTML = `<div style="display:flex; justify-content:space-between;"><span style="color:#00ffcc;">${t1}: <b>${pred.predictions[modelT1]}</b></span><span style="color:#ff4d4d;">${t2}: <b>${pred.predictions[modelT2]}</b></span></div>`;
+            
+            if (pred.is_default && (t1 === "Afghanistan" || t2 === "Afghanistan")) {
+                preDiv.innerHTML += `<p style="color: #fbbf24; font-size: 10px; margin-top: 5px;">⚠️ Afghanistan ka AI data missing hai. Fallback use ho raha hai.</p>`;
+            }
+
             if (!isLiveMatch) {
-                let p1 = parseFloat(pred.predictions[t1]), p2 = parseFloat(pred.predictions[t2]);
-                savePrediction(matchId, t1, t2, (p1 > p2 ? t1 : t2), Math.max(p1, p2));
+                let p1 = parseFloat(pred.predictions[modelT1]), p2 = parseFloat(pred.predictions[modelT2]);
+                let winner = p1 > p2 ? t1 : t2;
+                savePrediction(matchId, t1, t2, winner, Math.max(p1, p2));
             }
         }
     } catch (e) { preDiv.innerText = "Error loading prediction."; }
@@ -411,13 +427,10 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let maghribTime = apiData.maghrib;
     let venueTimezone = apiData.timezone || "UTC";
 
-    // FIX: Match time ko Ground ke timezone mein convert karein
     let matchTimeStr = d.toLocaleTimeString('en-US', { timeZone: venueTimezone, hour12: false, hour: '2-digit', minute: '2-digit' });
-
     let dateObj = new Date(startTime * 1000);
     if (matchTimeStr >= maghribTime) { dateObj.setDate(dateObj.getDate() + 1); }
 
-    // FIX: Final date ko gToH API se Hijri mein convert karein
     let finalGregorianDate = dateObj.toLocaleDateString('en-CA', { timeZone: venueTimezone }); 
     let hijriDateStr = "";
     try {
@@ -429,7 +442,6 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         }
     } catch (e) { console.log("gToH API Error:", e); }
 
-    // Fallback agar gToH API fail ho jaye
     if (!hijriDateStr) {
         let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic', { day: 'numeric', month: 'numeric', year: 'numeric' });
         let parts = formatter.formatToParts(dateObj);
@@ -442,8 +454,22 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let urduT2 = urduTeams[t2] || "نامعلوم";
     let urduVenue = urduVenues[venue] || "نامعلوم";
     
-    let capT1_Name = teamCaptains[t1] || "";
-    let capT2_Name = teamCaptains[t2] || "";
+    // --- CAPTAIN LOGIC (Format-wise for International) ---
+    let capT1_Name = "";
+    let capT2_Name = "";
+
+    if (internationalCaptains[t1]) {
+        capT1_Name = internationalCaptains[t1][type] || internationalCaptains[t1]["T20"] || "";
+    } else {
+        capT1_Name = teamCaptains[t1] || "";
+    }
+
+    if (internationalCaptains[t2]) {
+        capT2_Name = internationalCaptains[t2][type] || internationalCaptains[t2]["T20"] || "";
+    } else {
+        capT2_Name = teamCaptains[t2] || "";
+    }
+
     let urduCap1 = urduCaptains[capT1_Name] || "";
     let urduCap2 = urduCaptains[capT2_Name] || "";
 
@@ -493,14 +519,16 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         document.getElementById('post-toss-area').style.display = 'block';
         postDiv.innerHTML = "Calculating Post-Toss Impact...";
 
+        let modelTw = teamMapping[tw] || tw;
+
         try {
             const res = await fetch(`${BACKEND_URL}/predict`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ match_type: type, team1: t1, team2: t2, venue, toss_winner: tw, toss_decision: td })
+                body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue, toss_winner: modelTw, toss_decision: td })
             });
             const pred = await res.json();
             if (pred.success) {
-                const p1 = pred.predictions[t1], p2 = pred.predictions[t2];
+                const p1 = pred.predictions[modelT1], p2 = pred.predictions[modelT2];
                 let html = `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="color:#00ffcc;">${t1}: <b>${p1}</b></span><span style="color:#ff4d4d;">${t2}: <b>${p2}</b></span></div>`;
                 
                 if (!isLiveMatch) {
@@ -509,8 +537,10 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
                 }
 
                 if (window.prePred) {
-                    const d1 = (parseFloat(p1) - parseFloat(window.prePred[t1])).toFixed(1);
-                    const d2 = (parseFloat(p2) - parseFloat(window.prePred[t2])).toFixed(1);
+                    const preP1 = window.prePred[modelT1];
+                    const preP2 = window.prePred[modelT2];
+                    const d1 = (parseFloat(p1) - parseFloat(preP1)).toFixed(1);
+                    const d2 = (parseFloat(p2) - parseFloat(preP2)).toFixed(1);
                     html += `<div style="font-size:12px; border-top:1px solid #334155; padding-top:10px;">Toss Impact:</div>
                              <div style="display:flex; justify-content:space-between; font-size:12px;">
                                 <span style="color:${d1>0?'#22c55e':(d1<0?'#ef4444':'#94a3b8')}">${t1} (${d1>0?'+':''}${d1}%)</span>
