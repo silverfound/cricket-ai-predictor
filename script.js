@@ -737,7 +737,8 @@ function getIlmiTossTimeNumber(timeValue) {
     if (!match) return null;
     const digitSum = String(timeValue).replace(":", "").split("")
         .reduce((sum, digit) => sum + Number(digit), 0);
-    return reduceToSingle(digitSum);
+    const reduced = reduceToSingle(digitSum);
+    return reduced || 9;
 }
 
 function getIlmiTossTimeCompatibility(teamBaseNumber, tossTimeNumber) {
