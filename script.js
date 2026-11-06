@@ -141,7 +141,20 @@ Object.assign(urduTeams, {
     "Birmingham Phoenix": "برمنگھم فینکس", "London Spirit": "لندن اسپرٹ",
     "Manchester Super Giants": "مانچسٹر سپر جائنٹس", "MI London": "ایم آئی لندن",
     "Southern Brave": "سدرن بریو", "Sunrisers Leeds": "سن رائزرز لیڈز",
-    "Trent Rockets": "ٹرینٹ راکٹس", "Welsh Fire": "ویلش فائر"
+    "Trent Rockets": "ٹرینٹ راکٹس", "Welsh Fire": "ویلش فائر",
+    "Adelaide Strikers Women": "ایڈیلیڈ اسٹرائیکرز ویمن",
+    "Brisbane Heat Women": "برسبین ہیٹ ویمن",
+    "Sydney Sixers Women": "سڈنی سکسرز ویمن",
+    "Sydney Thunder Women": "سڈنی تھنڈر ویمن",
+    "Perth Scorchers Women": "پرتھ اسکارچرز ویمن",
+    "Hobart Hurricanes Women": "ہوبارٹ ہریکینز ویمن",
+    "Melbourne Stars Women": "میلبرن اسٹارز ویمن",
+    "Melbourne Renegades Women": "میلبرن رینیگیڈز ویمن",
+    "Queensland": "کوئنز لینڈ", "New South Wales": "نیو ساؤتھ ویلز",
+    "Victoria": "وکٹوریا", "Western Australia": "ویسٹرن آسٹریلیا",
+    "South Australia": "ساؤتھ آسٹریلیا", "Tasmania": "تسمانیہ",
+    "Northern Districts": "ناردرن ڈسٹرکٹس", "Central Districts": "سینٹرل ڈسٹرکٹس",
+    "Auckland": "آکلینڈ", "Canterbury": "کینٹربری", "Otago": "اوٹاگو", "Wellington": "ویلنگٹن"
 });
 
 // Exact match first; then case/spacing/punctuation-insensitive alias match.
@@ -151,8 +164,15 @@ function normalizeIlmiName(value) {
 }
 function getUrduTeamName(value) {
     if (urduTeams[value]) return urduTeams[value];
-    const key = Object.keys(urduTeams).find(k => normalizeIlmiName(k) === normalizeIlmiName(value));
-    return key ? urduTeams[key] : "";
+    const normalized = normalizeIlmiName(value);
+    const key = Object.keys(urduTeams).find(k => normalizeIlmiName(k) === normalized);
+    if (key) return urduTeams[key];
+    const raw = String(value || "").trim();
+    if (/\\s+women$/i.test(raw)) {
+        const base = raw.replace(/\\s+women$/i, "").trim();
+        if (urduTeams[base]) return urduTeams[base] + " ویمن";
+    }
+    return "";
 }
 
 // --- CURRENT INTERNATIONAL / LEAGUE VENUES (API venue name -> Urdu) ---
@@ -239,7 +259,19 @@ const urduVenues = {
     "Harare Sports Club": "ہرارے اسپورٹس کلب",
     "Queens Sports Club": "کوئنز اسپورٹس کلب",
     "Kigali": "کیگالی کرکٹ گراؤنڈ",
-    "Wanderers Cricket Ground": "وانڈررز کرکٹ گراؤنڈ"
+    "Wanderers Cricket Ground": "وانڈررز کرکٹ گراؤنڈ",
+    "Junction Oval": "جنکشن اوول",
+    "CitiPower Centre": "سٹی پاور سینٹر",
+    "Karen Rolton Oval": "کیرن رولٹن اوول",
+    "Allan Border Field": "ایلن بارڈر فیلڈ",
+    "North Sydney Oval": "نارتھ سڈنی اوول",
+    "Drummoyne Oval": "ڈروموئن اوول",
+    "WACA Ground": "واکا گراؤنڈ",
+    "Ninja Stadium": "ننجا اسٹیڈیم",
+    "Hurstville Oval": "ہرسٹ وِل اوول",
+    "Blacktown International Sportspark": "بلیک ٹاؤن انٹرنیشنل اسپورٹس پارک",
+    "Great Barrier Reef Arena": "گریٹ بیریئر ریف ایرینا",
+    "Riverway Stadium": "ریور وے اسٹیڈیم"
 };
 function getUrduVenueName(value) {
     if (urduVenues[value]) return urduVenues[value];
@@ -312,7 +344,15 @@ const urduCaptains = {
     "Sam Curran": "سام کرن",
     "Sam Billings": "سام بلنگز",
     "Phil Salt": "فل سالٹ",
-    "Jacob Bethell": "جیکب بیتھل"
+    "Jacob Bethell": "جیکب بیتھل",
+    "Tahlia McGrath": "تالیہ میک گرا",
+    "Georgia Redmayne": "جارجیا ریڈمین",
+    "Nicola Carey": "نکولا کیری",
+    "Sophie Molineux": "سوفی مولینیو",
+    "Meg Lanning": "میگ لیننگ",
+    "Sophie Devine": "سوفی ڈیوائن",
+    "Ashleigh Gardner": "ایشلی گارڈنر",
+    "Phoebe Litchfield": "فوبی لیچفیلڈ"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
@@ -369,7 +409,15 @@ const teamCaptains = {
     "MI London": "Sam Curran",
     "Manchester Super Giants": "Aiden Markram",
     "Trent Rockets": "Sam Billings",
-    "Welsh Fire": "Phil Salt"
+    "Welsh Fire": "Phil Salt",
+    "Adelaide Strikers Women": "Tahlia McGrath",
+    "Brisbane Heat Women": "Georgia Redmayne",
+    "Hobart Hurricanes Women": "Nicola Carey",
+    "Melbourne Renegades Women": "Sophie Molineux",
+    "Melbourne Stars Women": "Meg Lanning",
+    "Perth Scorchers Women": "Sophie Devine",
+    "Sydney Sixers Women": "Ashleigh Gardner",
+    "Sydney Thunder Women": "Phoebe Litchfield"
 };
 
 // International men's teams: format-wise captains.
@@ -826,17 +874,14 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let capT1_Name = "";
     let capT2_Name = "";
 
-    if (internationalCaptains[t1]) {
-        capT1_Name = internationalCaptains[t1][type] || internationalCaptains[t1]["T20"] || "";
-    } else {
-        capT1_Name = teamCaptains[t1] || "";
-    }
-
-    if (internationalCaptains[t2]) {
-        capT2_Name = internationalCaptains[t2][type] || internationalCaptains[t2]["T20"] || "";
-    } else {
-        capT2_Name = teamCaptains[t2] || "";
-    }
+    const captainFor = name => {
+        const base = String(name || "").replace(/\\s+women$/i, "").trim();
+        const key = teamCaptains[name] ? name : (teamCaptains[base] ? base : name);
+        if (internationalCaptains[key]) return internationalCaptains[key][type] || internationalCaptains[key]["T20"] || "";
+        return teamCaptains[key] || "";
+    };
+    capT1_Name = captainFor(t1);
+    capT2_Name = captainFor(t2);
 
     let urduCap1 = urduCaptains[capT1_Name] || "";
     let urduCap2 = urduCaptains[capT2_Name] || "";
