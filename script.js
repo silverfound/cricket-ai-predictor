@@ -1306,8 +1306,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         const internationalKey = Object.keys(internationalCaptains)
             .find(key => normalizeIlmiName(key) === normalizedName);
         if (internationalKey) {
-            return internationalCaptains[internationalKey][type] ||
-                internationalCaptains[internationalKey]["T20"] || "";
+            // Never silently use a T20 captain for a Test or ODI fixture.
+            return internationalCaptains[internationalKey][type] || "";
         }
 
         const franchiseKey = Object.keys(teamCaptains)
@@ -1320,12 +1320,14 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     capT1_Name = captainFor(t1);
     capT2_Name = captainFor(t2);
     const manualUrduCap1 = getIlmiCaptainOverride(t1), manualUrduCap2 = getIlmiCaptainOverride(t2);
-    if ((!capT1_Name && !manualUrduCap1) || (!capT2_Name && !manualUrduCap2)) {
-        const missingCaptains = [(!capT1_Name && !manualUrduCap1) ? t1 : "", (!capT2_Name && !manualUrduCap2) ? t2 : ""].filter(Boolean);
-        ilmiDiv.innerHTML = `<div style="color:#fbbf24;">Captain data missing for: ${missingCaptains.join(", ")}. Neeche Urdu mein manually captain name enter karke save karein.</div>` + renderIlmiCaptainEditor(t1,t2,manualUrduCap1,manualUrduCap2);
+    const directoryUrduCap1 = capT1_Name ? (urduCaptains[capT1_Name] || transliterateIlmiCaptainName(capT1_Name)) : "";
+    const directoryUrduCap2 = capT2_Name ? (urduCaptains[capT2_Name] || transliterateIlmiCaptainName(capT2_Name)) : "";
+    const urduCap1 = manualUrduCap1 || directoryUrduCap1;
+    const urduCap2 = manualUrduCap2 || directoryUrduCap2;
+    if (!urduCap1 || !urduCap2) {
+        const missingCaptains = [!urduCap1 ? `${t1} (${type})` : "", !urduCap2 ? `${t2} (${type})` : ""].filter(Boolean);
+        ilmiDiv.innerHTML = `<div style="color:#fbbf24;">${type} captain directory entry missing for: ${missingCaptains.join(", ")}. Agar aap ko sahi captain maloom hai to neeche Urdu mein enter karke save karein.</div>` + renderIlmiCaptainEditor(t1,t2,urduCap1,urduCap2);
     } else {
-    let urduCap1 = manualUrduCap1 || urduCaptains[capT1_Name] || transliterateIlmiCaptainName(capT1_Name);
-    let urduCap2 = manualUrduCap2 || urduCaptains[capT2_Name] || transliterateIlmiCaptainName(capT2_Name);
 
     let baseA = calculateAbjad(urduT1) + calculateAbjad(urduCap1); 
     let baseB = calculateAbjad(urduT2) + calculateAbjad(urduCap2); 
@@ -1356,6 +1358,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
     let ilmiHtml = `
         <div style="margin-bottom: 10px; font-size: 12px; color: #cbd5e1;">
+            🏏 Match Format: <strong style="color:#00ffcc;">${type}</strong><br>
             📅 <span class="urdu-text">${hijriDateStr}</span> | 🗓️ <span class="urdu-text">${dayUrdu}</span>
         </div>
         <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">(Ground Time: ${matchTimeStr} | Maghrib: ${maghribTime})</div>
