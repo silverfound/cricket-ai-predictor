@@ -351,6 +351,34 @@ function transliterateIlmiCaptainWord(word) {
     }
     return out;
 }
+
+// --- USER-EDITABLE URDU CAPTAIN OVERRIDES (Ilmi Prediction only) ---
+function getIlmiCaptainOverride(teamName) {
+    try { const saved = JSON.parse(localStorage.getItem("ilmi_urdu_captain_overrides_v1") || "{}"); return String(saved[normalizeIlmiName(teamName)] || "").trim(); }
+    catch (e) { return ""; }
+}
+function saveIlmiCaptainOverride(teamName, inputId) {
+    const value = String(document.getElementById(inputId)?.value || "").trim();
+    if (!value || /[A-Za-z]/.test(value) || !/[\u0600-\u06FF]/.test(value)) { alert("Captain ka naam sirf Urdu mein likhein."); return; }
+    try { const saved = JSON.parse(localStorage.getItem("ilmi_urdu_captain_overrides_v1") || "{}"); saved[normalizeIlmiName(teamName)] = value; localStorage.setItem("ilmi_urdu_captain_overrides_v1", JSON.stringify(saved)); alert("Urdu captain name save ho gaya. Match band karke dobara kholein."); }
+    catch (e) { alert("Captain name save nahi ho saka."); }
+}
+function resetIlmiCaptainOverride(teamName) {
+    try { const saved = JSON.parse(localStorage.getItem("ilmi_urdu_captain_overrides_v1") || "{}"); delete saved[normalizeIlmiName(teamName)]; localStorage.setItem("ilmi_urdu_captain_overrides_v1", JSON.stringify(saved)); alert("Manual Urdu correction reset ho gayi. Match dobara kholein."); }
+    catch (e) { alert("Correction reset nahi ho saki."); }
+}
+function renderIlmiCaptainEditor(team1, team2, value1 = "", value2 = "") {
+    const urduTeam1 = getUrduTeamName(team1) || team1, urduTeam2 = getUrduTeamName(team2) || team2;
+    const safe1 = String(value1 || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const safe2 = String(value2 || "").replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const esc1 = String(team1).replace(/'/g,"\\'"), esc2 = String(team2).replace(/'/g,"\\'");
+    return '<details style="margin-top:14px;padding:10px;border:1px solid #475569;border-radius:8px;background:#0f172a;"><summary style="cursor:pointer;color:#e2e8f0;font-weight:bold;">✍️ کپتان کا اردو نام درست کریں</summary><p style="font-size:11px;color:#94a3b8;">صرف اردو میں نام لکھیں۔ یہ تبدیلی صرف Ilmi Prediction کے لیے اس browser میں محفوظ ہوگی۔</p>' +
+    '<label style="display:block;color:#00ffcc;margin:8px 0 4px;">'+urduTeam1+' — کپتان</label><input id="ilmiCaptainUrdu1" dir="rtl" lang="ur" value="'+safe1+'" placeholder="کپتان کا نام اردو میں" style="width:100%;box-sizing:border-box;padding:9px;border-radius:6px;background:#1e293b;color:white;font-size:16px;">' +
+    '<div style="display:flex;gap:8px;margin:7px 0 12px;"><button onclick="saveIlmiCaptainOverride(\''+esc1+'\',\'ilmiCaptainUrdu1\')" style="flex:1;padding:8px;background:#0d9488;color:white;border:0;border-radius:5px;">محفوظ کریں</button><button onclick="resetIlmiCaptainOverride(\''+esc1+'\')" style="padding:8px;background:#475569;color:white;border:0;border-radius:5px;">ری سیٹ</button></div>' +
+    '<label style="display:block;color:#ff4d4d;margin:8px 0 4px;">'+urduTeam2+' — کپتان</label><input id="ilmiCaptainUrdu2" dir="rtl" lang="ur" value="'+safe2+'" placeholder="کپتان کا نام اردو میں" style="width:100%;box-sizing:border-box;padding:9px;border-radius:6px;background:#1e293b;color:white;font-size:16px;">' +
+    '<div style="display:flex;gap:8px;margin:7px 0 0;"><button onclick="saveIlmiCaptainOverride(\''+esc2+'\',\'ilmiCaptainUrdu2\')" style="flex:1;padding:8px;background:#0d9488;color:white;border:0;border-radius:5px;">محفوظ کریں</button><button onclick="resetIlmiCaptainOverride(\''+esc2+'\')" style="padding:8px;background:#475569;color:white;border:0;border-radius:5px;">ری سیٹ</button></div></details>';
+}
+
 function transliterateIlmiCaptainName(value) {
     return String(value || "").trim().split(/([\\s,.'’()&/-]+)/).map(part => {
         if (!part || /^[\\s,.'’()&/-]+$/.test(part)) return part;
@@ -703,6 +731,62 @@ function getMultiplier(teamNum, contextNum) {
     return 1.0;
 }
 
+// Toss Time is a separate Ilmi factor; it does not replace the existing match-time factor.
+function getIlmiTossTimeNumber(timeValue) {
+    const match = String(timeValue || "").match(/^([01]\d|2[0-3]):([0-5]\d)$/);
+    if (!match) return null;
+    const digitSum = String(timeValue).replace(":", "").split("")
+        .reduce((sum, digit) => sum + Number(digit), 0);
+    const reduced = reduceToSingle(digitSum);
+    return reduced || 9;
+}
+
+function getIlmiTossTimeCompatibility(teamBaseNumber, tossTimeNumber) {
+    const teamNumber = reduceToSingle(teamBaseNumber);
+    const rules = friendshipMatrix[tossTimeNumber] || { friends: [], enemies: [] };
+    if (rules.friends.includes(teamNumber)) return { status: "Friendly", multiplier: 1.03 };
+    if (rules.enemies.includes(teamNumber)) return { status: "Hostile", multiplier: 0.97 };
+    return { status: "Neutral", multiplier: 1.00 };
+}
+
+function applyIlmiTossTimeFactor() {
+    const state = window.ilmiTossBaseState;
+    const result = document.getElementById("ilmi-toss-result");
+    const timeInput = document.getElementById("ilmi-toss-time");
+    if (!state || !result || !timeInput) return;
+
+    const tossTimeNumber = getIlmiTossTimeNumber(timeInput.value);
+    if (tossTimeNumber === null) {
+        result.innerHTML = '<span style="color:#fbbf24;">Exact toss time enter karein (HH:MM, venue local time).</span>';
+        return;
+    }
+
+    const relationA = getIlmiTossTimeCompatibility(state.baseA, tossTimeNumber);
+    const relationB = getIlmiTossTimeCompatibility(state.baseB, tossTimeNumber);
+    const finalA = state.baseA * state.contextMultA * state.matchTimeMultA * relationA.multiplier;
+    const finalB = state.baseB * state.contextMultB * state.matchTimeMultB * relationB.multiplier;
+    const winner = finalA > finalB ? state.team1 : (finalB > finalA ? state.team2 : "Tie");
+    const tossWinner = document.getElementById("toss-winner")?.value || "";
+    const tossDecision = document.getElementById("toss-decision")?.value || "";
+    const decisionLabel = tossDecision === "bat" ? "Bat First" : (tossDecision === "field" ? "Field First" : "Not selected");
+
+    result.innerHTML = `
+        <div style="font-size:12px;color:#cbd5e1;margin-bottom:7px;">
+            Toss Time Number: <b>${tossTimeNumber}</b> | Toss: <b>${tossWinner || "Not selected"}</b> — <b>${decisionLabel}</b>
+        </div>
+        <div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;">
+            <span>${state.team1}: <b>${relationA.status}</b> (${relationA.multiplier > 1 ? "+3%" : (relationA.multiplier < 1 ? "-3%" : "0%")})</span>
+            <span>${state.team2}: <b>${relationB.status}</b> (${relationB.multiplier > 1 ? "+3%" : (relationB.multiplier < 1 ? "-3%" : "0%")})</span>
+        </div>
+        <table style="width:100%;border-collapse:collapse;margin-top:8px;">
+            <tr><td style="padding:4px 0;color:#00ffcc;">${state.team1}</td><td style="text-align:right;color:#00ffcc;font-weight:bold;">${finalA.toFixed(1)}</td></tr>
+            <tr><td style="padding:4px 0;color:#ef4444;">${state.team2}</td><td style="text-align:right;color:#ef4444;font-weight:bold;">${finalB.toFixed(1)}</td></tr>
+        </table>
+        <div style="text-align:center;color:#d946ef;font-weight:bold;margin-top:8px;">Toss-Time Ilmi Result: ${winner}</div>
+        <div style="font-size:10px;color:#94a3b8;margin-top:6px;">Toss decision is recorded as context; no extra batting/fielding bonus is invented beyond the supplied rules.</div>
+    `;
+}
+
 function numberToUrdu(num) {
     if (num <= 100) return urduNumbers[num] || num;
     if (num < 1000) {
@@ -1036,6 +1120,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
     document.getElementById('post-toss-area').style.display = 'none';
     document.getElementById('ilmi-area').style.display = 'none'; 
+    window.ilmiTossBaseState = null;
     document.getElementById('toss-winner').innerHTML = `<option value="${t1}">${t1}</option><option value="${t2}">${t2}</option>`;
 
     if (isLiveMatch) { document.getElementById('live-warning').style.display = 'block'; } 
@@ -1175,16 +1260,13 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     };
     capT1_Name = captainFor(t1);
     capT2_Name = captainFor(t2);
-
-    if (!capT1_Name || !capT2_Name) {
-        const missingCaptains = [
-            !capT1_Name ? t1 : "",
-            !capT2_Name ? t2 : ""
-        ].filter(Boolean);
-        ilmiDiv.innerHTML = `<div style="color:#fbbf24;">Captain data missing for: ${missingCaptains.join(", ")}. Verified captain mapping add karna zaroori hai; incomplete captain data par Ilmi score nahi banaya gaya.</div>`;
+    const manualUrduCap1 = getIlmiCaptainOverride(t1), manualUrduCap2 = getIlmiCaptainOverride(t2);
+    if ((!capT1_Name && !manualUrduCap1) || (!capT2_Name && !manualUrduCap2)) {
+        const missingCaptains = [(!capT1_Name && !manualUrduCap1) ? t1 : "", (!capT2_Name && !manualUrduCap2) ? t2 : ""].filter(Boolean);
+        ilmiDiv.innerHTML = `<div style="color:#fbbf24;">Captain data missing for: ${missingCaptains.join(", ")}. Neeche Urdu mein manually captain name enter karke save karein.</div>` + renderIlmiCaptainEditor(t1,t2,manualUrduCap1,manualUrduCap2);
     } else {
-    let urduCap1 = urduCaptains[capT1_Name] || transliterateIlmiCaptainName(capT1_Name);
-    let urduCap2 = urduCaptains[capT2_Name] || transliterateIlmiCaptainName(capT2_Name);
+    let urduCap1 = manualUrduCap1 || urduCaptains[capT1_Name] || transliterateIlmiCaptainName(capT1_Name);
+    let urduCap2 = manualUrduCap2 || urduCaptains[capT2_Name] || transliterateIlmiCaptainName(capT2_Name);
 
     let baseA = calculateAbjad(urduT1) + calculateAbjad(urduCap1); 
     let baseB = calculateAbjad(urduT2) + calculateAbjad(urduCap2); 
@@ -1202,11 +1284,24 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let finalB = baseB * contextMultB * timeMultB;
     let winnerText = finalA > finalB ? t1 : (finalB > finalA ? t2 : "Tie");
 
+    // Save only the existing Ilmi baseline values; the entered toss-time factor is applied separately.
+    window.ilmiTossBaseState = {
+        team1: t1, team2: t2, baseA, baseB,
+        contextMultA, contextMultB,
+        matchTimeMultA: timeMultA, matchTimeMultB: timeMultB
+    };
+
     let ilmiHtml = `
         <div style="margin-bottom: 10px; font-size: 12px; color: #cbd5e1;">
             📅 <span class="urdu-text">${hijriDateStr}</span> | 🗓️ <span class="urdu-text">${dayUrdu}</span>
         </div>
         <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">(Ground Time: ${matchTimeStr} | Maghrib: ${maghribTime})</div>
+        <div style="margin:10px 0;padding:9px;border:1px solid #6b4b86;border-radius:7px;background:#120d1b;">
+            <label for="ilmi-toss-time" style="display:block;color:#e9d5ff;font-size:12px;margin-bottom:5px;">Ilmi Toss Time (Venue Local — exact HH:MM)</label>
+            <input id="ilmi-toss-time" type="time" style="width:100%;box-sizing:border-box;padding:8px;background:#0f172a;color:white;border:1px solid #475569;border-radius:5px;">
+            <button id="apply-ilmi-toss-time" type="button" style="width:100%;padding:8px;margin-top:7px;background:#7e22ce;color:white;border:0;border-radius:5px;font-weight:bold;cursor:pointer;">Apply Toss Time Factor</button>
+            <div id="ilmi-toss-result" style="margin-top:8px;"></div>
+        </div>
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
             <tr>
                 <td style="color:#00ffcc; padding: 4px 0;">${t1} <br><span style="font-size:10px;color:#94a3b8;">(${capT1_Name || 'Unknown'})</span></td>
@@ -1221,7 +1316,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             🌟 ${winnerText} Ka Pala Bhari Hai!
         </div>
     `;
-    ilmiDiv.innerHTML = ilmiHtml;
+    ilmiDiv.innerHTML = ilmiHtml + renderIlmiCaptainEditor(t1,t2,manualUrduCap1,manualUrduCap2);
+    document.getElementById("apply-ilmi-toss-time")?.addEventListener("click", applyIlmiTossTimeFactor);
     }
     }
 
