@@ -565,7 +565,6 @@ const teamCaptains = {
     "Multan Sultans": "Ashton Turner",
     "Hyderabad Kingsmen": "Marnus Labuschagne",
     "Pindiz": "Mohammad Rizwan",
-    "Rawalpindiz": "Mohammad Rizwan",
     "Durban's Super Giants": "Aiden Markram",
     "Joburg Super Kings": "Faf du Plessis",
     "MI Cape Town": "Rashid Khan",
@@ -578,7 +577,6 @@ const teamCaptains = {
     "Texas Super Kings": "Faf du Plessis",
     "Seattle Orcas": "Sikandar Raza",
     "LA Knight Riders": "Jason Holder",
-    "Los Angeles Knight Riders": "Jason Holder",
     "Birmingham Phoenix": "Jacob Bethell",
     "MI London": "Sam Curran",
     "Manchester Super Giants": "Aiden Markram",
@@ -617,32 +615,19 @@ const internationalCaptains = {
 
 // Strict Ilmi eligibility: international fixtures + franchise leagues present in the Cricsheet training export.
 const ilmiInternationalTeams = new Set(["Afghanistan","Africa XI","Argentina","Asia XI","Australia","Austria","Bahamas","Bahrain","Bangladesh","Barbados","Belgium","Belize","Bermuda","Bhutan","Botswana","Brazil","Bulgaria","Cambodia","Cameroon","Canada","Cayman Islands","Chile","China","Cook Islands","Costa Rica","Croatia","Cyprus","Czech Republic","Denmark","England","Estonia","Eswatini","Fiji","Finland","France","Gambia","Germany","Ghana","Gibraltar","Greece","Guernsey","Hong Kong","Hungary","ICC World XI","India","Indonesia","Iran","Ireland","Isle of Man","Israel","Italy","Ivory Coast","Japan","Jersey","Kenya","Kuwait","Lesotho","Luxembourg","Malawi","Malaysia","Maldives","Mali","Malta","Mexico","Mongolia","Mozambique","Myanmar","Namibia","Nepal","Netherlands","New Zealand","Nigeria","Norway","Oman","Pakistan","Panama","Papua New Guinea","Peru","Philippines","Portugal","Qatar","Romania","Rwanda","Samoa","Saudi Arabia","Scotland","Serbia","Seychelles","Sierra Leone","Singapore","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Helena","Suriname","Swaziland","Sweden","Switzerland","Tanzania","Thailand","Timor-Leste","Turkey","Turks and Caicos Island","Uganda","United Arab Emirates","United States of America","Uzbekistan","Vanuatu","West Indies","Zambia","Zimbabwe"].map(normalizeIlmiName));
-const ilmiMajorCompetitions = new Set(["Indian Premier League","Pakistan Super League","Big Bash League","Women's Big Bash League","Bangladesh Premier League","Caribbean Premier League","Women's Caribbean Premier League","The Hundred Men's Competition","The Hundred Women's Competition","Lanka Premier League","International League T20","Major League Cricket","SA20","Nepal Premier League","Mzansi Super League","FairBreak Invitational Tournament","Women's Premier League","European T20 Premier League"].map(normalizeIlmiName));
-// Franchise sides are taken only from the 16,583-row Cricsheet training export,
-// after filtering to the major franchise competitions listed above.
-const ilmiFranchiseTeams = new Set(["Abu Dhabi Knight Riders","Adelaide Strikers","Amsterdam Flames","Antigua Hawksbills","Antigua and Barbuda Falcons","B-Love Kandy","Barbados Royals","Barbados Tridents","Barisal Bulls","Barisal Burners","Barmy Army","Belfast Wolves","Biratnagar Kings","Birmingham Phoenix","Brisbane Heat","Cape Town Blitz","Chattogram Challengers","Chattogram Royals","Chennai Super Kings","Chittagong Kings","Chittagong Vikings","Chitwan Rhinos","Colombo Kaps","Colombo Kings","Colombo Stars","Colombo Strikers","Comilla Victorians","Cumilla Warriors","Dambulla Aura","Dambulla Giants","Dambulla Sixers","Dambulla Viiking","Deccan Chargers","Delhi Capitals","Delhi Daredevils","Desert Vipers","Dhaka Capitals","Dhaka Dominators","Dhaka Dynamites","Dhaka Gladiators","Dhaka Platoon","Dubai Capitals","Dublin Guardians","Durban Heat","Durban's Super Giants","Durbar Rajshahi","Durdanto Dhaka","Duronto Rajshahi","Edinburgh Castle Rockers","Falcons","Fortune Barishal","Galle Gallants","Galle Gladiators","Galle Marvels","Galle Titans","Glasgow Cosmic","Gujarat Giants","Gujarat Lions","Gujarat Titans","Gulf Giants","Guyana Amazon Warriors","Hobart Hurricanes","Hyderabad Kingsmen","Islamabad United","Jaffna Kings","Jaffna Stallions","Jamaica Empress","Jamaica Kingsmen","Jamaica Tallawahs","Janakpur Bolts","Joburg Super Kings","Jozi Stars","Kandy Falcons","Kandy Royals","Kandy Tuskers","Kandy Warriors","Karachi Kings","Karnali Yaks","Kathmandu Gorkhas","Kathmandu Gurkhas","Khulna Royal Bengals","Khulna Tigers","Khulna Titans","Kings XI Punjab","Kochi Tuskers Kerala","Kolkata Knight Riders","Lahore Qalandars","London Spirit","Los Angeles Knight Riders","Lucknow Super Giants","Lumbini Lions","MI Cape Town","MI Emirates","MI London","MI New York","Manchester Originals","Manchester Super Giants","Melbourne Renegades","Melbourne Stars","Minister Group Dhaka","Multan Sultans","Mumbai Indians","Nelson Mandela Bay Giants","Noakhali Express","Northern Superchargers","Oval Invincibles","Paarl Rocks","Paarl Royals","Perth Scorchers","Peshawar Zalmi","Pokhara Avengers","Pretoria Capitals","Pune Warriors","Punjab Kings","Quetta Gladiators","Rajasthan Royals","Rajshahi Kings","Rajshahi Royals","Rajshahi Warriors","Rangpur Rangers","Rangpur Riders","Rawalpindiz","Rising Pune Supergiant","Rising Pune Supergiants","Rotterdam Dockers","Royal Challengers Bangalore","Royal Challengers Bengaluru","San Francisco Unicorns","Sapphires","Seattle Orcas","Sharjah Warriors","Sharjah Warriorz","Southern Brave","Spirit","St Kitts and Nevis Patriots","St Lucia Kings","St Lucia Stars","St Lucia Zouks","Sudur Paschim Royals","Sunrisers Eastern Cape","Sunrisers Hyderabad","Sunrisers Leeds","Sydney Sixers","Sydney Thunder","Sylhet Royals","Sylhet Sixers","Sylhet Strikers","Sylhet Sunrisers","Sylhet Super Stars","Sylhet Thunder","Sylhet Titans","Texas Super Kings","Tornadoes","Trent Rockets","Trinbago Knight Riders","Trinidad & Tobago Red Steel","Tshwane Spartans","UP Warriorz","Warriors","Warriors (FairBreak)","Washington Freedom","Welsh Fire"].map(name => normalizeIlmiName(String(name).replace(/\\s+women$/i, ""))));
-const ilmiAllowedTeamKeys = new Set([...ilmiInternationalTeams, ...ilmiFranchiseTeams, "uae", "saintluciakings"]);
-Object.keys(urduTeams).forEach(name => {
-    const key = normalizeIlmiName(String(name).replace(/\\s+women$/i, ""));
-    if (!ilmiAllowedTeamKeys.has(key)) delete urduTeams[name];
-});
-
+const ilmiMajorCompetitions = new Set(["Indian Premier League","Pakistan Super League","Big Bash League","Women's Big Bash League","Bangladesh Premier League","Caribbean Premier League","Women's Caribbean Premier League","The Hundred Men's Competition","The Hundred Women's Competition","Lanka Premier League","International League T20","Major League Cricket","SA20","Nepal Premier League","Mzansi Super League","FairBreak Invitational Tournament","Women's Premier League","Women's Cricket Super League","Women's T20 Challenge","European T20 Premier League","IPL","PSL","BBL","WBBL","BPL","CPL","WCPL","The Hundred","LPL","ILT20","MLC","WPL"].map(normalizeIlmiName));
 function isIlmiInternationalTeam(name) {
-    const base = String(name || "").trim().replace(/\\s+women$/i, "");
+    const base = String(name || "").trim().replace(/\s+women$/i, "");
     const key = normalizeIlmiName(base);
     const aliases = { "usa":"unitedstatesofamerica", "unitedstates":"unitedstatesofamerica", "uae":"unitedarabemirates" };
     return ilmiInternationalTeams.has(aliases[key] || key);
 }
 function isIlmiEligibleFixture(team1, team2, competitionTitle) {
-    const a = normalizeIlmiName(String(team1 || "").replace(/\\s+women$/i, ""));
-    const b = normalizeIlmiName(String(team2 || "").replace(/\\s+women$/i, ""));
-    const competitionKey = normalizeIlmiName(competitionTitle);
     const isInternational = isIlmiInternationalTeam(team1) && isIlmiInternationalTeam(team2);
-    const isFranchise = ilmiFranchiseTeams.has(a) && ilmiFranchiseTeams.has(b);
-    const isMajorCompetition = Array.from(ilmiMajorCompetitions).some(name =>
-        competitionKey === name || (competitionKey.startsWith(name) && /^(19|20)\\d{2,4}$/.test(competitionKey.slice(name.length)))
-    );
-    return isInternational || isFranchise || isMajorCompetition;
+    const competitionKey = normalizeIlmiName(competitionTitle);
+    const isMajorLeague = ilmiMajorCompetitions.has(competitionKey) ||
+        Array.from(ilmiMajorCompetitions).some(name => competitionKey.startsWith(name));
+    return isInternational || isMajorLeague;
 }
 
 const friendshipMatrix = {
