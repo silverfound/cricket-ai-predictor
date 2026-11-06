@@ -672,7 +672,7 @@ const internationalCaptains = {
     "Australia": { "Test": "Pat Cummins", "ODI": "Mitchell Marsh", "T20": "Mitchell Marsh" },
     "Bangladesh": { "Test": "Najmul Hossain Shanto", "ODI": "Litton Das", "T20": "Litton Das" },
     "England": { "Test": "Joe Root", "ODI": "Harry Brook", "T20": "Jacob Bethell" },
-    "India": { "Test": "Shubman Gill", "ODI": "Shreyas Iyer", "T20": "Shreyas Iyer" },
+    "India": { "Test": "Shubman Gill", "ODI": "Shubman Gill", "T20": "Shreyas Iyer" },
     "Ireland": { "Test": "Andrew Balbirnie", "ODI": "Paul Stirling", "T20": "Lorcan Tucker" },
     "New Zealand": { "Test": "Tom Latham", "ODI": "Mitchell Santner", "T20": "Mitchell Santner" },
     "Pakistan": { "Test": "Babar Azam", "ODI": "Shaheen Afridi", "T20": "Sahibzada Farhan" },
