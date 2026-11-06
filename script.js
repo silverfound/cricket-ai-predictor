@@ -786,8 +786,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     if (!urduVenue) missingIlmiNames.push(venue || "Venue");
     if (missingIlmiNames.length) {
         ilmiDiv.innerHTML = `<div style="color:#fbbf24;">Ilmi mapping abhi available nahi: ${missingIlmiNames.join(", ")}. Is naam ki Urdu mapping add karni hogi; AI prediction par iska koi asar nahi.</div>`;
-        return;
-    }
+    } else {
     
     // --- CAPTAIN LOGIC (Format-wise for International) ---
     let capT1_Name = "";
@@ -844,6 +843,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         </div>
     `;
     ilmiDiv.innerHTML = ilmiHtml;
+    }
 
     // 3. POST-TOSS AI CALCULATION
     document.getElementById('get-prediction-btn').onclick = async () => {
