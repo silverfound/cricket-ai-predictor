@@ -749,44 +749,94 @@ function getIlmiTossTimeCompatibility(teamBaseNumber, tossTimeNumber) {
     return { status: "Neutral", multiplier: 1.00 };
 }
 
+const ilmiChaldeanPlanets = ["Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon"];
+const ilmiPlanetNumbers = { Sun: 1, Moon: 2, Jupiter: 3, Mars: 9, Venus: 6, Mercury: 5, Saturn: 8 };
+const ilmiWeekdayRulers = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"];
+function ilmiMinutes(value) {
+    const m = String(value || "").match(/^([01]\d|2[0-3]):([0-5]\d)$/);
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+}
+function getIlmiPlanetaryHour(timeValue, sunriseValue, sunsetValue, nextSunriseValue, weekdayIndex) {
+    const now = ilmiMinutes(timeValue), sunrise = ilmiMinutes(sunriseValue);
+    const sunset = ilmiMinutes(sunsetValue), nextSunrise = ilmiMinutes(nextSunriseValue);
+    if ([now, sunrise, sunset, nextSunrise].some(v => v === null) || sunrise >= sunset) return null;
+    const rulerIndex = ilmiChaldeanPlanets.indexOf(ilmiWeekdayRulers[weekdayIndex]);
+    if (rulerIndex < 0) return null;
+    let hourIndex, segment, start;
+    if (now >= sunrise && now < sunset) {
+        segment = (sunset - sunrise) / 12;
+        hourIndex = Math.min(11, Math.floor((now - sunrise) / segment));
+        start = sunrise + hourIndex * segment;
+    } else if (now >= sunset) {
+        segment = (1440 - sunset + nextSunrise) / 12;
+        hourIndex = 12 + Math.min(11, Math.floor((now - sunset) / segment));
+        start = sunset + (hourIndex - 12) * segment;
+    } else {
+        return { error: "Toss sunrise se pehle hai; previous sunset timing bhi verify karni hogi." };
+    }
+    const planet = ilmiChaldeanPlanets[(rulerIndex + hourIndex) % 7];
+    return { planet, number: ilmiPlanetNumbers[planet], hour: hourIndex + 1,
+        startsAt: String(Math.floor(start / 60) % 24).padStart(2,"0") + ":" + String(Math.floor(start % 60)).padStart(2,"0") };
+}
+function getIlmiMatrixRelation(number, contextNumber) {
+    const n = reduceToSingle(number), rules = friendshipMatrix[reduceToSingle(contextNumber)] || { friends: [], enemies: [] };
+    if (rules.friends.includes(n)) return { status: "Friendly", multiplier: 1.03 };
+    if (rules.enemies.includes(n)) return { status: "Hostile", multiplier: 0.97 };
+    return { status: "Neutral", multiplier: 1.00 };
+}
+
 function applyIlmiTossTimeFactor() {
     const state = window.ilmiTossBaseState;
     const result = document.getElementById("ilmi-toss-result");
     const timeInput = document.getElementById("ilmi-toss-time");
     if (!state || !result || !timeInput) return;
-
     const tossTimeNumber = getIlmiTossTimeNumber(timeInput.value);
     if (tossTimeNumber === null) {
-        result.innerHTML = '<span style="color:#fbbf24;">Exact toss time enter karein (HH:MM, venue local time).</span>';
+        result.textContent = "Exact toss time HH:MM enter karein.";
         return;
     }
-
-    const relationA = getIlmiTossTimeCompatibility(state.baseA, tossTimeNumber);
-    const relationB = getIlmiTossTimeCompatibility(state.baseB, tossTimeNumber);
-    const finalA = state.baseA * state.contextMultA * state.matchTimeMultA * relationA.multiplier;
-    const finalB = state.baseB * state.contextMultB * state.matchTimeMultB * relationB.multiplier;
-    const winner = finalA > finalB ? state.team1 : (finalB > finalA ? state.team2 : "Tie");
     const tossWinner = document.getElementById("toss-winner")?.value || "";
     const tossDecision = document.getElementById("toss-decision")?.value || "";
-    const decisionLabel = tossDecision === "bat" ? "Bat First" : (tossDecision === "field" ? "Field First" : "Not selected");
-
-    result.innerHTML = `
-        <div style="font-size:12px;color:#cbd5e1;margin-bottom:7px;">
-            Toss Time Number: <b>${tossTimeNumber}</b> | Toss: <b>${tossWinner || "Not selected"}</b> — <b>${decisionLabel}</b>
-        </div>
-        <div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;">
-            <span>${state.team1}: <b>${relationA.status}</b> (${relationA.multiplier > 1 ? "+3%" : (relationA.multiplier < 1 ? "-3%" : "0%")})</span>
-            <span>${state.team2}: <b>${relationB.status}</b> (${relationB.multiplier > 1 ? "+3%" : (relationB.multiplier < 1 ? "-3%" : "0%")})</span>
-        </div>
-        <table style="width:100%;border-collapse:collapse;margin-top:8px;">
-            <tr><td style="padding:4px 0;color:#00ffcc;">${state.team1}</td><td style="text-align:right;color:#00ffcc;font-weight:bold;">${finalA.toFixed(1)}</td></tr>
-            <tr><td style="padding:4px 0;color:#ef4444;">${state.team2}</td><td style="text-align:right;color:#ef4444;font-weight:bold;">${finalB.toFixed(1)}</td></tr>
-        </table>
-        <div style="text-align:center;color:#d946ef;font-weight:bold;margin-top:8px;">Toss-Time Ilmi Result: ${winner}</div>
-        <div style="font-size:10px;color:#94a3b8;margin-top:6px;">Toss decision is recorded as context; no extra batting/fielding bonus is invented beyond the supplied rules.</div>
-    `;
+    if (![state.team1, state.team2].includes(tossWinner) || !tossDecision) {
+        result.textContent = "Toss winner aur Bat/Field decision select karein.";
+        return;
+    }
+    if (!state.nextSunrise) {
+        result.textContent = "Planetary hour ke liye next-day sunrise timing load nahi hui.";
+        return;
+    }
+    const planetary = getIlmiPlanetaryHour(timeInput.value, state.sunrise, state.sunset, state.nextSunrise, state.weekdayIndex);
+    if (!planetary || planetary.error) {
+        result.textContent = planetary?.error || "Planetary hour calculate nahi ho saka.";
+        return;
+    }
+    const winnerIsA = tossWinner === state.team1;
+    const winnerBase = winnerIsA ? state.baseA : state.baseB;
+    const teamAdad = winnerIsA ? state.teamAdadA : state.teamAdadB;
+    const captainAdad = winnerIsA ? state.captainAdadA : state.captainAdadB;
+    const teamRelation = getIlmiMatrixRelation(teamAdad, planetary.number);
+    const captainRelation = getIlmiMatrixRelation(captainAdad, planetary.number);
+    const planetMultiplier = teamRelation.multiplier === captainRelation.multiplier ? teamRelation.multiplier : 1.00;
+    const decisionAdad = reduceToSingle(calculateAbjad(tossDecision === "bat" ? "ضرب" : "دفاع"));
+    const decisionRelation = getIlmiMatrixRelation(winnerBase, decisionAdad);
+    const digitRelationA = getIlmiTossTimeCompatibility(state.baseA, tossTimeNumber);
+    const digitRelationB = getIlmiTossTimeCompatibility(state.baseB, tossTimeNumber);
+    const winnerFactor = planetMultiplier * decisionRelation.multiplier;
+    const finalA = state.baseA * state.contextMultA * state.matchTimeMultA * digitRelationA.multiplier * (winnerIsA ? winnerFactor : 1);
+    const finalB = state.baseB * state.contextMultB * state.matchTimeMultB * digitRelationB.multiplier * (!winnerIsA ? winnerFactor : 1);
+    const winner = finalA > finalB ? state.team1 : (finalB > finalA ? state.team2 : "Tie");
+    result.innerHTML =
+        '<div>Planetary Hour: <b>' + planetary.planet + '</b> (Hour ' + planetary.hour + ', ' + planetary.startsAt + ') — Number <b>' + planetary.number + '</b></div>' +
+        '<div>Toss: <b>' + tossWinner + '</b> — <b>' + (tossDecision === "bat" ? "Bat First" : "Field First") + '</b></div>' +
+        '<div>Winner team compatibility: ' + teamRelation.status + '; captain: ' + captainRelation.status + '; decision: ' + decisionRelation.status + '</div>' +
+        '<div>Time-number compatibility: ' + state.team1 + ' ' + digitRelationA.status + ' / ' + state.team2 + ' ' + digitRelationB.status + '</div>' +
+        '<div><b>Final Ilmi scores:</b> ' + state.team1 + ' ' + finalA.toFixed(2) + ' | ' + state.team2 + ' ' + finalB.toFixed(2) + '</div>' +
+        '<div><b>Ilmi result: ' + winner + '</b></div>';
+    const scoreCells = document.querySelectorAll("#ilmi-content table tr td:last-child");
+    if (scoreCells.length >= 2) { scoreCells[0].textContent = finalA.toFixed(2); scoreCells[1].textContent = finalB.toFixed(2); }
+    const winnerLabel = document.querySelector("#ilmi-content > div[style*='text-align: center']");
+    if (winnerLabel) winnerLabel.textContent = "🌟 " + winner + " Ka Pala Bhari Hai!";
 }
-
 function numberToUrdu(num) {
     if (num <= 100) return urduNumbers[num] || num;
     if (num < 1000) {
@@ -807,10 +857,12 @@ async function fetchMaghribTime(city, country, dateStr) {
         if (!res.ok) return { maghrib: null, timezone: null, ok: false };
         let data = await res.json();
         if (data.code === 200) {
-            const rawMaghrib = String(data.data?.timings?.Maghrib || "");
-            const timeMatch = rawMaghrib.match(/^(\d{2}:\d{2})/);
+            const timings = data.data?.timings || {};
+            const maghrib = String(timings.Maghrib || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
+            const sunrise = String(timings.Sunrise || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
+            const sunset = String(timings.Sunset || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
             const timezone = data.data?.meta?.timezone || null;
-            if (timeMatch && timezone) return { maghrib: timeMatch[1], timezone, ok: true };
+            if (maghrib && sunrise && sunset && timezone) return { maghrib, sunrise, sunset, timezone, ok: true };
         }
     } catch (e) { console.log("Aladhan API error:", e); }
     return { maghrib: null, timezone: null, ok: false };
@@ -1191,6 +1243,13 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue ka Maghrib time verify nahi ho saka. Incorrect date ke saath Ilmi calculation chalane ke bajaye rok di gayi hai.</div>';
         return;
     }
+    const nextIsoForPlanetary = addOneIsoDay(venueDateParts.iso);
+    const [nextYearForPlanetary,nextMonthForPlanetary,nextDayForPlanetary] = nextIsoForPlanetary.split("-");
+    const nextDayPrayerData = await fetchMaghribTime(city, country, `${nextDayForPlanetary}-${nextMonthForPlanetary}-${nextYearForPlanetary}`);
+    if (!maghribData.sunrise || !maghribData.sunset || !nextDayPrayerData.sunrise) {
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Planetary-hour calculation ke liye venue sunrise, sunset aur next sunrise verify nahi ho sake; Ilmi calculation roki gayi hai.</div>';
+        return;
+    }
 
     const matchTimeStr = matchInstant.toLocaleTimeString('en-GB', {
         timeZone: venueTimezone, hour12: false, hour: '2-digit', minute: '2-digit'
@@ -1287,8 +1346,12 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     // Save only the existing Ilmi baseline values; the entered toss-time factor is applied separately.
     window.ilmiTossBaseState = {
         team1: t1, team2: t2, baseA, baseB,
+        teamAdadA: calculateAbjad(urduT1), teamAdadB: calculateAbjad(urduT2),
+        captainAdadA: calculateAbjad(urduCap1), captainAdadB: calculateAbjad(urduCap2),
         contextMultA, contextMultB,
-        matchTimeMultA: timeMultA, matchTimeMultB: timeMultB
+        matchTimeMultA: timeMultA, matchTimeMultB: timeMultB,
+        sunrise: maghribData.sunrise, sunset: maghribData.sunset,
+        nextSunrise: nextDayPrayerData.sunrise, weekdayIndex: new Date(Date.UTC(...venueDateParts.iso.split("-").map((v,i)=>i===1?Number(v)-1:Number(v)))).getUTCDay()
     };
 
     let ilmiHtml = `
@@ -1297,9 +1360,9 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         </div>
         <div style="font-size: 10px; color: #94a3b8; margin-bottom: 5px;">(Ground Time: ${matchTimeStr} | Maghrib: ${maghribTime})</div>
         <div style="margin:10px 0;padding:9px;border:1px solid #6b4b86;border-radius:7px;background:#120d1b;">
-            <label for="ilmi-toss-time" style="display:block;color:#e9d5ff;font-size:12px;margin-bottom:5px;">Ilmi Toss Time (Venue Local — exact HH:MM)</label>
+            <label for="ilmi-toss-time" style="display:block;color:#e9d5ff;font-size:12px;margin-bottom:5px;">Exact Toss Time (Venue Local — HH:MM)</label>
             <input id="ilmi-toss-time" type="time" style="width:100%;box-sizing:border-box;padding:8px;background:#0f172a;color:white;border:1px solid #475569;border-radius:5px;">
-            <button id="apply-ilmi-toss-time" type="button" style="width:100%;padding:8px;margin-top:7px;background:#7e22ce;color:white;border:0;border-radius:5px;font-weight:bold;cursor:pointer;">Apply Toss Time Factor</button>
+            <button id="apply-ilmi-toss-time" type="button" style="width:100%;padding:8px;margin-top:7px;background:#7e22ce;color:white;border:0;border-radius:5px;font-weight:bold;cursor:pointer;">Apply Final Ilmi Toss + Planetary Factors</button>
             <div id="ilmi-toss-result" style="margin-top:8px;"></div>
         </div>
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
