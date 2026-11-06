@@ -579,7 +579,16 @@ async function fetchMatches(forceRefresh = false) {
         allMatches.forEach(m => {
             if (!m.teama || !m.teamb) return;
             let fmt = (m.format_str || '').toLowerCase(), isDom = m.domestic === "1";
-            if (fmt.includes('first class') && isDom) return; 
+            const competitionText = [
+                m.competition?.title, m.competition?.name, m.competition?.abbr,
+                m.competition_name, m.league?.name, m.league?.title,
+                m.tournament?.name, m.tournament?.title, m.title
+            ].filter(Boolean).join(' ').toLowerCase();
+
+            // Hide all T10 fixtures and Ford Trophy fixtures from match lists.
+            if (fmt.includes('t10') || fmt.includes('10 overs')) return;
+            if (competitionText.includes('ford trophy')) return;
+            if (fmt.includes('first class') && isDom) return;
             if (fmt.includes('odi') && isDom) return;
 
             if (seen.has(m.timestamp_start + m.teama.name + m.teamb.name)) return;
