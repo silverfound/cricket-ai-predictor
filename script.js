@@ -506,7 +506,10 @@ function isIlmiInternationalTeam(name) {
 }
 function isIlmiEligibleFixture(team1, team2, competitionTitle) {
     const isInternational = isIlmiInternationalTeam(team1) && isIlmiInternationalTeam(team2);
-    return isInternational || ilmiMajorCompetitions.has(normalizeIlmiName(competitionTitle));
+    const competitionKey = normalizeIlmiName(competitionTitle);
+    const isMajorLeague = ilmiMajorCompetitions.has(competitionKey) ||
+        Array.from(ilmiMajorCompetitions).some(name => competitionKey.startsWith(name));
+    return isInternational || isMajorLeague;
 }
 
 const friendshipMatrix = {
