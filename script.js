@@ -157,11 +157,65 @@ Object.assign(urduTeams, {
     "Auckland": "آکلینڈ", "Canterbury": "کینٹربری", "Otago": "اوٹاگو", "Wellington": "ویلنگٹن"
 });
 
+// Domestic provincial/county sides are intentionally excluded from Ilmi mappings.
+[
+    "Auckland Hearts","Canterbury Magicians","Otago Sparks","Wellington Blaze",
+    "Northern Brave","Northern Brave Women","Central Hinds","Dolphins","Western Province",
+    "Queensland","New South Wales","Victoria","Western Australia","South Australia","Tasmania",
+    "Northern Districts","Central Districts","Auckland","Canterbury","Otago","Wellington"
+].forEach(name => delete urduTeams[name]);
+
 // Exact match first; then case/spacing/punctuation-insensitive alias match.
 function normalizeIlmiName(value) {
     return String(value || "").toLowerCase().replace(/&/g, "and")
         .replace(/[^a-z0-9]/g, "");
 }
+// Dataset-wide Urdu fallback for every Cricsheet international/major-league name.
+const ilmiWordUrdu = {
+    "the":"دی","and":"اور","of":"آف","international":"انٹرنیشنل","national":"نیشنل",
+    "cricket":"کرکٹ","stadium":"اسٹیڈیم","ground":"گراؤنڈ","oval":"اوول","park":"پارک",
+    "field":"فیلڈ","centre":"سینٹر","center":"سینٹر","sports":"اسپورٹس","sportspark":"اسپورٹس پارک",
+    "club":"کلب","university":"یونیورسٹی","academy":"اکیڈمی","arena":"ایرینا","council":"کونسل",
+    "super":"سپر","kings":"کنگز","king":"کنگ","queens":"کوئنز","knight":"نائٹ","riders":"رائیڈرز",
+    "royals":"رائلز","royal":"رائل","warriors":"وارئیرز","strikers":"اسٹرائیکرز","heat":"ہیٹ",
+    "stars":"اسٹارز","thunder":"تھنڈر","sixers":"سکسرز","scorchers":"اسکارچرز","hurricanes":"ہریکینز",
+    "renegades":"رینیگیڈز","capitals":"کیپیٹلز","titans":"ٹائٹنز","challengers":"چیلنجرز",
+    "falcons":"فالکنز","tigers":"ٹائیگرز","lions":"لائنز","eagles":"ایگلز","phoenix":"فینکس",
+    "fire":"فائر","spirit":"اسپرٹ","brave":"بریو","rockets":"راکٹس","invincibles":"اِنونسبلز",
+    "women":"ویمن","men":"مین","city":"سٹی","bay":"بے","mount":"ماؤنٹ","new":"نیو","old":"اولڈ",
+    "abu":"ابو","dhabi":"دبئی","dubai":"دبئی","karachi":"کراچی","lahore":"لاہور","islamabad":"اسلام آباد",
+    "peshawar":"پشاور","quetta":"کوئٹہ","multan":"ملتان","mumbai":"ممبئی","chennai":"چنئی",
+    "kolkata":"کولکتہ","delhi":"دہلی","bengaluru":"بنگلورو","hyderabad":"حیدرآباد","jaipur":"جے پور",
+    "adelaide":"ایڈیلیڈ","brisbane":"برسبین","melbourne":"میلبرن","sydney":"سڈنی","perth":"پرتھ",
+    "hobart":"ہوبارٹ","london":"لندن","birmingham":"برمنگھم","manchester":"مانچسٹر","cardiff":"کارڈف",
+    "auckland":"آکلینڈ","wellington":"ویلنگٹن","canterbury":"کینٹربری","otago":"اوٹاگو","kandy":"کینڈی",
+    "colombo":"کولمبو","galle":"گال","dambulla":"دمبولا","jaffna":"جافنا","cape":"کیپ","town":"ٹاؤن",
+    "durban":"ڈربن","pretoria":"پریٹوریا","paarl":"پارل","joburg":"جوبرگ","washington":"واشنگٹن",
+    "texas":"ٹیکساس","seattle":"سیٹل","california":"کیلیفورنیا","san":"سان","francisco":"فرانسسکو",
+    "los":"لاس","angeles":"اینجلس","nepal":"نیپال","kathmandu":"کھٹمنڈو","pokhara":"پکھرا",
+    "biratnagar":"بیرات نگر","lumbini":"لمبینی","janakpur":"جنک پور","ranchi":"رانچی"
+};
+function transliterateIlmiWord(word) {
+    const w = String(word || "").toLowerCase();
+    if (ilmiWordUrdu[w]) return ilmiWordUrdu[w];
+    const clusters = {"tch":"چ","sh":"ش","ch":"چ","kh":"خ","gh":"غ","ph":"ف","th":"تھ","dh":"دھ","zh":"ژ","oo":"و","ee":"ی","aa":"ا","ai":"ے","au":"او","ou":"او","ng":"نگ","ck":"ک","qu":"کو","wh":"و"};
+    const letters = {a:"ا",b:"ب",c:"ک",d:"ڈ",e:"ے",f:"ف",g:"گ",h:"ہ",i:"ی",j:"ج",k:"ک",l:"ل",m:"م",n:"ن",o:"و",p:"پ",q:"ق",r:"ر",s:"س",t:"ٹ",u:"و",v:"و",w:"و",x:"کس",y:"ی",z:"ز"};
+    let out="";
+    for (let i=0;i<w.length;) {
+        let matched=false;
+        for (const n of [3,2]) { const part=w.slice(i,i+n); if (clusters[part]) { out+=clusters[part]; i+=n; matched=true; break; } }
+        if (matched) continue;
+        out+=letters[w[i]] || w[i]; i++;
+    }
+    return out;
+}
+function transliterateIlmiName(value) {
+    return String(value || "").trim().split(/([\s,.'’()&/-]+)/).map(part => {
+        if (!part || /^[\s,.'’()&/-]+$/.test(part)) return part;
+        return transliterateIlmiWord(part);
+    }).join("");
+}
+
 function getUrduTeamName(value) {
     if (urduTeams[value]) return urduTeams[value];
     const normalized = normalizeIlmiName(value);
@@ -172,7 +226,7 @@ function getUrduTeamName(value) {
         const base = raw.replace(/\s+women$/i, "").trim();
         if (urduTeams[base]) return urduTeams[base] + " ویمن";
     }
-    return "";
+    return transliterateIlmiName(raw);
 }
 
 // --- CURRENT INTERNATIONAL / LEAGUE VENUES (API venue name -> Urdu) ---
@@ -276,7 +330,7 @@ const urduVenues = {
 function getUrduVenueName(value) {
     if (urduVenues[value]) return urduVenues[value];
     const key = Object.keys(urduVenues).find(k => normalizeIlmiName(k) === normalizeIlmiName(value));
-    return key ? urduVenues[key] : "";
+    return key ? urduVenues[key] : transliterateIlmiName(value);
 }
 
 // --- CAPTAINS DICTIONARY (Urdu spellings for international captains) ---
@@ -440,6 +494,23 @@ const internationalCaptains = {
     "UAE": { "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
     "Oman": { "ODI": "Vinayak Shukla", "T20": "Vinayak Shukla" }
 };
+
+// Strict Ilmi eligibility: international fixtures + franchise leagues present in the Cricsheet training export.
+const ilmiInternationalTeams = new Set(["Afghanistan","Africa XI","Argentina","Asia XI","Australia","Austria","Bahamas","Bahrain","Bangladesh","Barbados","Belgium","Belize","Bermuda","Bhutan","Botswana","Brazil","Bulgaria","Cambodia","Cameroon","Canada","Cayman Islands","Chile","China","Cook Islands","Costa Rica","Croatia","Cyprus","Czech Republic","Denmark","England","Estonia","Eswatini","Fiji","Finland","France","Gambia","Germany","Ghana","Gibraltar","Greece","Guernsey","Hong Kong","Hungary","ICC World XI","India","Indonesia","Iran","Ireland","Isle of Man","Israel","Italy","Ivory Coast","Japan","Jersey","Kenya","Kuwait","Lesotho","Luxembourg","Malawi","Malaysia","Maldives","Mali","Malta","Mexico","Mongolia","Mozambique","Myanmar","Namibia","Nepal","Netherlands","New Zealand","Nigeria","Norway","Oman","Pakistan","Panama","Papua New Guinea","Peru","Philippines","Portugal","Qatar","Romania","Rwanda","Samoa","Saudi Arabia","Scotland","Serbia","Seychelles","Sierra Leone","Singapore","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Helena","Suriname","Swaziland","Sweden","Switzerland","Tanzania","Thailand","Timor-Leste","Turkey","Turks and Caicos Island","Uganda","United Arab Emirates","United States of America","Uzbekistan","Vanuatu","West Indies","Zambia","Zimbabwe"].map(normalizeIlmiName));
+const ilmiMajorCompetitions = new Set(["Indian Premier League","Pakistan Super League","Big Bash League","Women's Big Bash League","Bangladesh Premier League","Caribbean Premier League","Women's Caribbean Premier League","The Hundred Men's Competition","The Hundred Women's Competition","Lanka Premier League","International League T20","Major League Cricket","SA20","Nepal Premier League","Mzansi Super League","FairBreak Invitational Tournament","Women's Premier League","Women's Cricket Super League","Women's T20 Challenge","European T20 Premier League","IPL","PSL","BBL","WBBL","BPL","CPL","WCPL","The Hundred","LPL","ILT20","MLC","WPL"].map(normalizeIlmiName));
+function isIlmiInternationalTeam(name) {
+    const base = String(name || "").trim().replace(/\s+women$/i, "");
+    const key = normalizeIlmiName(base);
+    const aliases = { "usa":"unitedstatesofamerica", "unitedstates":"unitedstatesofamerica", "uae":"unitedarabemirates" };
+    return ilmiInternationalTeams.has(aliases[key] || key);
+}
+function isIlmiEligibleFixture(team1, team2, competitionTitle) {
+    const isInternational = isIlmiInternationalTeam(team1) && isIlmiInternationalTeam(team2);
+    const competitionKey = normalizeIlmiName(competitionTitle);
+    const isMajorLeague = ilmiMajorCompetitions.has(competitionKey) ||
+        Array.from(ilmiMajorCompetitions).some(name => competitionKey.startsWith(name));
+    return isInternational || isMajorLeague;
+}
 
 const friendshipMatrix = {
     1: { friends: [1, 2, 3, 9], enemies: [6, 8] }, 2: { friends: [1, 2, 5], enemies: [4, 8, 9] },
@@ -765,7 +836,7 @@ function renderMatches(matches) {
                 let city = match.venue?.location || "Unknown";
                 let country = match.venue?.country || "Unknown";
 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country);
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '');
             }
         });
     });
@@ -774,7 +845,7 @@ function renderMatches(matches) {
 // ==========================================
 // MAIN PREDICTION MODAL LOGIC
 // ==========================================
-async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country) {
+async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '') {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
@@ -820,6 +891,10 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     // 2. ILMI CALCULATION
     document.getElementById('ilmi-area').style.display = 'block';
     let ilmiDiv = document.getElementById('ilmi-content');
+    if (!isIlmiEligibleFixture(t1, t2, competitionTitle)) {
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Ilmi Prediction sirf international matches aur Cricsheet-trained major franchise leagues ke liye available hai. Domestic matches is se excluded hain.</div>';
+        return;
+    }
     ilmiDiv.innerHTML = "Calculating Ilmi Insight...";
 
     let d = new Date(startTime * 1000);
@@ -883,8 +958,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     capT1_Name = captainFor(t1);
     capT2_Name = captainFor(t2);
 
-    let urduCap1 = urduCaptains[capT1_Name] || "";
-    let urduCap2 = urduCaptains[capT2_Name] || "";
+    let urduCap1 = urduCaptains[capT1_Name] || (capT1_Name ? transliterateIlmiName(capT1_Name) : "");
+    let urduCap2 = urduCaptains[capT2_Name] || (capT2_Name ? transliterateIlmiName(capT2_Name) : "");
 
     let baseA = calculateAbjad(urduT1) + calculateAbjad(urduCap1); 
     let baseB = calculateAbjad(urduT2) + calculateAbjad(urduCap2); 
