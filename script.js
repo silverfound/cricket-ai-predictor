@@ -1,5 +1,3 @@
-const RAPIDAPI_KEY = "4c9925dbd4msh3c9b1d0ff0489b3p13b539jsn1ef2f7968fc4";
-const RAPIDAPI_HOST = "cricket-live-line-advance.p.rapidapi.com";
 const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com"; 
 
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
@@ -1010,8 +1008,7 @@ async function fetchMatches(forceRefresh = false) {
                         paged: String(page),
                         _nocache: String(Date.now())
                     });
-                    const res = await fetch(`https://${RAPIDAPI_HOST}/matches?${params.toString()}`, {
-                        headers: { "X-RapidAPI-Key": RAPIDAPI_KEY, "X-RapidAPI-Host": RAPIDAPI_HOST },
+                    const res = await fetch(`${BACKEND_URL}/matches?${params.toString()}`, {
                         cache: "no-store"
                     });
                     if (!res.ok) throw new Error(`Matches API failed for ${date}, page ${page}: HTTP ${res.status}`);
