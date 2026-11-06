@@ -79,6 +79,174 @@ const urduTeams = {
     "Melbourne Stars Women": "میلبرن اسٹارز ویمن"
 };
 
+// --- ADDITIONAL INTERNATIONAL WOMEN + ASSOCIATE + LEAGUE TEAM NAMES ---
+Object.assign(urduTeams, {
+    "Argentina": "ارجنٹینا", "Austria": "آسٹریا", "Bahrain": "بحرین",
+    "Belgium": "بیلجیم", "Bermuda": "برمودا", "Bhutan": "بھوٹان",
+    "Botswana": "بوٹسوانا", "Brazil": "برازیل", "Canada": "کینیڈا",
+    "Cayman Islands": "کیمین آئی لینڈز", "China": "چین", "Cook Islands": "کک آئی لینڈز",
+    "Croatia": "کروشیا", "Czech Republic": "چیک ریپبلک", "Denmark": "ڈنمارک",
+    "Estonia": "ایسٹونیا", "Fiji": "فجی", "Finland": "فن لینڈ",
+    "France": "فرانس", "Germany": "جرمنی", "Gibraltar": "جبرالٹر",
+    "Greece": "یونان", "Guernsey": "گرنزی", "Hong Kong": "ہانگ کانگ",
+    "Hungary": "ہنگری", "Indonesia": "انڈونیشیا", "Isle of Man": "آئل آف مین",
+    "Italy": "اٹلی", "Japan": "جاپان", "Jersey": "جرسی",
+    "Kenya": "کینیا", "Kuwait": "کویت", "Luxembourg": "لکسمبرگ",
+    "Malaysia": "ملائیشیا", "Maldives": "مالدیپ", "Malta": "مالٹا",
+    "Mexico": "میکسیکو", "Mongolia": "منگولیا", "Mozambique": "موزمبیق",
+    "Namibia": "نمیبیا", "Nepal": "نیپال", "Netherlands": "نیدرلینڈز",
+    "Nigeria": "نائجیریا", "Norway": "ناروے", "Papua New Guinea": "پاپوا نیو گنی",
+    "Philippines": "فلپائن", "Portugal": "پرتگال", "Qatar": "قطر",
+    "Romania": "رومانیہ", "Rwanda": "روانڈا", "Saudi Arabia": "سعودی عرب",
+    "Scotland": "اسکاٹ لینڈ", "Serbia": "سربیا", "Singapore": "سنگاپور",
+    "Spain": "اسپین", "Thailand": "تھائی لینڈ", "Turkey": "ترکی",
+    "Uganda": "یوگنڈا", "United States": "امریکہ", "USA": "امریکہ",
+    "Vanuatu": "وانواتو", "Zambia": "زیمبیا",
+
+    "Afghanistan Women": "افغانستان ویمن", "Australia Women": "آسٹریلیا ویمن",
+    "Bangladesh Women": "بنگلہ دیش ویمن", "England Women": "انگلینڈ ویمن",
+    "India Women": "بھارت ویمن", "Ireland Women": "آئرلینڈ ویمن",
+    "New Zealand Women": "نیوزی لینڈ ویمن", "Pakistan Women": "پاکستان ویمن",
+    "South Africa Women": "جنوبی افریقہ ویمن", "Sri Lanka Women": "سری لنکا ویمن",
+    "West Indies Women": "ویسٹ انڈیز ویمن", "Zimbabwe Women": "زمبابوے ویمن",
+    "Scotland Women": "اسکاٹ لینڈ ویمن", "Thailand Women": "تھائی لینڈ ویمن",
+    "UAE Women": "متحدہ عرب امارات ویمن", "United Arab Emirates Women": "متحدہ عرب امارات ویمن",
+    "Netherlands Women": "نیدرلینڈز ویمن", "Nepal Women": "نیپال ویمن",
+    "USA Women": "امریکہ ویمن", "United States Women": "امریکہ ویمن",
+
+    "Chennai Super Kings": "چنئی سپر کنگز", "Delhi Capitals": "دہلی کیپیٹلز",
+    "Gujarat Titans": "گجرات ٹائٹنز", "Kolkata Knight Riders": "کولکتہ نائٹ رائیڈرز",
+    "Lucknow Super Giants": "لکھنؤ سپر جائنٹس", "Mumbai Indians": "ممبئی انڈینز",
+    "Punjab Kings": "پنجاب کنگز", "Rajasthan Royals": "راجستھان رائلز",
+    "Royal Challengers Bengaluru": "رائل چیلنجرز بنگلورو", "Royal Challengers Bangalore": "رائل چیلنجرز بنگلورو",
+    "Sunrisers Hyderabad": "سن رائزرز حیدرآباد",
+
+    "Lahore Qalandars": "لاہور قلندرز", "Karachi Kings": "کراچی کنگز",
+    "Islamabad United": "اسلام آباد یونائیٹڈ", "Peshawar Zalmi": "پشاور زلمی",
+    "Quetta Gladiators": "کوئٹہ گلیڈی ایٹرز", "Multan Sultans": "ملتان سلطانز",
+    "Hyderabad Kingsmen": "حیدرآباد کنگزمین", "Pindiz": "پنڈیز",
+
+    "Durban's Super Giants": "ڈربن سپر جائنٹس", "Joburg Super Kings": "جوبرگ سپر کنگز",
+    "MI Cape Town": "ایم آئی کیپ ٹاؤن", "Paarl Royals": "پارل رائلز",
+    "Pretoria Capitals": "پریٹوریا کیپیٹلز", "Sunrisers Eastern Cape": "سن رائزرز ایسٹرن کیپ",
+
+    "MI New York": "ایم آئی نیو یارک", "Washington Freedom": "واشنگٹن فریڈم",
+    "San Francisco Unicorns": "سان فرانسسکو یونیکورنز", "Texas Super Kings": "ٹیکساس سپر کنگز",
+    "Seattle Orcas": "سیٹل اورکاز", "LA Knight Riders": "ایل اے نائٹ رائیڈرز",
+
+    "Hobart Hurricanes": "ہوبارٹ ہریکینز", "Melbourne Renegades": "میلبرن رینیگیڈز",
+    "Melbourne Stars": "میلبرن اسٹارز", "Sydney Sixers": "سڈنی سکسرز",
+    "Sydney Thunder": "سڈنی تھنڈر", "Perth Scorchers": "پرتھ اسکارچرز",
+    "Brisbane Heat": "برسبین ہیٹ", "Adelaide Strikers": "ایڈیلیڈ اسٹرائیکرز",
+    "Birmingham Phoenix": "برمنگھم فینکس", "London Spirit": "لندن اسپرٹ",
+    "Manchester Super Giants": "مانچسٹر سپر جائنٹس", "MI London": "ایم آئی لندن",
+    "Southern Brave": "سدرن بریو", "Sunrisers Leeds": "سن رائزرز لیڈز",
+    "Trent Rockets": "ٹرینٹ راکٹس", "Welsh Fire": "ویلش فائر"
+});
+
+// Exact match first; then case/spacing/punctuation-insensitive alias match.
+function normalizeIlmiName(value) {
+    return String(value || "").toLowerCase().replace(/&/g, "and")
+        .replace(/[^a-z0-9]/g, "");
+}
+function getUrduTeamName(value) {
+    if (urduTeams[value]) return urduTeams[value];
+    const key = Object.keys(urduTeams).find(k => normalizeIlmiName(k) === normalizeIlmiName(value));
+    return key ? urduTeams[key] : "";
+}
+
+// --- CURRENT INTERNATIONAL / LEAGUE VENUES (API venue name -> Urdu) ---
+const urduVenues = {
+    "Narendra Modi Stadium": "نریندر مودی اسٹیڈیم",
+    "M. A. Chidambaram Stadium": "ایم اے چدمبرم اسٹیڈیم",
+    "MA Chidambaram Stadium": "ایم اے چدمبرم اسٹیڈیم",
+    "Eden Gardens": "ایڈن گارڈنز",
+    "Wankhede Stadium": "وانکھیڑے اسٹیڈیم",
+    "Arun Jaitley Stadium": "ارون جیٹلی اسٹیڈیم",
+    "Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium": "اِکانا کرکٹ اسٹیڈیم",
+    "Ekana Cricket Stadium": "اِکانا کرکٹ اسٹیڈیم",
+    "Sawai Mansingh Stadium": "سوائی مان سنگھ اسٹیڈیم",
+    "M. Chinnaswamy Stadium": "ایم چناسوامی اسٹیڈیم",
+    "M Chinnaswamy Stadium": "ایم چناسوامی اسٹیڈیم",
+    "Rajiv Gandhi International Cricket Stadium": "راجیو گاندھی انٹرنیشنل کرکٹ اسٹیڈیم",
+    "Himachal Pradesh Cricket Association Stadium": "ہماچل پردیش کرکٹ ایسوسی ایشن اسٹیڈیم",
+    "PCA New Cricket Stadium": "پی سی اے نیو کرکٹ اسٹیڈیم",
+    "Punjab Cricket Association IS Bindra Stadium": "پی سی اے آئی ایس بندرا اسٹیڈیم",
+    "Shaheed Veer Narayan Singh International Cricket Stadium": "شہید ویر نارائن سنگھ اسٹیڈیم",
+    "ACA Stadium": "اے سی اے اسٹیڈیم",
+    "Barsapara Cricket Stadium": "برساپارا کرکٹ اسٹیڈیم",
+    "Hagley Oval": "ہیگلے اوول",
+    "Eden Park": "ایڈن پارک",
+    "Basin Reserve": "بیسن ریزرو",
+    "Bay Oval": "بے اوول",
+    "Seddon Park": "سیڈن پارک",
+    "Sky Stadium": "اسکائی اسٹیڈیم",
+    "Melbourne Cricket Ground": "میلبرن کرکٹ گراؤنڈ",
+    "MCG": "میلبرن کرکٹ گراؤنڈ",
+    "Sydney Cricket Ground": "سڈنی کرکٹ گراؤنڈ",
+    "SCG": "سڈنی کرکٹ گراؤنڈ",
+    "Adelaide Oval": "ایڈیلیڈ اوول",
+    "Perth Stadium": "پرتھ اسٹیڈیم",
+    "Optus Stadium": "آپٹس اسٹیڈیم",
+    "The Gabba": "دی گابا",
+    "Brisbane Cricket Ground": "برسبین کرکٹ گراؤنڈ",
+    "Bellerive Oval": "بیلیریو اوول",
+    "Hobart": "ہوبارٹ کرکٹ گراؤنڈ",
+    "Manuka Oval": "مانوکا اوول",
+    "Carrara Oval": "کارارا اوول",
+    "Gaddafi Stadium": "قذافی اسٹیڈیم",
+    "National Stadium": "نیشنل اسٹیڈیم کراچی",
+    "National Bank Cricket Arena": "نیشنل بینک کرکٹ ایرینا",
+    "Rawalpindi Cricket Stadium": "راولپنڈی کرکٹ اسٹیڈیم",
+    "Multan Cricket Stadium": "ملتان کرکٹ اسٹیڈیم",
+    "Arbab Niaz Stadium": "ارباب نیاز اسٹیڈیم",
+    "Bugti Stadium": "بگٹی اسٹیڈیم",
+    "Rangiri Dambulla International Stadium": "رنگیری دمبولا انٹرنیشنل اسٹیڈیم",
+    "R. Premadasa Stadium": "آر پریماداسا اسٹیڈیم",
+    "Pallekele International Cricket Stadium": "پالی کیلے انٹرنیشنل کرکٹ اسٹیڈیم",
+    "Galle International Stadium": "گال انٹرنیشنل اسٹیڈیم",
+    "Shere Bangla National Stadium": "شیر بنگلہ نیشنل اسٹیڈیم",
+    "Zahur Ahmed Chowdhury Stadium": "ظہور احمد چوہدری اسٹیڈیم",
+    "Sylhet International Cricket Stadium": "سلہٹ انٹرنیشنل کرکٹ اسٹیڈیم",
+    "Dubai International Cricket Stadium": "دبئی انٹرنیشنل کرکٹ اسٹیڈیم",
+    "Sharjah Cricket Stadium": "شارجہ کرکٹ اسٹیڈیم",
+    "Sheikh Zayed Cricket Stadium": "شیخ زاید کرکٹ اسٹیڈیم",
+    "Zayed Cricket Stadium": "زاید کرکٹ اسٹیڈیم",
+    "Kensington Oval": "کینسنگٹن اوول",
+    "Brian Lara Cricket Academy": "برائن لارا کرکٹ اکیڈمی",
+    "Sir Vivian Richards Stadium": "سر ویوین رچرڈز اسٹیڈیم",
+    "Providence Stadium": "پروویڈنس اسٹیڈیم",
+    "Sabina Park": "سبینا پارک",
+    "Queen's Park Oval": "کوئنز پارک اوول",
+    "National Cricket Stadium": "نیشنل کرکٹ اسٹیڈیم",
+    "Wanderers Stadium": "وانڈررز اسٹیڈیم",
+    "Newlands": "نیو لینڈز",
+    "Kingsmead": "کنگزمیڈ",
+    "SuperSport Park": "سپر اسپورٹ پارک",
+    "St George's Park": "سینٹ جارجز پارک",
+    "Lord's": "لارڈز",
+    "The Oval": "دی اوول",
+    "Edgbaston": "ایجبسٹن",
+    "Old Trafford": "اولڈ ٹریفورڈ",
+    "Headingley": "ہیڈنگلے",
+    "Trent Bridge": "ٹرینٹ برج",
+    "Rose Bowl": "روز باؤل",
+    "Sophia Gardens": "سوفیا گارڈنز",
+    "Bristol County Ground": "برسٹل کاؤنٹی گراؤنڈ",
+    "County Ground": "کاؤنٹی گراؤنڈ",
+    "Riverside Ground": "ریور سائیڈ گراؤنڈ",
+    "The Rose Bowl": "روز باؤل",
+    "Harare Sports Club": "ہرارے اسپورٹس کلب",
+    "Queens Sports Club": "کوئنز اسپورٹس کلب",
+    "Kigali": "کیگالی کرکٹ گراؤنڈ",
+    "Wanderers Cricket Ground": "وانڈررز کرکٹ گراؤنڈ"
+};
+function getUrduVenueName(value) {
+    if (urduVenues[value]) return urduVenues[value];
+    const key = Object.keys(urduVenues).find(k => normalizeIlmiName(k) === normalizeIlmiName(value));
+    return key ? urduVenues[key] : "";
+}
+
 // --- CAPTAINS DICTIONARY (Urdu spellings for international captains) ---
 const urduCaptains = {
     "Rahmat Shah": "رحمت شاہ",
@@ -111,9 +279,40 @@ const urduCaptains = {
     "Shai Hope": "شائی ہوپ",
     "Richard Ngarava": "رچرڈ نگاروا",
     "Sikandar Raza": "سکندر رضا",
-    "Harpreet Singh": "ہربریت سنگھ",
+    "Vinayak Shukla": "ونائیک شکلا",
     "Muhammad Waseem": "محمد وسیم",
-    "Vinayak Shukla": "ونائیک شکلا"
+    "Ruturaj Gaikwad": "رتوراج گائیکواڑ",
+    "Axar Patel": "اکشر پٹیل",
+    "Shubman Gill": "شبمن گل",
+    "Ajinkya Rahane": "اجنکیا رہانے",
+    "Rishabh Pant": "رشبھ پنت",
+    "Hardik Pandya": "ہارڈک پانڈیا",
+    "Shreyas Iyer": "شریاس ائیر",
+    "Riyan Parag": "ریان پراگ",
+    "Rajat Patidar": "رجت پاٹیدار",
+    "Ishan Kishan": "ایشان کشن",
+    "Shaheen Shah Afridi": "شاہین شاہ آفریدی",
+    "Shadab Khan": "شاداب خان",
+    "Babar Azam": "بابر اعظم",
+    "Mohammad Rizwan": "محمد رضوان",
+    "Saud Shakeel": "سعود شکیل",
+    "Ashton Turner": "ایشٹن ٹرنر",
+    "Marnus Labuschagne": "مارنس لبوشین",
+    "David Warner": "ڈیوڈ وارنر",
+    "Glenn Maxwell": "گلین میکسویل",
+    "Nicholas Pooran": "نکولس پورن",
+    "Matt Short": "میٹ شارٹ",
+    "Faf du Plessis": "فَف ڈو پلیسی",
+    "Sikandar Raza": "سکندر رضا",
+    "Jason Holder": "جیسن ہولڈر",
+    "Rashid Khan": "راشد خان",
+    "David Miller": "ڈیوڈ ملر",
+    "Keshav Maharaj": "کیشو مہاراج",
+    "Tristan Stubbs": "ٹرسٹن اسٹبس",
+    "Sam Curran": "سام کرن",
+    "Sam Billings": "سام بلنگز",
+    "Phil Salt": "فل سالٹ",
+    "Jacob Bethell": "جیکب بیتھل"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
@@ -134,7 +333,43 @@ const teamCaptains = {
     "Zimbabwe": "Sikandar Raza",
     "United Arab Emirates": "Muhammad Waseem",
     "UAE": "Muhammad Waseem",
-    "Oman": "Vinayak Shukla"
+    "Oman": "Vinayak Shukla",
+    "Chennai Super Kings": "Ruturaj Gaikwad",
+    "Delhi Capitals": "Axar Patel",
+    "Gujarat Titans": "Shubman Gill",
+    "Kolkata Knight Riders": "Ajinkya Rahane",
+    "Lucknow Super Giants": "Rishabh Pant",
+    "Mumbai Indians": "Hardik Pandya",
+    "Punjab Kings": "Shreyas Iyer",
+    "Rajasthan Royals": "Riyan Parag",
+    "Royal Challengers Bengaluru": "Rajat Patidar",
+    "Royal Challengers Bangalore": "Rajat Patidar",
+    "Sunrisers Hyderabad": "Ishan Kishan",
+    "Lahore Qalandars": "Shaheen Shah Afridi",
+    "Karachi Kings": "David Warner",
+    "Islamabad United": "Shadab Khan",
+    "Peshawar Zalmi": "Babar Azam",
+    "Quetta Gladiators": "Saud Shakeel",
+    "Multan Sultans": "Ashton Turner",
+    "Hyderabad Kingsmen": "Marnus Labuschagne",
+    "Pindiz": "Mohammad Rizwan",
+    "Durban's Super Giants": "Aiden Markram",
+    "Joburg Super Kings": "Faf du Plessis",
+    "MI Cape Town": "Rashid Khan",
+    "Paarl Royals": "David Miller",
+    "Pretoria Capitals": "Keshav Maharaj",
+    "Sunrisers Eastern Cape": "Tristan Stubbs",
+    "MI New York": "Nicholas Pooran",
+    "Washington Freedom": "Glenn Maxwell",
+    "San Francisco Unicorns": "Matt Short",
+    "Texas Super Kings": "Faf du Plessis",
+    "Seattle Orcas": "Sikandar Raza",
+    "LA Knight Riders": "Jason Holder",
+    "Birmingham Phoenix": "Jacob Bethell",
+    "MI London": "Sam Curran",
+    "Manchester Super Giants": "Aiden Markram",
+    "Trent Rockets": "Sam Billings",
+    "Welsh Fire": "Phil Salt"
 };
 
 // International men's teams: format-wise captains.
@@ -537,11 +772,22 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         hijriDateStr = `${numberToUrdu(parseInt(parts.find(p => p.type === 'day').value))} ${urduMonths[parseInt(parts.find(p => p.type === 'month').value) - 1]} ${numberToUrdu(parseInt(parts.find(p => p.type === 'year').value.replace(' AH', '').replace(' BC', '')))}`;
     }
 
-    let dayUrdu = urduDays[new Date(finalGregorianDate).getDay()];
+    // Parse the venue-local calendar date at UTC noon to avoid browser timezone day-shifts.
+    const [localYear, localMonth, localDay] = finalGregorianDate.split("-").map(Number);
+    let dayUrdu = urduDays[new Date(Date.UTC(localYear, localMonth - 1, localDay, 12)).getUTCDay()];
 
-    let urduT1 = urduTeams[t1] || "نامعلوم";
-    let urduT2 = urduTeams[t2] || "نامعلوم";
-    let urduVenue = urduVenues[venue] || "نامعلوم";
+    let urduT1 = getUrduTeamName(t1);
+    let urduT2 = getUrduTeamName(t2);
+    let urduVenue = getUrduVenueName(venue);
+
+    // Never silently calculate Abjad with "unknown" placeholder text.
+    const missingIlmiNames = [];
+    if (!urduT1) missingIlmiNames.push(t1);
+    if (!urduT2) missingIlmiNames.push(t2);
+    if (!urduVenue) missingIlmiNames.push(venue || "Venue");
+    if (missingIlmiNames.length) {
+        ilmiDiv.innerHTML = `<div style="color:#fbbf24;">Ilmi mapping abhi available nahi: ${missingIlmiNames.join(", ")}. Is naam ki Urdu mapping add karni hogi; AI prediction par iska koi asar nahi.</div>`;
+    } else {
     
     // --- CAPTAIN LOGIC (Format-wise for International) ---
     let capT1_Name = "";
@@ -598,6 +844,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         </div>
     `;
     ilmiDiv.innerHTML = ilmiHtml;
+    }
 
     // 3. POST-TOSS AI CALCULATION
     document.getElementById('get-prediction-btn').onclick = async () => {
