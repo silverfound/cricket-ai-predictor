@@ -1243,6 +1243,13 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue ka Maghrib time verify nahi ho saka. Incorrect date ke saath Ilmi calculation chalane ke bajaye rok di gayi hai.</div>';
         return;
     }
+    const nextIsoForPlanetary = addOneIsoDay(venueDateParts.iso);
+    const [nextYearForPlanetary,nextMonthForPlanetary,nextDayForPlanetary] = nextIsoForPlanetary.split("-");
+    const nextDayPrayerData = await fetchMaghribTime(city, country, `${nextDayForPlanetary}-${nextMonthForPlanetary}-${nextYearForPlanetary}`);
+    if (!maghribData.sunrise || !maghribData.sunset || !nextDayPrayerData.sunrise) {
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Planetary-hour calculation ke liye venue sunrise, sunset aur next sunrise verify nahi ho sake; Ilmi calculation roki gayi hai.</div>';
+        return;
+    }
 
     const matchTimeStr = matchInstant.toLocaleTimeString('en-GB', {
         timeZone: venueTimezone, hour12: false, hour: '2-digit', minute: '2-digit'
@@ -1344,7 +1351,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         contextMultA, contextMultB,
         matchTimeMultA: timeMultA, matchTimeMultB: timeMultB,
         sunrise: maghribData.sunrise, sunset: maghribData.sunset,
-        nextSunrise: null, weekdayIndex: new Date(Date.UTC(...venueDateParts.iso.split("-").map((v,i)=>i===1?Number(v)-1:Number(v)))).getUTCDay()
+        nextSunrise: nextDayPrayerData.sunrise, weekdayIndex: new Date(Date.UTC(...venueDateParts.iso.split("-").map((v,i)=>i===1?Number(v)-1:Number(v)))).getUTCDay()
     };
 
     let ilmiHtml = `
@@ -1374,11 +1381,6 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     `;
     ilmiDiv.innerHTML = ilmiHtml + renderIlmiCaptainEditor(t1,t2,manualUrduCap1,manualUrduCap2);
     document.getElementById("apply-ilmi-toss-time")?.addEventListener("click", applyIlmiTossTimeFactor);
-    const nextIso = addOneIsoDay(venueDateParts.iso);
-    const [nextYear,nextMonth,nextDay] = nextIso.split("-");
-    fetchMaghribTime(city, country, `${nextDay}-${nextMonth}-${nextYear}`).then(nextData => {
-        if (window.ilmiTossBaseState && nextData.ok) window.ilmiTossBaseState.nextSunrise = nextData.sunrise;
-    }).catch(() => {});
     }
     }
 
