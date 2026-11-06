@@ -1379,7 +1379,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             🌟 ${winnerText} Ka Pala Bhari Hai!
         </div>
     `;
-    ilmiDiv.innerHTML = ilmiHtml + renderIlmiCaptainEditor(t1,t2,manualUrduCap1,manualUrduCap2);
+    ilmiDiv.innerHTML = ilmiHtml + renderIlmiCaptainEditor(t1,t2,urduCap1,urduCap2);
     document.getElementById("apply-ilmi-toss-time")?.addEventListener("click", applyIlmiTossTimeFactor);
     }
     }
