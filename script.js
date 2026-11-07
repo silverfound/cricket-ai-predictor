@@ -860,7 +860,7 @@ async function fetchMaghribTime(city, country, dateStr) {
             const sunrise = String(timings.Sunrise || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
             const sunset = String(timings.Sunset || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
             const timezone = data.data?.meta?.timezone || null;
-            if (maghrib && sunrise && sunset && timezone) return { maghrib, sunrise, sunset, timezone, ok: true };
+            if (maghrib && sunrise && sunset) return { maghrib, sunrise, sunset, timezone: timezone || null, ok: true };
         }
     } catch (e) { console.log("Aladhan API error:", e); }
     return { maghrib: null, timezone: null, ok: false };
