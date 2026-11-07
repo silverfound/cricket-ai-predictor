@@ -1521,8 +1521,9 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
     const hijriDateStr = `${numberToUrdu(parseInt(hijriDay, 10))} ${urduMonths[parseInt(hijriMonth, 10) - 1]} ${numberToUrdu(parseInt(hijriYear.replace(' AH', '').replace(' BC', ''), 10))}`;
 
-    // Weekday follows the final venue-local calendar date.
-    const [localYear, localMonth, localDay] = finalGregorianDate.split("-").map(Number);
+    // Civil weekday remains the venue-local match weekday. Hijri date advances
+    // at Maghrib, but the Gregorian weekday does not advance until midnight.
+    const [localYear, localMonth, localDay] = venueDateParts.iso.split("-").map(Number);
     let dayUrdu = urduDays[new Date(Date.UTC(localYear, localMonth - 1, localDay, 12)).getUTCDay()];
 
     let urduT1 = getUrduTeamName(t1);
