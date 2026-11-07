@@ -1039,26 +1039,61 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
     return null;
 }
 async function fetchMaghribTime(location, dateStr) {
-    const empty = { maghrib: null, sunrise: null, sunset: null, timezone: location?.timezone || null, ok: false };
-    if (!location || !validVenueCoordinates(location.latitude, location.longitude) ||
-        !isValidIanaTimezone(location.timezone)) return empty;
-    try {
-        const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${location.latitude}&longitude=${location.longitude}&method=4&timezonestring=${encodeURIComponent(location.timezone)}`;
-        const response = await fetch(url);
-        if (!response.ok) return empty;
-        const data = await response.json();
-        const timings = data.code === 200 ? (data.data?.timings || {}) : {};
-        const parseTime = value => String(value || '').match(/^(\d{2}:\d{2})/)?.[1] || null;
-        const maghrib = parseTime(timings.Maghrib);
-        const sunrise = parseTime(timings.Sunrise);
-        const sunset = parseTime(timings.Sunset);
-        if (maghrib && sunrise && sunset) {
-            return { maghrib, sunrise, sunset, timezone: location.timezone, ok: true };
-        }
-    } catch (error) { console.warn('AlAdhan coordinate prayer lookup failed:', error); }
-    return empty;
-}
+    const empty = { maghrib: null, sunrise: null, sunset: null, timezone: location?.timezone || null, ok: false, error: 'not-requested' };
+    const coords = location && validVenueCoordinates(location.latitude, location.longitude);
+    if (!coords || !isValidIanaTimezone(location.timezone)) {
+        return { ...empty, error: 'invalid-location-or-timezone' };
+    }
 
+    const parseTime = value => {
+        if (value == null) return null;
+        const match = String(value).trim().match(/(?:^|\\s)(\\d{1,2}:\\d{2})(?::\\d{2})?(?:\\s|$)/);
+        if (!match) return null;
+        const [hour, minute] = match[1].split(':').map(Number);
+        return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59
+            ? `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}` : null;
+    };
+
+    // First ask AlAdhan to calculate timezone from coordinates itself. This avoids
+    // a valid IANA zone string being rejected/misinterpreted by an upstream proxy.
+    const attempts = [
+        { label: 'coordinates-auto-timezone', params: `latitude=${coords.latitude}&longitude=${coords.longitude}&method=4` },
+        { label: 'coordinates-explicit-timezone', params: `latitude=${coords.latitude}&longitude=${coords.longitude}&method=4&timezonestring=${encodeURIComponent(location.timezone)}` }
+    ];
+    let lastError = 'no-response';
+    for (const attempt of attempts) {
+        try {
+            const url = `https://api.aladhan.com/v1/timings/${encodeURIComponent(dateStr)}?${attempt.params}`;
+            const response = await fetch(url, { method: 'GET', headers: { 'Accept': 'application/json' } });
+            const raw = await response.text();
+            let data;
+            try { data = JSON.parse(raw); } catch (_) {
+                lastError = `non-json-response-${response.status}`;
+                console.warn('AlAdhan returned non-JSON response', { attempt: attempt.label, status: response.status, body: raw.slice(0, 300) });
+                continue;
+            }
+            if (!response.ok || Number(data.code) !== 200) {
+                lastError = `http-${response.status}-api-${data.code || 'unknown'}`;
+                console.warn('AlAdhan prayer request failed', { attempt: attempt.label, status: response.status, code: data.code, statusText: data.status, body: data.data || data.message });
+                continue;
+            }
+            const timings = data.data?.timings || {};
+            const maghrib = parseTime(timings.Maghrib || timings.maghrib) || parseTime(timings.Sunset || timings.sunset);
+            const sunrise = parseTime(timings.Sunrise || timings.sunrise);
+            const sunset = parseTime(timings.Sunset || timings.sunset);
+            if (maghrib && sunrise && sunset) {
+                return { maghrib, sunrise, sunset, timezone: location.timezone, ok: true,
+                    source: attempt.label, date: dateStr };
+            }
+            lastError = `missing-times-${Object.keys(timings).join(',') || 'empty-timings'}`;
+            console.warn('AlAdhan response missing required prayer times', { attempt: attempt.label, date: dateStr, keys: Object.keys(timings), data });
+        } catch (error) {
+            lastError = error?.message || 'network-or-cors-error';
+            console.warn('AlAdhan fetch threw an error', { attempt: attempt.label, error });
+        }
+    }
+    return { ...empty, error: lastError, date: dateStr };
+}
 // Validate a timezone supplied by the match feed without relying on a country list.
 function resolveGroundTimezone(location, hint = '') {
     if (isValidIanaTimezone(location?.timezone)) return location.timezone;
@@ -1442,7 +1477,12 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     const maghribData = await fetchMaghribTime(venueLocation, venueDateApi);
     const maghribTime = maghribData.maghrib;
     if (!maghribTime) {
-        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue ka Maghrib time verify nahi ho saka. Incorrect date ke saath Ilmi calculation chalane ke bajaye rok di gayi hai.</div>';
+        console.error('Ilmi Maghrib verification failed', {
+            venue, city, country, date: venueDateApi, coordinates: {
+                latitude: venueLocation.latitude, longitude: venueLocation.longitude
+            }, timezone: venueLocation.timezone, apiError: maghribData.error
+        });
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue ka Maghrib time verify nahi ho saka. API response ya network error ki tafseel browser console mein record kar di gayi hai. Ghalat date se bachne ke liye Ilmi calculation rok di gayi hai.</div>';
         return;
     }
     const nextIsoForPlanetary = addOneIsoDay(venueDateParts.iso);
