@@ -593,6 +593,7 @@ const urduCaptains = {
     "Sophie Molineux": "سوفی مولینیو",
     "Meg Lanning": "میگ لیننگ",
     "Sophie Devine": "سوفی ڈیوائن",
+    "Beth Mooney": "بیتھ مونی",
     "Ashleigh Gardner": "ایشلی گارڈنر",
     "Phoebe Litchfield": "فوبی لچفیلڈ"
 };
@@ -657,7 +658,7 @@ const teamCaptains = {
     "Hobart Hurricanes Women": "Nicola Carey",
     "Melbourne Renegades Women": "Sophie Molineux",
     "Melbourne Stars Women": "Meg Lanning",
-    "Perth Scorchers Women": "Sophie Devine",
+    "Perth Scorchers Women": "Beth Mooney",
     "Sydney Sixers Women": "Ashleigh Gardner",
     "Sydney Thunder Women": "Phoebe Litchfield"
 };
