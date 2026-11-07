@@ -594,7 +594,7 @@ const urduCaptains = {
     "Meg Lanning": "میگ لیننگ",
     "Sophie Devine": "سوفی ڈیوائن",
     "Ashleigh Gardner": "ایشلی گارڈنر",
-    "Phoebe Litchfield": "فوبی لیچفیلڈ"
+    "Phoebe Litchfield": "فوبی لچفیلڈ"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
@@ -1503,7 +1503,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
     let hijriDateStr = "";
     try {
-        let gToHRes = await fetch(`https://api.aladhan.com/v1/gToH/${finalGregorianDate}`);
+        let gToHRes = await fetch(`https://api.aladhan.com/v1/gToH/${finalGregorianDate}?adjustment=-1`);
         if (gToHRes.ok) {
             let gToHData = await gToHRes.json();
             if (gToHData.code === 200) {
@@ -1514,7 +1514,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     } catch (e) { console.log("gToH API Error:", e); }
 
     if (!hijriDateStr) {
-        let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic', {
+        let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura', {
             timeZone: 'UTC', day: 'numeric', month: 'numeric', year: 'numeric'
         });
         let parts = formatter.formatToParts(hijriReferenceDate);
