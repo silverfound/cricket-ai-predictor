@@ -1183,7 +1183,7 @@ function getAccuracyStats() {
     return { total: evaluated.length, correct: correct, pending: pending.length };
 }
 
-async function fetchMatches(forceRefresh = false) {
+async function fetchMatches() {
     let container = document.getElementById("dynamic-prediction-area");
     let stats = getAccuracyStats();
     let accPercent = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
@@ -1236,7 +1236,7 @@ async function fetchMatches(forceRefresh = false) {
             let cachedData = localStorage.getItem(cacheKey);
             let fetchNeeded = true;
 
-            if (cachedData && !forceRefresh) {
+            if (cachedData) {
                 let parsed = JSON.parse(cachedData);
                 if (Date.now() - parsed.time < cacheExpiry && parsed.data.length > 0) { allMatches.push(...parsed.data); fetchNeeded = false; }
             }
@@ -1325,7 +1325,7 @@ function switchTab(tab) {
 function renderMatches(matches) {
     let container = document.getElementById("matches-container");
     if (!matches.length) {
-        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Is category mein filhal koi match nahi hai. Refresh dabayein.</div>`;
+        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Is category mein filhal koi match nahi hai. Matches automatic update honge.</div>`;
         return;
     }
     let html = "";
