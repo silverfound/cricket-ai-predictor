@@ -32,6 +32,13 @@ def init_db():
             subscribed_leagues TEXT[] NOT NULL DEFAULT '{}'
         )""")
         conn.execute("ALTER TABLE app_licenses ADD COLUMN IF NOT EXISTS subscribed_leagues TEXT[] NOT NULL DEFAULT '{}'")
+        conn.execute("ALTER TABLE app_licenses ADD COLUMN IF NOT EXISTS allow_all_matches BOOLEAN NOT NULL DEFAULT FALSE")
+        conn.execute("""CREATE TABLE IF NOT EXISTS license_match_permissions (
+            license_id BIGINT NOT NULL REFERENCES app_licenses(id) ON DELETE CASCADE,
+            match_id TEXT NOT NULL, competition TEXT NOT NULL, match_title TEXT NOT NULL DEFAULT '',
+            enabled BOOLEAN NOT NULL DEFAULT TRUE, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            PRIMARY KEY (license_id, match_id)
+        )""")
         conn.execute("""CREATE TABLE IF NOT EXISTS match_prediction_permissions (
             match_id TEXT PRIMARY KEY,
             competition TEXT NOT NULL,
@@ -179,22 +186,56 @@ def save_match_permission(data: MatchPermission, x_admin_key: Optional[str] = He
 @router.get("/license/match-permissions")
 def customer_match_permissions(x_device_id: Optional[str] = Header(default=None)):
     license = active_license(x_device_id or "")
-    leagues = [str(x).strip().casefold() for x in (license.get("subscribed_leagues") or [])]
+    if license.get("allow_all_matches"):
+        return {"allow_all_matches": True, "allowed_match_ids": []}
     with db() as conn:
-        rows = conn.execute("SELECT match_id,competition FROM match_prediction_permissions WHERE enabled=TRUE").fetchall()
-    allowed = [row["match_id"] for row in rows if str(row["competition"]).strip().casefold() in leagues]
-    return {"allowed_match_ids": allowed}
+        rows = conn.execute("SELECT match_id FROM license_match_permissions WHERE license_id=%s AND enabled=TRUE", (license["id"],)).fetchall()
+    return {"allow_all_matches": False, "allowed_match_ids": [row["match_id"] for row in rows]}
+
+@router.get("/admin/licenses/{license_id}/matches")
+def admin_customer_matches(license_id: int, x_admin_key: Optional[str] = Header(default=None)):
+    admin_guard(x_admin_key)
+    with db() as conn:
+        customer = conn.execute("SELECT id,allow_all_matches FROM app_licenses WHERE id=%s", (license_id,)).fetchone()
+        if not customer:
+            raise HTTPException(404, "License not found")
+        rows = conn.execute("SELECT match_id,competition,match_title,enabled FROM license_match_permissions WHERE license_id=%s ORDER BY updated_at DESC", (license_id,)).fetchall()
+    return {"allow_all_matches": customer["allow_all_matches"], "matches": [dict(row) for row in rows]}
+
+class CustomerMatchesUpdate(BaseModel):
+    allow_all_matches: bool = False
+    matches: list[MatchPermission] = []
+
+@router.put("/admin/licenses/{license_id}/matches")
+def update_customer_matches(license_id: int, data: CustomerMatchesUpdate, x_admin_key: Optional[str] = Header(default=None)):
+    admin_guard(x_admin_key)
+    clean = {}
+    for item in data.matches:
+        mid, comp = item.match_id.strip()[:160], item.competition.strip()[:120]
+        if not mid or not comp:
+            raise HTTPException(400, "Every match needs match ID and competition")
+        clean[mid] = (comp, item.match_title.strip()[:240], item.enabled)
+    with db() as conn:
+        if not conn.execute("SELECT id FROM app_licenses WHERE id=%s FOR UPDATE", (license_id,)).fetchone():
+            raise HTTPException(404, "License not found")
+        conn.execute("UPDATE app_licenses SET allow_all_matches=%s WHERE id=%s", (data.allow_all_matches, license_id))
+        for mid, (comp, title, enabled) in clean.items():
+            conn.execute("""INSERT INTO license_match_permissions(license_id,match_id,competition,match_title,enabled)
+                VALUES(%s,%s,%s,%s,%s) ON CONFLICT(license_id,match_id) DO UPDATE SET
+                competition=EXCLUDED.competition,match_title=EXCLUDED.match_title,enabled=EXCLUDED.enabled,updated_at=NOW()""",
+                (license_id, mid, comp, title, enabled))
+    return {"success": True, "allow_all_matches": data.allow_all_matches, "updated_matches": len(clean)}
 
 def require_match_permission(license, match_id: str, competition: str):
     if not match_id or not competition:
         raise HTTPException(403, "Match identity is required for prediction")
-    leagues = [str(x).strip().casefold() for x in (license.get("subscribed_leagues") or [])]
-    if str(competition).strip().casefold() not in leagues:
-        raise HTTPException(403, "Your license does not include this league")
+    if license.get("allow_all_matches"):
+        return
     with db() as conn:
-        row = conn.execute("SELECT competition,enabled FROM match_prediction_permissions WHERE match_id=%s", (match_id,)).fetchone()
+        row = conn.execute("SELECT enabled,competition FROM license_match_permissions WHERE license_id=%s AND match_id=%s",
+            (license["id"], match_id)).fetchone()
     if not row or not row["enabled"] or str(row["competition"]).strip().casefold() != str(competition).strip().casefold():
-        raise HTTPException(403, "Admin has not enabled this match")
+        raise HTTPException(403, "This match is not included in your subscription")
 
 @router.post("/admin/licenses/{license_id}/extend")
 def extend(license_id: int, data: ExtendLicense, x_admin_key: Optional[str] = Header(default=None)):
