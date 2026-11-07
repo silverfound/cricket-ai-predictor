@@ -6,6 +6,7 @@ function showLicenseActivation(message=''){let old=document.getElementById('lice
 const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com"; 
 
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
+let allowedPredictionMatchIds = new Set();
 
 // ==========================================
 // NAME MAPPING (API Name -> Model Name)
@@ -1299,6 +1300,11 @@ async function fetchMatches() {
             else { upcomingMatches.push(m); }
         });
 
+        const permissionResponse = await fetch(BACKEND_URL + '/license/match-permissions', { headers: licenseHeaders() });
+        if (!permissionResponse.ok) throw new Error('Prediction permissions could not be loaded');
+        const permissionData = await permissionResponse.json();
+        allowedPredictionMatchIds = new Set((permissionData.allowed_match_ids || []).map(String));
+
         upcomingMatches.sort((a,b) => a.timestamp_start - b.timestamp_start);
         finishedMatches.sort((a,b) => b.timestamp_start - a.timestamp_start);
         switchTab(liveMatches.length > 0 ? 'live' : 'upcoming');
@@ -1338,6 +1344,9 @@ function renderMatches(matches) {
         else if (fmt.toLowerCase().includes("odi") || fmt.toLowerCase().includes("list a")) matchType = "ODI";
 
         let time = new Date(m.timestamp_start * 1000).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        let permissionMatchId = String(m.match_id || m.timestamp_start || '');
+        let competitionTitle = m.competition?.title || m.competition?.name || m.competition_name || m.league?.name || m.tournament?.name || '';
+        let predictionAllowed = allowedPredictionMatchIds.has(permissionMatchId);
         
         let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
         
@@ -1367,7 +1376,7 @@ function renderMatches(matches) {
                 <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0 0 5px 0;">🏟️ ${m.venue?.name || 'Unknown'}</p>
                 ${statusText}
                 <p style="color: #fbbf24; font-size: 0.85rem; margin: 0 0 10px 0;">📅 ${time}</p>
-                ${currentTab !== 'finished' ? `<button class="predict-btn" data-index="${index}" style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : ''}
+                ${currentTab !== 'finished' ? (predictionAllowed ? `<button class="predict-btn" data-index="${index}" style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : `<button disabled style="width: 100%; padding: 8px; background: #475569; color: #cbd5e1; border: none; border-radius: 6px; font-weight: bold; cursor: not-allowed;">🔒 Subscription / Admin approval required</button>`) : ''}
             </div>`;
     });
     container.innerHTML = html;
@@ -1433,7 +1442,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     try {
         const res = await fetch(`${BACKEND_URL}/predict`, {
             method: 'POST', headers: { 'Content-Type': 'application/json', ...licenseHeaders() },
-            body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue })
+            body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue, match_id: String(matchId), competition: competitionTitle })
         });
         const pred = await res.json();
         
@@ -1645,8 +1654,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
         try {
             const res = await fetch(`${BACKEND_URL}/predict`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue, toss_winner: modelTw, toss_decision: td })
+                method: 'POST', headers: { 'Content-Type': 'application/json', ...licenseHeaders() },
+                body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue, match_id: String(matchId), competition: competitionTitle, toss_winner: modelTw, toss_decision: td })
             });
             const pred = await res.json();
             if (pred.success) {
