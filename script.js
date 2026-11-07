@@ -850,6 +850,8 @@ async function fetchMaghribTime(city, country, dateStr, venue = '', timeZone = '
     const normalize = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
     const venueText = normalize(venue);
     const cityText = normalize(city);
+    const countryText = normalize(country);
+    const prayerCountry = countryText.includes('australia') ? 'Australia' : (country || 'Australia');
     const candidates = [];
     if (city && city !== 'Unknown') candidates.push(city);
     if (venueText.includes('north sydney') || cityText.includes('north sydney')) candidates.push('Sydney');
@@ -860,7 +862,7 @@ async function fetchMaghribTime(city, country, dateStr, venue = '', timeZone = '
 
     for (const prayerCity of [...new Set(candidates.filter(Boolean))]) {
         try {
-            const url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(prayerCity)}&country=${encodeURIComponent(country || 'Australia')}&method=4`;
+            const url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(prayerCity)}&country=${encodeURIComponent(prayerCountry)}&method=4`;
             const res = await fetch(url);
             if (!res.ok) continue;
             const data = await res.json();
