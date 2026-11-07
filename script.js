@@ -1206,7 +1206,7 @@ async function fetchMatches() {
                 <button id="tab-upcoming" onclick="switchTab('upcoming')" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">⏳ Upcoming</button>
                 <button id="tab-finished" onclick="switchTab('finished')" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">✅ Finished</button>
             </div>
-            <button onclick="fetchMatches(true)" style="background: transparent; color: #00ffcc; border: 1px solid #00ffcc; padding: 8px 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">🔄 Refresh</button>
+
         </div>
         <div id="matches-container"></div>`;
     
@@ -1229,7 +1229,7 @@ async function fetchMatches() {
     let allMatches = [];
 
     try {
-        if (forceRefresh) { localStorage.removeItem(cacheKeyToday); localStorage.removeItem(cacheKeyTomorrow); }
+
 
         for (let date of [today, tomorrow]) {
             let cacheKey = date === today ? cacheKeyToday : cacheKeyTomorrow;
