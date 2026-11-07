@@ -32,6 +32,13 @@ def init_db():
             subscribed_leagues TEXT[] NOT NULL DEFAULT '{}'
         )""")
         conn.execute("ALTER TABLE app_licenses ADD COLUMN IF NOT EXISTS subscribed_leagues TEXT[] NOT NULL DEFAULT '{}'")
+        conn.execute("ALTER TABLE app_licenses ADD COLUMN IF NOT EXISTS allow_all_matches BOOLEAN NOT NULL DEFAULT FALSE")
+        conn.execute("""CREATE TABLE IF NOT EXISTS license_match_permissions (
+            license_id BIGINT NOT NULL REFERENCES app_licenses(id) ON DELETE CASCADE,
+            match_id TEXT NOT NULL, competition TEXT NOT NULL, match_title TEXT NOT NULL DEFAULT '',
+            enabled BOOLEAN NOT NULL DEFAULT TRUE, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+            PRIMARY KEY (license_id, match_id)
+        )""")
         conn.execute("""CREATE TABLE IF NOT EXISTS match_prediction_permissions (
             match_id TEXT PRIMARY KEY,
             competition TEXT NOT NULL,
@@ -133,7 +140,7 @@ def create(data: CreateLicense, x_admin_key: Optional[str] = Header(default=None
 def listing(x_admin_key: Optional[str] = Header(default=None)):
     admin_guard(x_admin_key)
     with db() as conn:
-        rows = conn.execute("SELECT id,label,duration_days,device_id,created_at,activated_at,expires_at,blocked,subscribed_leagues FROM app_licenses ORDER BY id DESC LIMIT 500").fetchall()
+        rows = conn.execute("SELECT id,label,duration_days,device_id,created_at,activated_at,expires_at,blocked,subscribed_leagues,allow_all_matches FROM app_licenses ORDER BY id DESC LIMIT 500").fetchall()
     now, out = datetime.now(timezone.utc), []
     for row in rows:
         item = dict(row)
@@ -179,22 +186,56 @@ def save_match_permission(data: MatchPermission, x_admin_key: Optional[str] = He
 @router.get("/license/match-permissions")
 def customer_match_permissions(x_device_id: Optional[str] = Header(default=None)):
     license = active_license(x_device_id or "")
-    leagues = [str(x).strip().casefold() for x in (license.get("subscribed_leagues") or [])]
+    if license.get("allow_all_matches"):
+        return {"allow_all_matches": True, "allowed_match_ids": []}
     with db() as conn:
-        rows = conn.execute("SELECT match_id,competition FROM match_prediction_permissions WHERE enabled=TRUE").fetchall()
-    allowed = [row["match_id"] for row in rows if str(row["competition"]).strip().casefold() in leagues]
-    return {"allowed_match_ids": allowed}
+        rows = conn.execute("SELECT match_id FROM license_match_permissions WHERE license_id=%s AND enabled=TRUE", (license["id"],)).fetchall()
+    return {"allow_all_matches": False, "allowed_match_ids": [row["match_id"] for row in rows]}
+
+@router.get("/admin/licenses/{license_id}/matches")
+def admin_customer_matches(license_id: int, x_admin_key: Optional[str] = Header(default=None)):
+    admin_guard(x_admin_key)
+    with db() as conn:
+        customer = conn.execute("SELECT id,allow_all_matches FROM app_licenses WHERE id=%s", (license_id,)).fetchone()
+        if not customer:
+            raise HTTPException(404, "License not found")
+        rows = conn.execute("SELECT match_id,competition,match_title,enabled FROM license_match_permissions WHERE license_id=%s ORDER BY updated_at DESC", (license_id,)).fetchall()
+    return {"allow_all_matches": customer["allow_all_matches"], "matches": [dict(row) for row in rows]}
+
+class CustomerMatchesUpdate(BaseModel):
+    allow_all_matches: bool = False
+    matches: list[MatchPermission] = []
+
+@router.put("/admin/licenses/{license_id}/matches")
+def update_customer_matches(license_id: int, data: CustomerMatchesUpdate, x_admin_key: Optional[str] = Header(default=None)):
+    admin_guard(x_admin_key)
+    clean = {}
+    for item in data.matches:
+        mid, comp = item.match_id.strip()[:160], item.competition.strip()[:120]
+        if not mid or not comp:
+            raise HTTPException(400, "Every match needs match ID and competition")
+        clean[mid] = (comp, item.match_title.strip()[:240], item.enabled)
+    with db() as conn:
+        if not conn.execute("SELECT id FROM app_licenses WHERE id=%s FOR UPDATE", (license_id,)).fetchone():
+            raise HTTPException(404, "License not found")
+        conn.execute("UPDATE app_licenses SET allow_all_matches=%s WHERE id=%s", (data.allow_all_matches, license_id))
+        for mid, (comp, title, enabled) in clean.items():
+            conn.execute("""INSERT INTO license_match_permissions(license_id,match_id,competition,match_title,enabled)
+                VALUES(%s,%s,%s,%s,%s) ON CONFLICT(license_id,match_id) DO UPDATE SET
+                competition=EXCLUDED.competition,match_title=EXCLUDED.match_title,enabled=EXCLUDED.enabled,updated_at=NOW()""",
+                (license_id, mid, comp, title, enabled))
+    return {"success": True, "allow_all_matches": data.allow_all_matches, "updated_matches": len(clean)}
 
 def require_match_permission(license, match_id: str, competition: str):
     if not match_id or not competition:
         raise HTTPException(403, "Match identity is required for prediction")
-    leagues = [str(x).strip().casefold() for x in (license.get("subscribed_leagues") or [])]
-    if str(competition).strip().casefold() not in leagues:
-        raise HTTPException(403, "Your license does not include this league")
+    if license.get("allow_all_matches"):
+        return
     with db() as conn:
-        row = conn.execute("SELECT competition,enabled FROM match_prediction_permissions WHERE match_id=%s", (match_id,)).fetchone()
+        row = conn.execute("SELECT enabled,competition FROM license_match_permissions WHERE license_id=%s AND match_id=%s",
+            (license["id"], match_id)).fetchone()
     if not row or not row["enabled"] or str(row["competition"]).strip().casefold() != str(competition).strip().casefold():
-        raise HTTPException(403, "Admin has not enabled this match")
+        raise HTTPException(403, "This match is not included in your subscription")
 
 @router.post("/admin/licenses/{license_id}/extend")
 def extend(license_id: int, data: ExtendLicense, x_admin_key: Optional[str] = Header(default=None)):
@@ -246,10 +287,11 @@ def admin_javascript():
 def admin_page():
     return HTMLResponse(ADMIN_HTML)
 
-ADMIN_HTML = """<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cricket AI License Admin</title><style>
-body{font:15px Arial;background:#0a0f1a;color:#eef;padding:18px;max-width:950px;margin:auto}input,button{padding:10px;margin:4px;border-radius:6px}input{background:#111827;color:white;border:1px solid #456}button{background:#00d9b5;color:#06121a;font-weight:bold;cursor:pointer}.card{border:1px solid #334155;padding:12px;border-radius:9px;margin:12px 0}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #334155;text-align:left;font-size:12px}
-</style></head><body><h2>🏏 Cricket AI — License Admin</h2>
-<div class="card">Admin key <input id="key" type="password"><button id="connectBtn" type="button">Connect</button><span id="connectionStatus" role="status" aria-live="polite" style="margin-left:8px;color:#fbbf24">Not connected</span></div>
-<div class="card"><h3>Create customer code</h3><input id="label" placeholder="Customer name/phone"><input id="days" type="number" min="1" max="3650" value="30"><input id="count" type="number" min="1" max="100" value="1"><input id="leagues" placeholder="Subscribed leagues, comma-separated"><button onclick="createCodes()">Generate code(s)</button><div id="created"></div></div>
-<div class="card"><h3>Match prediction permissions</h3><p>Match feed mein se Match ID aur exact competition title enter karein. Sirf enabled match aur customer ki subscribed league dono match hon to prediction chalegi.</p><input id="matchid" placeholder="Match ID"><input id="matchleague" placeholder="Exact competition / league"><input id="matchtitle" placeholder="Teams / match title"><button onclick="saveMatch(true)">Allow prediction</button><button onclick="saveMatch(false)">Disable prediction</button><button onclick="loadMatchPermissions()">Refresh permissions</button><div id="matchrows"></div></div><div class="card"><h3>Customer licenses</h3><button onclick="loadList()">Refresh</button><div style="overflow:auto"><table><thead><tr><th>ID</th><th>Customer</th><th>Days</th><th>Leagues</th><th>Status</th><th>Expiry</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+ADMIN_HTML = """<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cricket AI Admin</title><style>
+*{box-sizing:border-box}body{font:15px Arial;background:#0a0f1a;color:#eef;padding:18px;max-width:950px;margin:auto}input,button{padding:11px;margin:4px;border-radius:7px}input{background:#111827;color:white;border:1px solid #456;max-width:100%}button{background:#00d9b5;color:#06121a;font-weight:bold;border:0;cursor:pointer}.card{border:1px solid #334155;padding:14px;border-radius:10px;margin:12px 0;background:#111827}table{width:100%;border-collapse:collapse}td,th{padding:10px;border-bottom:1px solid #334155;text-align:left}.modal{display:none;position:fixed;inset:0;background:#000b;overflow:auto;padding:16px}.modalbox{background:#111827;border:1px solid #456;border-radius:12px;padding:18px;max-width:650px;margin:4vh auto}.matchrow{padding:10px;border-bottom:1px solid #334155}.matchrow small{display:block;color:#9ca3af;margin-left:28px}.muted{color:#9ca3af}
+</style></head><body><h2>🏏 Cricket AI Admin</h2>
+<div class="card">Admin key <input id="key" type="password" placeholder="Admin key"><button id="connectBtn" type="button">Connect</button><span id="connectionStatus" class="muted">Not connected</span></div>
+<div class="card"><h3>Add Customer</h3><input id="label" placeholder="Customer name"><input id="days" type="number" min="1" max="3650" value="30" placeholder="Subscription days"><button onclick="createCodes()">+ Add Customer / Generate Code</button><div id="created"></div></div>
+<div class="card"><h3>Customers</h3><button onclick="loadList()">Refresh</button><div style="overflow:auto"><table><thead><tr><th>Customer</th><th>Subscription</th><th>Status</th><th>Expiry</th><th>Details</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+<div id="customerModal" class="modal"><div class="modalbox"><button style="float:right" onclick="document.getElementById('customerModal').style.display='none'">Close</button><h2 id="customerTitle">Customer</h2><p id="customerInfo"></p><button onclick="extendCustomer()">Extend subscription</button><button onclick="blockCustomer()">Deactivate</button><hr><h3>Match access</h3><label><input id="allMatches" type="checkbox"> Full subscription — allow all matches</label><p class="muted">Full subscription on ho to individual list ignore hogi. Warna sirf neeche enabled matches allowed honge.</p><h4>Allow a match</h4><input id="newMatchId" placeholder="Match ID"><input id="newCompetition" placeholder="Competition / league"><input id="newMatchTitle" placeholder="Match title / teams"><button onclick="addCustomerMatch()">Add match</button><div id="customerMatches"></div><button onclick="saveCustomerMatches()">Save match permissions</button></div></div>
 <script src="/admin.js" defer></script></body></html>"""
