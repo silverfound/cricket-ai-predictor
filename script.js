@@ -1047,7 +1047,7 @@ async function fetchMaghribTime(location, dateStr) {
 
     const parseTime = value => {
         if (value == null) return null;
-        const match = String(value).trim().match(/(?:^|\\s)(\\d{1,2}:\\d{2})(?::\\d{2})?(?:\\s|$)/);
+        const match = String(value).trim().match(/(\d{1,2}):(\d{2})(?::\d{2})?/);
         if (!match) return null;
         const [hour, minute] = match[1].split(':').map(Number);
         return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59
