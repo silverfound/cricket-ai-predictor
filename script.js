@@ -1371,7 +1371,7 @@ function renderMatches(matches) {
 
         html += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
-                <p style="color: #00ffcc; font-size: 0.8rem; margin: 0 0 5px 0;">${m.competition?.title.toUpperCase() || 'MATCH'} | ${matchType}</p>
+                <p style="color: #00ffcc; font-size: 0.8rem; margin: 0 0 5px 0;">${(competitionTitle || 'MATCH').toUpperCase()} | ${matchType}</p>
                 <h4 style="color: #fff; margin: 0 0 5px 0;">${m.teama.name} vs ${m.teamb.name}</h4>
                 <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0 0 5px 0;">🏟️ ${m.venue?.name || 'Unknown'}</p>
                 ${statusText}
@@ -1398,6 +1398,7 @@ function renderMatches(matches) {
                 let v = match.venue && match.venue.name ? match.venue.name : '';
                 let safeVenue = v.replace(/'/g, ""); 
                 let matchId = match.match_id ? match.match_id : match.timestamp_start;
+                let competitionTitle = match.competition?.title || match.competition?.name || match.competition_name || match.league?.name || match.tournament?.name || '';
                 
                 const venueMeta = match.venue || {};
                 const city = venueMeta.location || venueMeta.city || venueMeta.town || venueMeta.locality || "";
@@ -1405,7 +1406,7 @@ function renderMatches(matches) {
                 const venueTimezoneHint = venueMeta.timezone || venueMeta.time_zone || venueMeta.tz || "";
                 const matchContext = {
                     team1: t1, team2: t2,
-                    competition: match.competition?.title || "",
+                    competition: competitionTitle,
                     format: match.format_str || matchType,
                     startTime: match.timestamp_start || ""
                 };
