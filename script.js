@@ -878,64 +878,166 @@ function isValidIanaTimezone(zone) {
     } catch (_) { return false; }
 }
 
-async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezoneHint = '') {
-    const directCoords = extractVenueCoordinates(venueMeta);
-    const normalizedCountry = String(country || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+// Global venue resolver: use feed coordinates first, then POI geocoding,
+// then city-level geocoding only when city/country are explicitly supplied.
+// Team names and competition are retained as context, never treated as proof of venue.
+const VENUE_CACHE_KEY = "ilmi_verified_venue_locations_v2";
+const VENUE_CACHE_TTL = 30 * 24 * 60 * 60 * 1000;
 
-    // Feed-provided coordinates are the most precise source for a ground.
-    if (directCoords) {
-        // Coordinates are authoritative; resolve their timezone instead of trusting a possibly stale feed hint.
-        let timezone = '';
-        if (!timezone) {
-            try {
-                const url = `https://api.open-meteo.com/v1/forecast?latitude=${directCoords.latitude}&longitude=${directCoords.longitude}&daily=sunrise&forecast_days=1&timezone=auto`;
-                const response = await fetch(url);
-                if (response.ok) {
-                    const data = await response.json();
-                    if (isValidIanaTimezone(data.timezone)) timezone = data.timezone;
-                }
-            } catch (error) { console.warn('Coordinate timezone lookup failed:', error); }
-        }
-        if (timezone) return { ...directCoords, timezone, source: 'match-feed-coordinates' };
-    }
-
-    // Most feeds provide a city and country but omit stadium coordinates.
-    // Open-Meteo's global GeoNames search supplies coordinates + IANA timezone.
-    const queries = [];
-    if (venue && city && country) queries.push(`${venue}, ${city}, ${country}`);
-    if (city && country) queries.push(`${city}, ${country}`);
-    if (venue && country) queries.push(`${venue}, ${country}`);
-    if (city) queries.push(String(city));
-    if (venue) queries.push(String(venue));
-
-    for (const query of [...new Set(queries)]) {
-        try {
-            const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=en&format=json`;
-            const response = await fetch(url);
-            if (!response.ok) continue;
-            const data = await response.json();
-            const results = Array.isArray(data.results) ? data.results : [];
-            const countryMatch = results.find(item => {
-                const resultCountry = String(item.country || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
-                return normalizedCountry && (resultCountry === normalizedCountry ||
-                    resultCountry.includes(normalizedCountry) || normalizedCountry.includes(resultCountry));
-            });
-            const ordered = countryMatch ? [countryMatch, ...results.filter(item => item !== countryMatch)] : results;
-            for (const item of ordered) {
-                const coords = validVenueCoordinates(item.latitude, item.longitude);
-                if (coords && isValidIanaTimezone(item.timezone)) {
-                    return { ...coords, timezone: item.timezone, source: 'open-meteo-geocoding',
-                        resolvedName: item.name, resolvedCountry: item.country || '' };
-                }
-            }
-        } catch (error) { console.warn('Global venue geocoding failed:', query, error); }
-    }
-
-    // A valid IANA hint is a last-resort timezone source, but prayer timings still
-    // require coordinates; do not invent coordinates from a timezone alone.
+function normalizeVenueText(value) {
+    return String(value || "").normalize("NFKD").toLowerCase()
+        .replace(/&/g, "and").replace(/[^a-z0-9]+/g, " ").trim();
+}
+function readVenueCache(key) {
+    try {
+        const cache = JSON.parse(localStorage.getItem(VENUE_CACHE_KEY) || "{}");
+        const item = cache[key];
+        if (item && Date.now() - item.savedAt < VENUE_CACHE_TTL &&
+            validVenueCoordinates(item.latitude, item.longitude) && isValidIanaTimezone(item.timezone)) return item;
+    } catch (_) {}
     return null;
 }
+function writeVenueCache(key, location) {
+    try {
+        const cache = JSON.parse(localStorage.getItem(VENUE_CACHE_KEY) || "{}");
+        cache[key] = { ...location, savedAt: Date.now() };
+        const entries = Object.entries(cache).sort((a,b) => (b[1].savedAt || 0) - (a[1].savedAt || 0)).slice(0,250);
+        localStorage.setItem(VENUE_CACHE_KEY, JSON.stringify(Object.fromEntries(entries)));
+    } catch (_) {}
+}
+function collectVenueHints(meta = {}) {
+    const values = [];
+    const visit = (obj, depth = 0) => {
+        if (!obj || typeof obj !== "object" || depth > 2) return;
+        for (const [key,value] of Object.entries(obj)) {
+            if (typeof value === "string" && /(city|town|district|country|venue|ground|stadium|location|address)/i.test(key)) values.push(value);
+            else if (value && typeof value === "object") visit(value, depth + 1);
+        }
+    };
+    visit(meta);
+    return [...new Set(values.map(v => v.trim()).filter(Boolean))];
+}
+async function timezoneForCoordinates(coords) {
+    try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.latitude}&longitude=${coords.longitude}&daily=sunrise&forecast_days=1&timezone=auto`;
+        const response = await fetch(url);
+        if (!response.ok) return "";
+        const data = await response.json();
+        return isValidIanaTimezone(data.timezone) ? data.timezone : "";
+    } catch (_) { return ""; }
+}
+async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezoneHint = '', matchContext = {}) {
+    const directCoords = extractVenueCoordinates(venueMeta);
+    if (directCoords) {
+        const timezone = await timezoneForCoordinates(directCoords);
+        if (timezone) return { ...directCoords, timezone, source: 'match-feed-coordinates', confidence: 100 };
+    }
 
+    const clean = value => {
+        const v = String(value || '').trim();
+        return !v || /^(unknown|null|n\/a|none)$/i.test(v) ? '' : v;
+    };
+    city = clean(city); country = clean(country); venue = clean(venue);
+    const cacheKey = [venue, city, country].map(normalizeVenueText).join('|');
+    const cached = readVenueCache(cacheKey);
+    if (cached) return { ...cached, source: 'verified-cache' };
+
+    // Capture every useful feed field for diagnostics and future disambiguation.
+    const context = {
+        teams: [matchContext.team1, matchContext.team2].filter(Boolean),
+        competition: matchContext.competition || '',
+        format: matchContext.format || '',
+        startTime: matchContext.startTime || '',
+        hints: collectVenueHints(venueMeta)
+    };
+    const venueNorm = normalizeVenueText(venue);
+    const cityNorm = normalizeVenueText(city);
+    const countryNorm = normalizeVenueText(country);
+    const candidates = [];
+
+    // Photon indexes OpenStreetMap POIs, including many named cricket grounds.
+    // Exact POI-name matches are preferred over fuzzy city matches.
+    if (venue) {
+        const photonQueries = [];
+        if (city || country) photonQueries.push([venue, city, country].filter(Boolean).join(', '));
+        photonQueries.push(venue);
+        for (const query of [...new Set(photonQueries)]) {
+            try {
+                const response = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=15&lang=en`);
+                if (!response.ok) continue;
+                const data = await response.json();
+                for (const feature of (data.features || [])) {
+                    const p = feature.properties || {};
+                    const coords = validVenueCoordinates(feature.geometry?.coordinates?.[1], feature.geometry?.coordinates?.[0]);
+                    if (!coords) continue;
+                    const nameNorm = normalizeVenueText(p.name || p.street || '');
+                    const resultCountry = normalizeVenueText(p.country || '');
+                    const resultCity = normalizeVenueText(p.city || p.locality || p.county || '');
+                    let score = 0;
+                    if (venueNorm && nameNorm === venueNorm) score += 70;
+                    else if (venueNorm && (nameNorm.includes(venueNorm) || venueNorm.includes(nameNorm))) score += 38;
+                    if (countryNorm && resultCountry === countryNorm) score += 22;
+                    else if (countryNorm && resultCountry && (resultCountry.includes(countryNorm) || countryNorm.includes(resultCountry))) score += 14;
+                    if (cityNorm && resultCity === cityNorm) score += 18;
+                    else if (cityNorm && resultCity && (resultCity.includes(cityNorm) || cityNorm.includes(resultCity))) score += 10;
+                    const category = normalizeVenueText([p.osm_key,p.osm_value,p.type].join(' '));
+                    if (/stadium|sports|pitch|track|leisure|ground/.test(category)) score += 12;
+                    if (venueNorm && nameNorm && score >= 35) candidates.push({
+                        ...coords, name: p.name || '', country: p.country || '', city: p.city || p.locality || '',
+                        score, source: 'openstreetmap-photon'
+                    });
+                }
+            } catch (error) { console.warn('Venue POI search failed:', query, error); }
+        }
+    }
+
+    candidates.sort((a,b) => b.score - a.score);
+    if (candidates.length) {
+        const best = candidates[0], second = candidates[1];
+        // Require a strong venue-name match and separation from competing candidates.
+        if (best.score >= 65 && (!second || best.score - second.score >= 12)) {
+            const timezone = await timezoneForCoordinates(best);
+            if (timezone) {
+                const resolved = { latitude: best.latitude, longitude: best.longitude, timezone,
+                    source: best.source, resolvedName: best.name, resolvedCountry: best.country,
+                    confidence: best.score };
+                writeVenueCache(cacheKey, resolved);
+                return resolved;
+            }
+        }
+    }
+
+    // City fallback is permitted only when city/country are explicit. Never use
+    // a fuzzy venue-only city result as if it were a stadium.
+    const cityQueries = [];
+    if (city && country) cityQueries.push(`${city}, ${country}`);
+    else if (city) cityQueries.push(city);
+    for (const query of cityQueries) {
+        try {
+            const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=en&format=json`);
+            if (!response.ok) continue;
+            const data = await response.json();
+            const results = (data.results || []).filter(item => {
+                const rc = normalizeVenueText(item.country || '');
+                return !countryNorm || rc === countryNorm || rc.includes(countryNorm) || countryNorm.includes(rc);
+            });
+            if (results.length === 1 || (results.length > 1 && countryNorm)) {
+                const item = results[0];
+                const coords = validVenueCoordinates(item.latitude, item.longitude);
+                if (coords && isValidIanaTimezone(item.timezone)) {
+                    const resolved = { ...coords, timezone: item.timezone, source: 'city-level-fallback',
+                        resolvedName: item.name, resolvedCountry: item.country || '', confidence: 55 };
+                    // Cache only the same explicit city/country query; mark it as city precision.
+                    writeVenueCache(cacheKey, resolved);
+                    return resolved;
+                }
+            }
+        } catch (error) { console.warn('City geocoding failed:', query, error); }
+    }
+
+    console.warn('Venue unresolved; match context retained but not used as geographic proof', context);
+    return null;
+}
 async function fetchMaghribTime(location, dateStr) {
     const empty = { maghrib: null, sunrise: null, sunset: null, timezone: location?.timezone || null, ok: false };
     if (!location || !validVenueCoordinates(location.latitude, location.longitude) ||
@@ -1247,11 +1349,18 @@ function renderMatches(matches) {
                 let safeVenue = v.replace(/'/g, ""); 
                 let matchId = match.match_id ? match.match_id : match.timestamp_start;
                 
-                let city = match.venue?.location || "Unknown";
-                let country = match.venue?.country || "Unknown";
-                let venueTimezoneHint = match.venue?.timezone || match.venue?.time_zone || match.venue?.tz || "";
+                const venueMeta = match.venue || {};
+                const city = venueMeta.location || venueMeta.city || venueMeta.town || venueMeta.locality || "";
+                const country = venueMeta.country || venueMeta.country_name || "";
+                const venueTimezoneHint = venueMeta.timezone || venueMeta.time_zone || venueMeta.tz || "";
+                const matchContext = {
+                    team1: t1, team2: t2,
+                    competition: match.competition?.title || "",
+                    format: match.format_str || matchType,
+                    startTime: match.timestamp_start || ""
+                };
 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '', venueTimezoneHint, match.venue || {});
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '', venueTimezoneHint, venueMeta, matchContext);
             }
         });
     });
@@ -1260,7 +1369,7 @@ function renderMatches(matches) {
 // ==========================================
 // MAIN PREDICTION MODAL LOGIC
 // ==========================================
-async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '', venueMeta = {}) {
+async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '', venueMeta = {}, matchContext = {}) {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
@@ -1320,7 +1429,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
 
     // Resolve this ground globally: prefer feed coordinates, otherwise geocode city/venue.
-    const venueLocation = await resolveVenueLocation(city, country, venue, venueMeta, venueTimezoneHint);
+    const venueLocation = await resolveVenueLocation(city, country, venue, venueMeta, venueTimezoneHint, matchContext);
     const resolvedVenueTimezone = resolveGroundTimezone(venueLocation, venueTimezoneHint);
     if (!venueLocation || !resolvedVenueTimezone) {
         console.warn('Ilmi ground location/timezone resolution failed', { city, country, venue, venueMeta });
