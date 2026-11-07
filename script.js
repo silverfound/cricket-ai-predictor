@@ -869,30 +869,39 @@ async function fetchMaghribTime(city, country, dateStr) {
 // Resolve the ground's IANA timezone deterministically. Venue-local time is used
 // consistently for match date, Hijri/Maghrib boundary, weekday and planetary hour.
 function resolveGroundTimezone(city, country, venue, hint = '', apiTimezone = '') {
-    const candidates = [hint, apiTimezone];
-    const locationText = [city, venue, country].filter(Boolean).join(' ').toLowerCase();
+    // A known ground/city is authoritative. API hints can be missing or stale,
+    // so they must never override the timezone of a recognized venue.
+    const normalize = value => String(value || '').normalize('NFKD')
+        .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    const cityText = normalize(city);
+    const venueText = normalize(venue);
+    const countryText = normalize(country);
     const groundZones = [
-        { keys: ['north sydney', 'sydney'], zone: 'Australia/Sydney' },
-        { keys: ['perth'], zone: 'Australia/Perth' },
-        { keys: ['melbourne'], zone: 'Australia/Melbourne' },
-        { keys: ['brisbane'], zone: 'Australia/Brisbane' },
-        { keys: ['adelaide'], zone: 'Australia/Adelaide' },
-        { keys: ['hobart'], zone: 'Australia/Hobart' },
-        { keys: ['darwin'], zone: 'Australia/Darwin' },
-        { keys: ['canberra'], zone: 'Australia/Sydney' }
+        { keys: ['north sydney oval', 'north sydney', 'sydney'], zone: 'Australia/Sydney', cities: ['sydney', 'north sydney'] },
+        { keys: ['perth', 'waca'], zone: 'Australia/Perth', cities: ['perth'] },
+        { keys: ['melbourne', 'junction oval'], zone: 'Australia/Melbourne', cities: ['melbourne'] },
+        { keys: ['brisbane', 'gabba'], zone: 'Australia/Brisbane', cities: ['brisbane'] },
+        { keys: ['adelaide'], zone: 'Australia/Adelaide', cities: ['adelaide'] },
+        { keys: ['hobart', 'bellerive'], zone: 'Australia/Hobart', cities: ['hobart'] },
+        { keys: ['darwin'], zone: 'Australia/Darwin', cities: ['darwin'] },
+        { keys: ['canberra', 'manuka oval'], zone: 'Australia/Sydney', cities: ['canberra'] }
     ];
     const groundMatch = groundZones.find(item =>
-        item.keys.some(key => locationText.includes(key)) &&
-        (locationText.includes('australia') || String(country || '').toLowerCase().includes('australia') ||
-         item.keys.some(key => String(city || '').toLowerCase().includes(key)))
+        item.keys.some(key => venueText.includes(normalize(key))) ||
+        item.cities.some(key => cityText === normalize(key) || cityText.includes(normalize(key)))
     );
-    if (groundMatch) candidates.push(groundMatch.zone);
+    const isAustralianGround = countryText === 'australia' ||
+        venueText.includes('australia') || cityText.includes('australia') ||
+        Boolean(groundMatch);
+    const candidates = [];
+    if (groundMatch && isAustralianGround) candidates.push(groundMatch.zone);
+    candidates.push(hint, apiTimezone);
     for (const zone of candidates) {
         if (!zone || typeof zone !== 'string') continue;
         try {
             new Intl.DateTimeFormat('en-AU', { timeZone: zone }).format(new Date());
             return zone;
-        } catch (_) { /* invalid timezone candidate; try the next source */ }
+        } catch (_) { /* invalid timezone candidate; try next source */ }
     }
     return '';
 }
@@ -1257,17 +1266,13 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     const utcDate = matchInstant.toISOString().slice(0, 10);
     const [utcYear, utcMonth, utcDay] = utcDate.split("-");
     const timezoneProbe = await fetchMaghribTime(city, country, `${utcDay}-${utcMonth}-${utcYear}`);
-    const venueTimezone = resolveGroundTimezone(city, country, venue, venueTimezoneHint, timezoneProbe.timezone);
-    if (!venueTimezone) {
+    const resolvedVenueTimezone = resolveGroundTimezone(city, country, venue, venueTimezoneHint, timezoneProbe.timezone);
+    if (!resolvedVenueTimezone) {
+        console.warn('Ilmi timezone resolution failed', { city, country, venue, venueTimezoneHint, apiTimezone: timezoneProbe.timezone });
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue timezone confirm nahi ho saka. Ghalat local time ya Hijri date se bachne ke liye Ilmi calculation roki gayi hai.</div>';
         return;
     }
-
-    const resolvedVenueTimezone = resolveGroundTimezone(city, country, venue, venueTimezoneHint, timezoneProbe.timezone);
-    if (!resolvedVenueTimezone) {
-        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Ground ka valid IANA timezone resolve nahi ho saka. Venue/city data verify karein; calculation ghalat local time par nahi chalegi.</div>';
-        return;
-    }
+    console.info('Ilmi venue timezone resolved', { venue, city, country, timeZone: resolvedVenueTimezone });
     const venueDateParts = getDatePartsInTimezone(matchInstant, resolvedVenueTimezone);
     const venueDateApi = `${venueDateParts.day}-${venueDateParts.month}-${venueDateParts.year}`;
     const maghribData = await fetchMaghribTime(city, country, venueDateApi);
