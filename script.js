@@ -845,65 +845,121 @@ function numberToUrdu(num) {
     return urduNumbers[th] + " ہزار" + (h > 0 ? " " + urduNumbers[h] + " سو" : "") + (r > 0 ? " " + (urduNumbers[r] || r) : "");
 }
 
-async function fetchMaghribTime(city, country, dateStr) {
-    try {
-        if (!city || !country || city === "Unknown" || country === "Unknown") {
-            return { maghrib: null, timezone: null, ok: false };
-        }
-        let url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=4`;
-        let res = await fetch(url);
-        if (!res.ok) return { maghrib: null, timezone: null, ok: false };
-        let data = await res.json();
-        if (data.code === 200) {
-            const timings = data.data?.timings || {};
-            const maghrib = String(timings.Maghrib || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
-            const sunrise = String(timings.Sunrise || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
-            const sunset = String(timings.Sunset || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
-            const timezone = data.data?.meta?.timezone || null;
-            if (maghrib && sunrise && sunset) return { maghrib, sunrise, sunset, timezone: timezone || null, ok: true };
-        }
-    } catch (e) { console.log("Aladhan API error:", e); }
-    return { maghrib: null, timezone: null, ok: false };
+// Resolve every cricket venue globally from feed coordinates or Open-Meteo geocoding.
+// Never depend on a country-specific hardcoded stadium/timezone list.
+function validVenueCoordinates(latitude, longitude) {
+    const lat = Number(latitude), lon = Number(longitude);
+    return Number.isFinite(lat) && Number.isFinite(lon) &&
+        lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180 &&
+        !(lat === 0 && lon === 0) ? { latitude: lat, longitude: lon } : null;
 }
 
-// Resolve the ground's IANA timezone deterministically. Venue-local time is used
-// consistently for match date, Hijri/Maghrib boundary, weekday and planetary hour.
-function resolveGroundTimezone(city, country, venue, hint = '', apiTimezone = '') {
-    // A known ground/city is authoritative. API hints can be missing or stale,
-    // so they must never override the timezone of a recognized venue.
-    const normalize = value => String(value || '').normalize('NFKD')
-        .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-    const cityText = normalize(city);
-    const venueText = normalize(venue);
-    const countryText = normalize(country);
-    const groundZones = [
-        { keys: ['north sydney oval', 'north sydney', 'sydney'], zone: 'Australia/Sydney', cities: ['sydney', 'north sydney'] },
-        { keys: ['perth', 'waca'], zone: 'Australia/Perth', cities: ['perth'] },
-        { keys: ['melbourne', 'junction oval'], zone: 'Australia/Melbourne', cities: ['melbourne'] },
-        { keys: ['brisbane', 'gabba'], zone: 'Australia/Brisbane', cities: ['brisbane'] },
-        { keys: ['adelaide'], zone: 'Australia/Adelaide', cities: ['adelaide'] },
-        { keys: ['hobart', 'bellerive'], zone: 'Australia/Hobart', cities: ['hobart'] },
-        { keys: ['darwin'], zone: 'Australia/Darwin', cities: ['darwin'] },
-        { keys: ['canberra', 'manuka oval'], zone: 'Australia/Sydney', cities: ['canberra'] }
+function extractVenueCoordinates(venueMeta = {}) {
+    const candidates = [
+        [venueMeta.latitude, venueMeta.longitude],
+        [venueMeta.lat, venueMeta.lon],
+        [venueMeta.lat, venueMeta.lng],
+        [venueMeta.geo?.latitude, venueMeta.geo?.longitude],
+        [venueMeta.coordinates?.latitude, venueMeta.coordinates?.longitude],
+        [venueMeta.coordinates?.lat, venueMeta.coordinates?.lng]
     ];
-    const groundMatch = groundZones.find(item =>
-        item.keys.some(key => venueText.includes(normalize(key))) ||
-        item.cities.some(key => cityText === normalize(key) || cityText.includes(normalize(key)))
-    );
-    const isAustralianGround = countryText === 'australia' ||
-        venueText.includes('australia') || cityText.includes('australia') ||
-        Boolean(groundMatch);
-    const candidates = [];
-    if (groundMatch && isAustralianGround) candidates.push(groundMatch.zone);
-    candidates.push(hint, apiTimezone);
-    for (const zone of candidates) {
-        if (!zone || typeof zone !== 'string') continue;
-        try {
-            new Intl.DateTimeFormat('en-AU', { timeZone: zone }).format(new Date());
-            return zone;
-        } catch (_) { /* invalid timezone candidate; try next source */ }
+    for (const pair of candidates) {
+        const coords = validVenueCoordinates(pair[0], pair[1]);
+        if (coords) return coords;
     }
-    return '';
+    return null;
+}
+
+function isValidIanaTimezone(zone) {
+    if (!zone || typeof zone !== 'string') return false;
+    try {
+        new Intl.DateTimeFormat('en-US', { timeZone: zone }).format(new Date());
+        return true;
+    } catch (_) { return false; }
+}
+
+async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezoneHint = '') {
+    const directCoords = extractVenueCoordinates(venueMeta);
+    const normalizedCountry = String(country || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+
+    // Feed-provided coordinates are the most precise source for a ground.
+    if (directCoords) {
+        let timezone = isValidIanaTimezone(timezoneHint) ? timezoneHint : '';
+        if (!timezone) {
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${directCoords.latitude}&longitude=${directCoords.longitude}&daily=sunrise&forecast_days=1&timezone=auto`;
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (isValidIanaTimezone(data.timezone)) timezone = data.timezone;
+                }
+            } catch (error) { console.warn('Coordinate timezone lookup failed:', error); }
+        }
+        if (timezone) return { ...directCoords, timezone, source: 'match-feed-coordinates' };
+    }
+
+    // Most feeds provide a city and country but omit stadium coordinates.
+    // Open-Meteo's global GeoNames search supplies coordinates + IANA timezone.
+    const queries = [];
+    if (venue && city && country) queries.push(`${venue}, ${city}, ${country}`);
+    if (city && country) queries.push(`${city}, ${country}`);
+    if (venue && country) queries.push(`${venue}, ${country}`);
+    if (city) queries.push(String(city));
+    if (venue) queries.push(String(venue));
+
+    for (const query of [...new Set(queries)]) {
+        try {
+            const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=en&format=json`;
+            const response = await fetch(url);
+            if (!response.ok) continue;
+            const data = await response.json();
+            const results = Array.isArray(data.results) ? data.results : [];
+            const countryMatch = results.find(item => {
+                const resultCountry = String(item.country || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+                return normalizedCountry && (resultCountry === normalizedCountry ||
+                    resultCountry.includes(normalizedCountry) || normalizedCountry.includes(resultCountry));
+            });
+            const ordered = countryMatch ? [countryMatch, ...results.filter(item => item !== countryMatch)] : results;
+            for (const item of ordered) {
+                const coords = validVenueCoordinates(item.latitude, item.longitude);
+                if (coords && isValidIanaTimezone(item.timezone)) {
+                    return { ...coords, timezone: item.timezone, source: 'open-meteo-geocoding',
+                        resolvedName: item.name, resolvedCountry: item.country || '' };
+                }
+            }
+        } catch (error) { console.warn('Global venue geocoding failed:', query, error); }
+    }
+
+    // A valid IANA hint is a last-resort timezone source, but prayer timings still
+    // require coordinates; do not invent coordinates from a timezone alone.
+    return null;
+}
+
+async function fetchMaghribTime(location, dateStr) {
+    const empty = { maghrib: null, sunrise: null, sunset: null, timezone: location?.timezone || null, ok: false };
+    if (!location || !validVenueCoordinates(location.latitude, location.longitude) ||
+        !isValidIanaTimezone(location.timezone)) return empty;
+    try {
+        const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=${location.latitude}&longitude=${location.longitude}&method=4&timezonestring=${encodeURIComponent(location.timezone)}`;
+        const response = await fetch(url);
+        if (!response.ok) return empty;
+        const data = await response.json();
+        const timings = data.code === 200 ? (data.data?.timings || {}) : {};
+        const parseTime = value => String(value || '').match(/^(\d{2}:\d{2})/)?.[1] || null;
+        const maghrib = parseTime(timings.Maghrib);
+        const sunrise = parseTime(timings.Sunrise);
+        const sunset = parseTime(timings.Sunset);
+        if (maghrib && sunrise && sunset) {
+            return { maghrib, sunrise, sunset, timezone: location.timezone, ok: true };
+        }
+    } catch (error) { console.warn('AlAdhan coordinate prayer lookup failed:', error); }
+    return empty;
+}
+
+// Validate a timezone supplied by the match feed without relying on a country list.
+function resolveGroundTimezone(location, hint = '') {
+    if (isValidIanaTimezone(hint)) return hint;
+    return isValidIanaTimezone(location?.timezone) ? location.timezone : '';
 }
 
 function getDatePartsInTimezone(date, timeZone) {
@@ -1194,7 +1250,7 @@ function renderMatches(matches) {
                 let country = match.venue?.country || "Unknown";
                 let venueTimezoneHint = match.venue?.timezone || match.venue?.time_zone || match.venue?.tz || "";
 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '', venueTimezoneHint);
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '', venueTimezoneHint, match.venue || {});
             }
         });
     });
@@ -1203,7 +1259,7 @@ function renderMatches(matches) {
 // ==========================================
 // MAIN PREDICTION MODAL LOGIC
 // ==========================================
-async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '') {
+async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '', venueMeta = {}) {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
@@ -1262,20 +1318,18 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         return;
     }
 
-    // Resolve venue timezone first; UTC date is used only to obtain timezone metadata.
-    const utcDate = matchInstant.toISOString().slice(0, 10);
-    const [utcYear, utcMonth, utcDay] = utcDate.split("-");
-    const timezoneProbe = await fetchMaghribTime(city, country, `${utcDay}-${utcMonth}-${utcYear}`);
-    const resolvedVenueTimezone = resolveGroundTimezone(city, country, venue, venueTimezoneHint, timezoneProbe.timezone);
-    if (!resolvedVenueTimezone) {
-        console.warn('Ilmi timezone resolution failed', { city, country, venue, venueTimezoneHint, apiTimezone: timezoneProbe.timezone });
-        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue timezone confirm nahi ho saka. Ghalat local time ya Hijri date se bachne ke liye Ilmi calculation roki gayi hai.</div>';
+    // Resolve this ground globally: prefer feed coordinates, otherwise geocode city/venue.
+    const venueLocation = await resolveVenueLocation(city, country, venue, venueMeta, venueTimezoneHint);
+    const resolvedVenueTimezone = resolveGroundTimezone(venueLocation, venueTimezoneHint);
+    if (!venueLocation || !resolvedVenueTimezone) {
+        console.warn('Ilmi ground location/timezone resolution failed', { city, country, venue, venueMeta });
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Is ground ki location/timezone verify nahi ho saki. Sahi local date aur Maghrib ke liye venue data zaroori hai.</div>';
         return;
     }
-    console.info('Ilmi venue timezone resolved', { venue, city, country, timeZone: resolvedVenueTimezone });
+    console.info('Ilmi ground location resolved', { venue, city, country, ...venueLocation });
     const venueDateParts = getDatePartsInTimezone(matchInstant, resolvedVenueTimezone);
     const venueDateApi = `${venueDateParts.day}-${venueDateParts.month}-${venueDateParts.year}`;
-    const maghribData = await fetchMaghribTime(city, country, venueDateApi);
+    const maghribData = await fetchMaghribTime(venueLocation, venueDateApi);
     const maghribTime = maghribData.maghrib;
     if (!maghribTime) {
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue ka Maghrib time verify nahi ho saka. Incorrect date ke saath Ilmi calculation chalane ke bajaye rok di gayi hai.</div>';
@@ -1283,7 +1337,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
     const nextIsoForPlanetary = addOneIsoDay(venueDateParts.iso);
     const [nextYearForPlanetary,nextMonthForPlanetary,nextDayForPlanetary] = nextIsoForPlanetary.split("-");
-    const nextDayPrayerData = await fetchMaghribTime(city, country, `${nextDayForPlanetary}-${nextMonthForPlanetary}-${nextYearForPlanetary}`);
+    const nextDayPrayerData = await fetchMaghribTime(venueLocation, `${nextDayForPlanetary}-${nextMonthForPlanetary}-${nextYearForPlanetary}`);
     if (!maghribData.sunrise || !maghribData.sunset || !nextDayPrayerData.sunrise) {
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Planetary-hour calculation ke liye venue sunrise, sunset aur next sunrise verify nahi ho sake; Ilmi calculation roki gayi hai.</div>';
         return;
