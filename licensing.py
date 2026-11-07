@@ -140,7 +140,7 @@ def create(data: CreateLicense, x_admin_key: Optional[str] = Header(default=None
 def listing(x_admin_key: Optional[str] = Header(default=None)):
     admin_guard(x_admin_key)
     with db() as conn:
-        rows = conn.execute("SELECT id,label,duration_days,device_id,created_at,activated_at,expires_at,blocked,subscribed_leagues FROM app_licenses ORDER BY id DESC LIMIT 500").fetchall()
+        rows = conn.execute("SELECT id,label,duration_days,device_id,created_at,activated_at,expires_at,blocked,subscribed_leagues,allow_all_matches FROM app_licenses ORDER BY id DESC LIMIT 500").fetchall()
     now, out = datetime.now(timezone.utc), []
     for row in rows:
         item = dict(row)
