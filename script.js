@@ -883,10 +883,10 @@ function isValidIanaTimezone(zone) {
     } catch (_) { return false; }
 }
 
-// Global venue resolver: use feed coordinates first, then POI geocoding,
-// then city-level geocoding only when city/country are explicitly supplied.
+// Global venue resolver: use feed coordinates first, then an exact named-ground POI.
+// City-centre coordinates are deliberately rejected because they are not venue-accurate.
 // Team names and competition are retained as context, never treated as proof of venue.
-const VENUE_CACHE_KEY = "ilmi_verified_venue_locations_v2";
+const VENUE_CACHE_KEY = "ilmi_verified_venue_locations_v3";
 const VENUE_CACHE_TTL = 30 * 24 * 60 * 60 * 1000;
 
 function normalizeVenueText(value) {
