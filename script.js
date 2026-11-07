@@ -414,7 +414,7 @@ function getUrduTeamName(value) {
         const base = raw.replace(/\s+women$/i, "").trim();
         if (urduTeams[base]) return urduTeams[base] + " ویمن";
     }
-    return transliterateIlmiName(raw);
+    return "";
 }
 
 // --- CURRENT INTERNATIONAL / LEAGUE VENUES (API venue name -> Urdu) ---
@@ -518,7 +518,7 @@ const urduVenues = {
 function getUrduVenueName(value) {
     if (urduVenues[value]) return urduVenues[value];
     const key = Object.keys(urduVenues).find(k => normalizeIlmiName(k) === normalizeIlmiName(value));
-    return key ? urduVenues[key] : transliterateIlmiName(value);
+    return key ? urduVenues[key] : "";
 }
 
 // --- CAPTAINS DICTIONARY (Urdu spellings for international captains) ---
@@ -1012,34 +1012,8 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
         }
     }
 
-    // City fallback is permitted only when city/country are explicit. Never use
-    // a fuzzy venue-only city result as if it were a stadium.
-    const cityQueries = [];
-    if (city && country) cityQueries.push(`${city}, ${country}`);
-    else if (city) cityQueries.push(city);
-    for (const query of cityQueries) {
-        try {
-            const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=10&language=en&format=json`);
-            if (!response.ok) continue;
-            const data = await response.json();
-            const results = (data.results || []).filter(item => {
-                const rc = normalizeVenueText(item.country || '');
-                return !countryNorm || rc === countryNorm || rc.includes(countryNorm) || countryNorm.includes(rc);
-            });
-            if (results.length === 1 || (results.length > 1 && countryNorm)) {
-                const item = results[0];
-                const coords = validVenueCoordinates(item.latitude, item.longitude);
-                if (coords && isValidIanaTimezone(item.timezone)) {
-                    const resolved = { ...coords, timezone: item.timezone, source: 'city-level-fallback',
-                        resolvedName: item.name, resolvedCountry: item.country || '', confidence: 55 };
-                    // Cache only the same explicit city/country query; mark it as city precision.
-                    writeVenueCache(cacheKey, resolved);
-                    return resolved;
-                }
-            }
-        } catch (error) { console.warn('City geocoding failed:', query, error); }
-    }
-
+    // Never substitute city-centre coordinates for a cricket venue. That can
+    // shift Maghrib and planetary-hour calculations by a material amount.
     console.warn('Venue unresolved; match context retained but not used as geographic proof', context);
     return null;
 }
@@ -1564,8 +1538,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     capT1_Name = captainFor(t1);
     capT2_Name = captainFor(t2);
     const manualUrduCap1 = getIlmiCaptainOverride(t1), manualUrduCap2 = getIlmiCaptainOverride(t2);
-    const directoryUrduCap1 = capT1_Name ? (urduCaptains[capT1_Name] || transliterateIlmiCaptainName(capT1_Name)) : "";
-    const directoryUrduCap2 = capT2_Name ? (urduCaptains[capT2_Name] || transliterateIlmiCaptainName(capT2_Name)) : "";
+    const directoryUrduCap1 = capT1_Name ? (urduCaptains[capT1_Name] || "") : "";
+    const directoryUrduCap2 = capT2_Name ? (urduCaptains[capT2_Name] || "") : "";
     const urduCap1 = manualUrduCap1 || directoryUrduCap1;
     const urduCap2 = manualUrduCap2 || directoryUrduCap2;
     if (!urduCap1 || !urduCap2) {
