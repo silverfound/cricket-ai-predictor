@@ -996,6 +996,29 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
         }
     }
 
+    // Photon can return the same named ground from multiple query variants.
+    // Treat nearby identical-name hits as one POI before comparing confidence;
+    // otherwise duplicate copies make the best-vs-second score gap zero and
+    // incorrectly reject a valid venue (for example, North Sydney Oval).
+    const uniqueCandidates = [];
+    for (const candidate of candidates) {
+        const candidateName = normalizeVenueText(candidate.name);
+        const duplicate = uniqueCandidates.find(existing => {
+            if (!candidateName || normalizeVenueText(existing.name) !== candidateName) return false;
+            const toRad = value => value * Math.PI / 180;
+            const dLat = toRad(candidate.latitude - existing.latitude);
+            const dLon = toRad(candidate.longitude - existing.longitude);
+            const lat1 = toRad(existing.latitude), lat2 = toRad(candidate.latitude);
+            const haversine = Math.sin(dLat / 2) ** 2 +
+                Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+            const distanceKm = 6371 * 2 * Math.atan2(Math.sqrt(haversine), Math.sqrt(1 - haversine));
+            return distanceKm <= 0.5;
+        });
+        if (!duplicate) uniqueCandidates.push(candidate);
+        else if (candidate.score > duplicate.score) Object.assign(duplicate, candidate);
+    }
+    candidates.length = 0;
+    candidates.push(...uniqueCandidates);
     candidates.sort((a,b) => b.score - a.score);
     if (candidates.length) {
         const best = candidates[0], second = candidates[1];
