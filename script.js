@@ -1218,7 +1218,8 @@ async function fetchMatches(forceRefresh = false) {
     // Bump cache version so older first-page-only data is not reused.
     const cacheKeyToday = `cricket_data_v26_${today}`;
     const cacheKeyTomorrow = `cricket_data_v26_${tomorrow}`;
-    const cacheExpiry = 10 * 60 * 1000;
+    // Keep browser cache aligned with the shared 5-minute backend cache.
+    const cacheExpiry = 5 * 60 * 1000;
 
     let allMatches = [];
 
@@ -1241,12 +1242,9 @@ async function fetchMatches(forceRefresh = false) {
                     const params = new URLSearchParams({
                         date,
                         per_paged: "10",
-                        paged: String(page),
-                        _nocache: String(Date.now())
+                        paged: String(page)
                     });
-                    const res = await fetch(`${BACKEND_URL}/matches?${params.toString()}`, {
-                        cache: "no-store"
-                    });
+                    const res = await fetch(`${BACKEND_URL}/matches?${params.toString()}`);
                     if (!res.ok) throw new Error(`Matches API failed for ${date}, page ${page}: HTTP ${res.status}`);
                     return await res.json();
                 };
@@ -1262,10 +1260,10 @@ async function fetchMatches(forceRefresh = false) {
                     dateItems.push(...pageItems);
                 }
 
-                if (dateItems.length > 0) {
-                    allMatches.push(...dateItems);
-                    localStorage.setItem(cacheKey, JSON.stringify({ time: Date.now(), data: dateItems }));
-                }
+                // Cache empty as well as non-empty results to avoid repeatedly
+                // querying dates that currently have no fixtures.
+                allMatches.push(...dateItems);
+                localStorage.setItem(cacheKey, JSON.stringify({ time: Date.now(), data: dateItems }));
             }
         }
 
