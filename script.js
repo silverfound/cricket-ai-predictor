@@ -866,6 +866,37 @@ async function fetchMaghribTime(city, country, dateStr) {
     return { maghrib: null, timezone: null, ok: false };
 }
 
+// Resolve the ground's IANA timezone deterministically. Venue-local time is used
+// consistently for match date, Hijri/Maghrib boundary, weekday and planetary hour.
+function resolveGroundTimezone(city, country, venue, hint = '', apiTimezone = '') {
+    const candidates = [hint, apiTimezone];
+    const locationText = [city, venue, country].filter(Boolean).join(' ').toLowerCase();
+    const groundZones = [
+        { keys: ['north sydney', 'sydney'], zone: 'Australia/Sydney' },
+        { keys: ['perth'], zone: 'Australia/Perth' },
+        { keys: ['melbourne'], zone: 'Australia/Melbourne' },
+        { keys: ['brisbane'], zone: 'Australia/Brisbane' },
+        { keys: ['adelaide'], zone: 'Australia/Adelaide' },
+        { keys: ['hobart'], zone: 'Australia/Hobart' },
+        { keys: ['darwin'], zone: 'Australia/Darwin' },
+        { keys: ['canberra'], zone: 'Australia/Sydney' }
+    ];
+    const groundMatch = groundZones.find(item =>
+        item.keys.some(key => locationText.includes(key)) &&
+        (locationText.includes('australia') || String(country || '').toLowerCase().includes('australia') ||
+         item.keys.some(key => String(city || '').toLowerCase().includes(key)))
+    );
+    if (groundMatch) candidates.push(groundMatch.zone);
+    for (const zone of candidates) {
+        if (!zone || typeof zone !== 'string') continue;
+        try {
+            new Intl.DateTimeFormat('en-AU', { timeZone: zone }).format(new Date());
+            return zone;
+        } catch (_) { /* invalid timezone candidate; try the next source */ }
+    }
+    return '';
+}
+
 function getDatePartsInTimezone(date, timeZone) {
     const parts = new Intl.DateTimeFormat("en-CA", {
         timeZone, year: "numeric", month: "2-digit", day: "2-digit"
@@ -1226,13 +1257,18 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     const utcDate = matchInstant.toISOString().slice(0, 10);
     const [utcYear, utcMonth, utcDay] = utcDate.split("-");
     const timezoneProbe = await fetchMaghribTime(city, country, `${utcDay}-${utcMonth}-${utcYear}`);
-    const venueTimezone = timezoneProbe.timezone || venueTimezoneHint;
+    const venueTimezone = resolveGroundTimezone(city, country, venue, venueTimezoneHint, timezoneProbe.timezone);
     if (!venueTimezone) {
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue timezone confirm nahi ho saka. Ghalat local time ya Hijri date se bachne ke liye Ilmi calculation roki gayi hai.</div>';
         return;
     }
 
-    const venueDateParts = getDatePartsInTimezone(matchInstant, venueTimezone);
+    const resolvedVenueTimezone = resolveGroundTimezone(city, country, venue, venueTimezoneHint, timezoneProbe.timezone);
+    if (!resolvedVenueTimezone) {
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Ground ka valid IANA timezone resolve nahi ho saka. Venue/city data verify karein; calculation ghalat local time par nahi chalegi.</div>';
+        return;
+    }
+    const venueDateParts = getDatePartsInTimezone(matchInstant, resolvedVenueTimezone);
     const venueDateApi = `${venueDateParts.day}-${venueDateParts.month}-${venueDateParts.year}`;
     const maghribData = await fetchMaghribTime(city, country, venueDateApi);
     const maghribTime = maghribData.maghrib;
@@ -1249,7 +1285,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
 
     const matchTimeStr = matchInstant.toLocaleTimeString('en-GB', {
-        timeZone: venueTimezone, hour12: false, hour: '2-digit', minute: '2-digit'
+        timeZone: resolvedVenueTimezone, hour12: false, hour: '2-digit', minute: '2-digit'
     });
     const finalGregorianDate = matchTimeStr >= maghribTime
         ? addOneIsoDay(venueDateParts.iso)
