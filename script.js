@@ -867,9 +867,9 @@ async function fetchMaghribTime(city, country, dateStr, venue = '', timeZone = '
             if (!res.ok) continue;
             const data = await res.json();
             const timings = data.code === 200 ? (data.data?.timings || {}) : {};
-            const maghrib = String(timings.Maghrib || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
-            const sunrise = String(timings.Sunrise || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
-            const sunset = String(timings.Sunset || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
+            const maghrib = String(timings.Maghrib || '').match(/^(\d{2}:\d{2})/)?.[1] || null;
+            const sunrise = String(timings.Sunrise || '').match(/^(\d{2}:\d{2})/)?.[1] || null;
+            const sunset = String(timings.Sunset || '').match(/^(\d{2}:\d{2})/)?.[1] || null;
             const apiTimezone = data.data?.meta?.timezone || null;
             if (maghrib && sunrise && sunset) return { maghrib, sunrise, sunset, timezone: apiTimezone, ok: true };
         } catch (e) { console.warn('AlAdhan city prayer lookup failed:', prayerCity, e); }
@@ -883,9 +883,9 @@ async function fetchMaghribTime(city, country, dateStr, venue = '', timeZone = '
             if (res.ok) {
                 const data = await res.json();
                 const timings = data.code === 200 ? (data.data?.timings || {}) : {};
-                const maghrib = String(timings.Maghrib || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
-                const sunrise = String(timings.Sunrise || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
-                const sunset = String(timings.Sunset || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
+                const maghrib = String(timings.Maghrib || '').match(/^(\d{2}:\d{2})/)?.[1] || null;
+                const sunrise = String(timings.Sunrise || '').match(/^(\d{2}:\d{2})/)?.[1] || null;
+                const sunset = String(timings.Sunset || '').match(/^(\d{2}:\d{2})/)?.[1] || null;
                 if (maghrib && sunrise && sunset) return { maghrib, sunrise, sunset, timezone: timeZone || 'Australia/Sydney', ok: true };
             }
         } catch (e) { console.warn('AlAdhan coordinate prayer lookup failed:', e); }
