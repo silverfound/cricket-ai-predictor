@@ -845,25 +845,51 @@ function numberToUrdu(num) {
     return urduNumbers[th] + " ہزار" + (h > 0 ? " " + urduNumbers[h] + " سو" : "") + (r > 0 ? " " + (urduNumbers[r] || r) : "");
 }
 
-async function fetchMaghribTime(city, country, dateStr) {
-    try {
-        if (!city || !country || city === "Unknown" || country === "Unknown") {
-            return { maghrib: null, timezone: null, ok: false };
-        }
-        let url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}&method=4`;
-        let res = await fetch(url);
-        if (!res.ok) return { maghrib: null, timezone: null, ok: false };
-        let data = await res.json();
-        if (data.code === 200) {
-            const timings = data.data?.timings || {};
-            const maghrib = String(timings.Maghrib || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
-            const sunrise = String(timings.Sunrise || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
-            const sunset = String(timings.Sunset || "").match(/^(\d{2}:\d{2})/)?.[1] || null;
-            const timezone = data.data?.meta?.timezone || null;
-            if (maghrib && sunrise && sunset) return { maghrib, sunrise, sunset, timezone: timezone || null, ok: true };
-        }
-    } catch (e) { console.log("Aladhan API error:", e); }
-    return { maghrib: null, timezone: null, ok: false };
+async function fetchMaghribTime(city, country, dateStr, venue = '', timeZone = '') {
+    const empty = { maghrib: null, sunrise: null, sunset: null, timezone: null, ok: false };
+    const normalize = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    const venueText = normalize(venue);
+    const cityText = normalize(city);
+    const candidates = [];
+    if (city && city !== 'Unknown') candidates.push(city);
+    if (venueText.includes('north sydney') || cityText.includes('north sydney')) candidates.push('Sydney');
+    if (venueText.includes('boland park') || cityText.includes('paarl')) candidates.push('Paarl');
+    if (venueText.includes('tribhuvan university') || cityText.includes('kathmandu')) candidates.push('Kathmandu');
+    if (venueText.includes('entebbe cricket') || cityText.includes('entebbe')) candidates.push('Entebbe');
+    if (venueText.includes('al amerat') || cityText.includes('muscat')) candidates.push('Muscat');
+
+    for (const prayerCity of [...new Set(candidates.filter(Boolean))]) {
+        try {
+            const url = `https://api.aladhan.com/v1/timingsByCity/${dateStr}?city=${encodeURIComponent(prayerCity)}&country=${encodeURIComponent(country || 'Australia')}&method=4`;
+            const res = await fetch(url);
+            if (!res.ok) continue;
+            const data = await res.json();
+            const timings = data.code === 200 ? (data.data?.timings || {}) : {};
+            const maghrib = String(timings.Maghrib || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
+            const sunrise = String(timings.Sunrise || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
+            const sunset = String(timings.Sunset || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
+            const apiTimezone = data.data?.meta?.timezone || null;
+            if (maghrib && sunrise && sunset) return { maghrib, sunrise, sunset, timezone: apiTimezone, ok: true };
+        } catch (e) { console.warn('AlAdhan city prayer lookup failed:', prayerCity, e); }
+    }
+
+    // North Sydney Oval coordinate fallback avoids suburb-name geocoding errors.
+    if (venueText.includes('north sydney') || cityText.includes('north sydney')) {
+        try {
+            const url = `https://api.aladhan.com/v1/timings/${dateStr}?latitude=-33.83190&longitude=151.20929&method=4&timezonestring=${encodeURIComponent(timeZone || 'Australia/Sydney')}`;
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                const timings = data.code === 200 ? (data.data?.timings || {}) : {};
+                const maghrib = String(timings.Maghrib || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
+                const sunrise = String(timings.Sunrise || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
+                const sunset = String(timings.Sunset || '').match(/^(\\d{2}:\\d{2})/)?.[1] || null;
+                if (maghrib && sunrise && sunset) return { maghrib, sunrise, sunset, timezone: timeZone || 'Australia/Sydney', ok: true };
+            }
+        } catch (e) { console.warn('AlAdhan coordinate prayer lookup failed:', e); }
+    }
+    console.warn('No verified AlAdhan prayer timings returned', { city, country, venue, dateStr });
+    return empty;
 }
 
 // Resolve the ground's IANA timezone deterministically. Venue-local time is used
@@ -1265,7 +1291,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     // Resolve venue timezone first; UTC date is used only to obtain timezone metadata.
     const utcDate = matchInstant.toISOString().slice(0, 10);
     const [utcYear, utcMonth, utcDay] = utcDate.split("-");
-    const timezoneProbe = await fetchMaghribTime(city, country, `${utcDay}-${utcMonth}-${utcYear}`);
+    const timezoneProbe = await fetchMaghribTime(city, country, `${utcDay}-${utcMonth}-${utcYear}`, venue, venueTimezoneHint);
     const resolvedVenueTimezone = resolveGroundTimezone(city, country, venue, venueTimezoneHint, timezoneProbe.timezone);
     if (!resolvedVenueTimezone) {
         console.warn('Ilmi timezone resolution failed', { city, country, venue, venueTimezoneHint, apiTimezone: timezoneProbe.timezone });
@@ -1275,7 +1301,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     console.info('Ilmi venue timezone resolved', { venue, city, country, timeZone: resolvedVenueTimezone });
     const venueDateParts = getDatePartsInTimezone(matchInstant, resolvedVenueTimezone);
     const venueDateApi = `${venueDateParts.day}-${venueDateParts.month}-${venueDateParts.year}`;
-    const maghribData = await fetchMaghribTime(city, country, venueDateApi);
+    const maghribData = await fetchMaghribTime(city, country, venueDateApi, venue, resolvedVenueTimezone);
     const maghribTime = maghribData.maghrib;
     if (!maghribTime) {
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Venue ka Maghrib time verify nahi ho saka. Incorrect date ke saath Ilmi calculation chalane ke bajaye rok di gayi hai.</div>';
@@ -1283,7 +1309,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
     const nextIsoForPlanetary = addOneIsoDay(venueDateParts.iso);
     const [nextYearForPlanetary,nextMonthForPlanetary,nextDayForPlanetary] = nextIsoForPlanetary.split("-");
-    const nextDayPrayerData = await fetchMaghribTime(city, country, `${nextDayForPlanetary}-${nextMonthForPlanetary}-${nextYearForPlanetary}`);
+    const nextDayPrayerData = await fetchMaghribTime(city, country, `${nextDayForPlanetary}-${nextMonthForPlanetary}-${nextYearForPlanetary}`, venue, resolvedVenueTimezone);
     if (!maghribData.sunrise || !maghribData.sunset || !nextDayPrayerData.sunrise) {
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Planetary-hour calculation ke liye venue sunrise, sunset aur next sunrise verify nahi ho sake; Ilmi calculation roki gayi hai.</div>';
         return;
