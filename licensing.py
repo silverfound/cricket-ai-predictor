@@ -251,7 +251,7 @@ body{font:15px Arial;background:#0a0f1a;color:#eef;padding:18px;max-width:950px;
 <script>
 let k="";function headers(){return {"Content-Type":"application/json","X-Admin-Key":k}}
 async function api(url,opts={}){let r=await fetch(url,{...opts,headers:{...headers(),...(opts.headers||{})}});let j=await r.json();if(!r.ok)throw Error(j.detail||"Request failed");return j}
-function saveKey(){k=document.getElementById("key").value;loadList()}
+function saveKey(){k=document.getElementById("key").value;loadList();loadMatchPermissions()}
 async function createCodes(){try{let j=await api("/admin/licenses",{method:"POST",body:JSON.stringify({label:document.getElementById("label").value,duration_days:+document.getElementById("days").value,count:+document.getElementById("count").value,subscribed_leagues:document.getElementById("leagues").value.split(",").map(x=>x.trim()).filter(Boolean)})});document.getElementById("created").innerHTML=j.licenses.map(x=>"<p><b>"+x.code+"</b> — "+x.duration_days+" days — "+(x.subscribed_leagues.join(", ")||"No league access")+"</p>").join("");loadList()}catch(e){alert(e.message)}}
 async function saveMatch(enabled){try{await api("/admin/match-permissions",{method:"POST",body:JSON.stringify({match_id:document.getElementById("matchid").value,competition:document.getElementById("matchleague").value,match_title:document.getElementById("matchtitle").value,enabled})});loadMatchPermissions()}catch(e){alert(e.message)}}
 async function loadMatchPermissions(){try{let j=await api("/admin/match-permissions");document.getElementById("matchrows").innerHTML=j.matches.map(x=>"<p>"+x.match_id+" | "+x.competition+" | "+x.match_title+" | "+(x.enabled?"ALLOWED":"DISABLED")+"</p>").join("")}catch(e){alert(e.message)}}
