@@ -28,7 +28,16 @@ def init_db():
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             activated_at TIMESTAMPTZ,
             expires_at TIMESTAMPTZ,
-            blocked BOOLEAN NOT NULL DEFAULT FALSE
+            blocked BOOLEAN NOT NULL DEFAULT FALSE,
+            subscribed_leagues TEXT[] NOT NULL DEFAULT '{}'
+        )""")
+        conn.execute("ALTER TABLE app_licenses ADD COLUMN IF NOT EXISTS subscribed_leagues TEXT[] NOT NULL DEFAULT '{}'")
+        conn.execute("""CREATE TABLE IF NOT EXISTS match_prediction_permissions (
+            match_id TEXT PRIMARY KEY,
+            competition TEXT NOT NULL,
+            match_title TEXT NOT NULL DEFAULT '',
+            enabled BOOLEAN NOT NULL DEFAULT FALSE,
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         )""")
 
 def admin_guard(key: Optional[str]):
@@ -42,7 +51,7 @@ def active_license(device_id: str):
     if not device_id or len(device_id) > 128:
         raise HTTPException(401, "App installation is not registered")
     with db() as conn:
-        row = conn.execute("SELECT id, expires_at, blocked FROM app_licenses WHERE device_id=%s", (device_id,)).fetchone()
+        row = conn.execute("SELECT id, expires_at, blocked, subscribed_leagues FROM app_licenses WHERE device_id=%s", (device_id,)).fetchone()
     now = datetime.now(timezone.utc)
     if not row or row["blocked"] or not row["expires_at"] or row["expires_at"] <= now:
         raise HTTPException(403, "License expired or inactive")
@@ -59,6 +68,16 @@ class CreateLicense(BaseModel):
     label: str = ""
     duration_days: int
     count: int = 1
+    subscribed_leagues: list[str] = []
+
+class LeagueUpdate(BaseModel):
+    leagues: list[str]
+
+class MatchPermission(BaseModel):
+    match_id: str
+    competition: str
+    match_title: str = ""
+    enabled: bool = True
 
 class ExtendLicense(BaseModel):
     duration_days: int
@@ -105,15 +124,16 @@ def create(data: CreateLicense, x_admin_key: Optional[str] = Header(default=None
         for _ in range(data.count):
             code = secrets.token_hex(8).upper()
             digest = hashlib.sha256(code.encode()).hexdigest()
-            conn.execute("INSERT INTO app_licenses(code_hash,label,duration_days) VALUES(%s,%s,%s)", (digest, data.label.strip()[:120], data.duration_days))
-            result.append({"code": code, "label": data.label, "duration_days": data.duration_days})
+            leagues = list(dict.fromkeys(str(x).strip()[:120] for x in data.subscribed_leagues if str(x).strip()))
+            conn.execute("INSERT INTO app_licenses(code_hash,label,duration_days,subscribed_leagues) VALUES(%s,%s,%s,%s)", (digest, data.label.strip()[:120], data.duration_days, leagues))
+            result.append({"code": code, "label": data.label, "duration_days": data.duration_days, "subscribed_leagues": leagues})
     return {"licenses": result}
 
 @router.get("/admin/licenses")
 def listing(x_admin_key: Optional[str] = Header(default=None)):
     admin_guard(x_admin_key)
     with db() as conn:
-        rows = conn.execute("SELECT id,label,duration_days,device_id,created_at,activated_at,expires_at,blocked FROM app_licenses ORDER BY id DESC LIMIT 500").fetchall()
+        rows = conn.execute("SELECT id,label,duration_days,device_id,created_at,activated_at,expires_at,blocked,subscribed_leagues FROM app_licenses ORDER BY id DESC LIMIT 500").fetchall()
     now, out = datetime.now(timezone.utc), []
     for row in rows:
         item = dict(row)
@@ -122,6 +142,59 @@ def listing(x_admin_key: Optional[str] = Header(default=None)):
             item[key] = item[key].isoformat() if item[key] else None
         out.append(item)
     return {"licenses": out}
+
+@router.put("/admin/licenses/{license_id}/leagues")
+def update_leagues(license_id: int, data: LeagueUpdate, x_admin_key: Optional[str] = Header(default=None)):
+    admin_guard(x_admin_key)
+    leagues = list(dict.fromkeys(str(x).strip()[:120] for x in data.leagues if str(x).strip()))
+    if len(leagues) > 100:
+        raise HTTPException(400, "Maximum 100 leagues")
+    with db() as conn:
+        result = conn.execute("UPDATE app_licenses SET subscribed_leagues=%s WHERE id=%s", (leagues, license_id))
+        if result.rowcount == 0:
+            raise HTTPException(404, "License not found")
+    return {"success": True, "subscribed_leagues": leagues}
+
+@router.get("/admin/match-permissions")
+def get_match_permissions(x_admin_key: Optional[str] = Header(default=None)):
+    admin_guard(x_admin_key)
+    with db() as conn:
+        rows = conn.execute("SELECT match_id,competition,match_title,enabled,updated_at FROM match_prediction_permissions ORDER BY updated_at DESC LIMIT 500").fetchall()
+    return {"matches": [dict(row) for row in rows]}
+
+@router.post("/admin/match-permissions")
+def save_match_permission(data: MatchPermission, x_admin_key: Optional[str] = Header(default=None)):
+    admin_guard(x_admin_key)
+    match_id, competition = data.match_id.strip()[:160], data.competition.strip()[:120]
+    if not match_id or not competition:
+        raise HTTPException(400, "Match ID and competition are required")
+    with db() as conn:
+        conn.execute("""INSERT INTO match_prediction_permissions(match_id,competition,match_title,enabled,updated_at)
+            VALUES(%s,%s,%s,%s,NOW()) ON CONFLICT(match_id) DO UPDATE SET
+            competition=EXCLUDED.competition,match_title=EXCLUDED.match_title,
+            enabled=EXCLUDED.enabled,updated_at=NOW()""",
+            (match_id, competition, data.match_title.strip()[:240], data.enabled))
+    return {"success": True}
+
+@router.get("/license/match-permissions")
+def customer_match_permissions(x_device_id: Optional[str] = Header(default=None)):
+    license = active_license(x_device_id or "")
+    leagues = [str(x).strip().casefold() for x in (license.get("subscribed_leagues") or [])]
+    with db() as conn:
+        rows = conn.execute("SELECT match_id,competition FROM match_prediction_permissions WHERE enabled=TRUE").fetchall()
+    allowed = [row["match_id"] for row in rows if str(row["competition"]).strip().casefold() in leagues]
+    return {"allowed_match_ids": allowed}
+
+def require_match_permission(license, match_id: str, competition: str):
+    if not match_id or not competition:
+        raise HTTPException(403, "Match identity is required for prediction")
+    leagues = [str(x).strip().casefold() for x in (license.get("subscribed_leagues") or [])]
+    if str(competition).strip().casefold() not in leagues:
+        raise HTTPException(403, "Your license does not include this league")
+    with db() as conn:
+        row = conn.execute("SELECT competition,enabled FROM match_prediction_permissions WHERE match_id=%s", (match_id,)).fetchone()
+    if not row or not row["enabled"] or str(row["competition"]).strip().casefold() != str(competition).strip().casefold():
+        raise HTTPException(403, "Admin has not enabled this match")
 
 @router.post("/admin/licenses/{license_id}/extend")
 def extend(license_id: int, data: ExtendLicense, x_admin_key: Optional[str] = Header(default=None)):
@@ -173,13 +246,15 @@ ADMIN_HTML = """<!doctype html><html><head><meta name="viewport" content="width=
 body{font:15px Arial;background:#0a0f1a;color:#eef;padding:18px;max-width:950px;margin:auto}input,button{padding:10px;margin:4px;border-radius:6px}input{background:#111827;color:white;border:1px solid #456}button{background:#00d9b5;color:#06121a;font-weight:bold;cursor:pointer}.card{border:1px solid #334155;padding:12px;border-radius:9px;margin:12px 0}table{width:100%;border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #334155;text-align:left;font-size:12px}
 </style></head><body><h2>🏏 Cricket AI — License Admin</h2>
 <div class="card">Admin key <input id="key" type="password"><button onclick="saveKey()">Connect</button></div>
-<div class="card"><h3>Create customer code</h3><input id="label" placeholder="Customer name/phone"><input id="days" type="number" min="1" max="3650" value="30"><input id="count" type="number" min="1" max="100" value="1"><button onclick="createCodes()">Generate code(s)</button><div id="created"></div></div>
-<div class="card"><h3>Customer licenses</h3><button onclick="loadList()">Refresh</button><div style="overflow:auto"><table><thead><tr><th>ID</th><th>Customer</th><th>Days</th><th>Status</th><th>Expiry</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></div>
+<div class="card"><h3>Create customer code</h3><input id="label" placeholder="Customer name/phone"><input id="days" type="number" min="1" max="3650" value="30"><input id="count" type="number" min="1" max="100" value="1"><input id="leagues" placeholder="Subscribed leagues, comma-separated"><button onclick="createCodes()">Generate code(s)</button><div id="created"></div></div>
+<div class="card"><h3>Match prediction permissions</h3><p>Match feed mein se Match ID aur exact competition title enter karein. Sirf enabled match aur customer ki subscribed league dono match hon to prediction chalegi.</p><input id="matchid" placeholder="Match ID"><input id="matchleague" placeholder="Exact competition / league"><input id="matchtitle" placeholder="Teams / match title"><button onclick="saveMatch(true)">Allow prediction</button><button onclick="saveMatch(false)">Disable prediction</button><button onclick="loadMatchPermissions()">Refresh permissions</button><div id="matchrows"></div></div><div class="card"><h3>Customer licenses</h3><button onclick="loadList()">Refresh</button><div style="overflow:auto"><table><thead><tr><th>ID</th><th>Customer</th><th>Days</th><th>Leagues</th><th>Status</th><th>Expiry</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table></div></div>
 <script>
 let k="";function headers(){return {"Content-Type":"application/json","X-Admin-Key":k}}
 async function api(url,opts={}){let r=await fetch(url,{...opts,headers:{...headers(),...(opts.headers||{})}});let j=await r.json();if(!r.ok)throw Error(j.detail||"Request failed");return j}
 function saveKey(){k=document.getElementById("key").value;loadList()}
-async function createCodes(){try{let j=await api("/admin/licenses",{method:"POST",body:JSON.stringify({label:document.getElementById("label").value,duration_days:+document.getElementById("days").value,count:+document.getElementById("count").value})});document.getElementById("created").innerHTML=j.licenses.map(x=>"<p><b>"+x.code+"</b> — "+x.duration_days+" days</p>").join("");loadList()}catch(e){alert(e.message)}}
-async function action(id,a){try{if(a==="extend"){let d=prompt("Additional days?");if(!d)return;await api("/admin/licenses/"+id+"/extend",{method:"POST",body:JSON.stringify({duration_days:+d})})}else if(a==="reset-device"){if(!confirm("Reset device binding? Code becomes unused and starts a fresh term on next activation."))return;await api("/admin/licenses/"+id+"/reset-device",{method:"POST",body:JSON.stringify({confirm:true})})}else await api("/admin/licenses/"+id+"/"+a,{method:"POST"});loadList()}catch(e){alert(e.message)}}
-async function loadList(){try{let j=await api("/admin/licenses");document.getElementById("rows").innerHTML=j.licenses.map(x=>"<tr><td>"+x.id+"</td><td>"+(x.label||"—")+"</td><td>"+x.duration_days+"</td><td>"+x.status+"</td><td>"+(x.expires_at||"—")+"</td><td><button onclick='action("+x.id+",\"extend\")'>Extend</button><button onclick='action("+x.id+",\""+(x.blocked?"unblock":"block")+"\")'>"+(x.blocked?"Unblock":"Block")+"</button><button onclick='action("+x.id+",\"reset-device\")'>Reset</button></td></tr>").join("")}catch(e){document.getElementById("rows").innerHTML="<tr><td>"+e.message+"</td></tr>"}}
+async function createCodes(){try{let j=await api("/admin/licenses",{method:"POST",body:JSON.stringify({label:document.getElementById("label").value,duration_days:+document.getElementById("days").value,count:+document.getElementById("count").value,subscribed_leagues:document.getElementById("leagues").value.split(",").map(x=>x.trim()).filter(Boolean)})});document.getElementById("created").innerHTML=j.licenses.map(x=>"<p><b>"+x.code+"</b> — "+x.duration_days+" days — "+(x.subscribed_leagues.join(", ")||"No league access")+"</p>").join("");loadList()}catch(e){alert(e.message)}}
+async function saveMatch(enabled){try{await api("/admin/match-permissions",{method:"POST",body:JSON.stringify({match_id:document.getElementById("matchid").value,competition:document.getElementById("matchleague").value,match_title:document.getElementById("matchtitle").value,enabled})});loadMatchPermissions()}catch(e){alert(e.message)}}
+async function loadMatchPermissions(){try{let j=await api("/admin/match-permissions");document.getElementById("matchrows").innerHTML=j.matches.map(x=>"<p>"+x.match_id+" | "+x.competition+" | "+x.match_title+" | "+(x.enabled?"ALLOWED":"DISABLED")+"</p>").join("")}catch(e){alert(e.message)}}
+async function action(id,a){try{if(a==="leagues"){let v=prompt("Comma-separated exact league names");if(v===null)return;await api("/admin/licenses/"+id+"/leagues",{method:"PUT",body:JSON.stringify({leagues:v.split(",").map(x=>x.trim()).filter(Boolean)})})}else if(a==="extend"){let d=prompt("Additional days?");if(!d)return;await api("/admin/licenses/"+id+"/extend",{method:"POST",body:JSON.stringify({duration_days:+d})})}else if(a==="reset-device"){if(!confirm("Reset device binding? Code becomes unused and starts a fresh term on next activation."))return;await api("/admin/licenses/"+id+"/reset-device",{method:"POST",body:JSON.stringify({confirm:true})})}else await api("/admin/licenses/"+id+"/"+a,{method:"POST"});loadList();loadMatchPermissions()}catch(e){alert(e.message)}}
+async function loadList(){try{let j=await api("/admin/licenses");document.getElementById("rows").innerHTML=j.licenses.map(x=>"<tr><td>"+x.id+"</td><td>"+(x.label||"—")+"</td><td>"+x.duration_days+"</td><td>"+(x.subscribed_leagues||[]).join(", ")+" <button onclick='action("+x.id+",\"leagues\")'>Edit</button></td><td>"+x.status+"</td><td>"+(x.expires_at||"—")+"</td><td><button onclick='action("+x.id+",\"extend\")'>Extend</button><button onclick='action("+x.id+",\""+(x.blocked?"unblock":"block")+"\")'>"+(x.blocked?"Unblock":"Block")+"</button><button onclick='action("+x.id+",\"reset-device\")'>Reset</button></td></tr>").join("")}catch(e){document.getElementById("rows").innerHTML="<tr><td>"+e.message+"</td></tr>"}}
 </script></body></html>"""
