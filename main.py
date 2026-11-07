@@ -95,6 +95,7 @@ MATCHES_CACHE_TTL_SECONDS = 300
 MATCHES_STALE_MAX_SECONDS = 1800
 _matches_cache = {}
 _matches_cache_lock = Lock()
+_matches_key_locks = {}
 
 
 @app.get("/matches")
@@ -108,49 +109,55 @@ def get_matches(date: str, per_paged: int = 10, paged: int = 1, _nocache: Option
     per_paged = max(1, min(int(per_paged), 50))
     paged = max(1, min(int(paged), 100))
     cache_key = (date, per_paged, paged)
-    now = time.monotonic()
 
+    # One upstream request per cache key at a time, even when many visitors
+    # open/refresh the site simultaneously.
     with _matches_cache_lock:
-        cached = _matches_cache.get(cache_key)
-        if cached and now - cached["stored_at"] < MATCHES_CACHE_TTL_SECONDS:
-            return cached["payload"]
+        key_lock = _matches_key_locks.setdefault(cache_key, Lock())
 
-    params = {"date": date, "per_paged": per_paged, "paged": paged}
-    # Intentionally do not forward _nocache: client cache-busters must not
-    # force a paid upstream request and defeat the shared cache.
-
-    try:
-        response = requests.get(
-            "https://cricket-live-line-advance.p.rapidapi.com/matches",
-            params=params,
-            headers={
-                "X-RapidAPI-Key": api_key,
-                "X-RapidAPI-Host": "cricket-live-line-advance.p.rapidapi.com"
-            },
-            timeout=20
-        )
-        response.raise_for_status()
-        payload = response.json()
+    with key_lock:
+        now = time.monotonic()
         with _matches_cache_lock:
-            _matches_cache[cache_key] = {"stored_at": time.monotonic(), "payload": payload}
-            # Keep memory bounded if many dates/pages are requested.
-            if len(_matches_cache) > 512:
-                oldest_keys = sorted(_matches_cache, key=lambda key: _matches_cache[key]["stored_at"])
-                for old_key in oldest_keys[:len(_matches_cache) - 384]:
-                    _matches_cache.pop(old_key, None)
-        return payload
-    except requests.RequestException as exc:
-        # If the provider quota is temporarily exhausted, keep the site useful
-        # by serving the last successful response for up to 30 minutes.
-        if cached and now - cached["stored_at"] < MATCHES_STALE_MAX_SECONDS:
-            return cached["payload"]
-        print(f"Cricket matches provider request failed: {exc}")
-        raise HTTPException(status_code=502, detail="Cricket matches provider request failed")
-    except ValueError:
-        if cached and now - cached["stored_at"] < MATCHES_STALE_MAX_SECONDS:
-            return cached["payload"]
-        raise HTTPException(status_code=502, detail="Cricket matches provider returned invalid JSON")
+            cached = _matches_cache.get(cache_key)
+            if cached and now - cached["stored_at"] < MATCHES_CACHE_TTL_SECONDS:
+                return cached["payload"]
 
+        params = {"date": date, "per_paged": per_paged, "paged": paged}
+        # Intentionally do not forward _nocache: client cache-busters must not
+        # force a paid upstream request and defeat the shared cache.
+
+        try:
+            response = requests.get(
+                "https://cricket-live-line-advance.p.rapidapi.com/matches",
+                params=params,
+                headers={
+                    "X-RapidAPI-Key": api_key,
+                    "X-RapidAPI-Host": "cricket-live-line-advance.p.rapidapi.com"
+                },
+                timeout=20
+            )
+            response.raise_for_status()
+            payload = response.json()
+            with _matches_cache_lock:
+                _matches_cache[cache_key] = {"stored_at": time.monotonic(), "payload": payload}
+                # Keep memory bounded if many dates/pages are requested.
+                if len(_matches_cache) > 512:
+                    oldest_keys = sorted(_matches_cache, key=lambda key: _matches_cache[key]["stored_at"])
+                    for old_key in oldest_keys[:len(_matches_cache) - 384]:
+                        _matches_cache.pop(old_key, None)
+                        _matches_key_locks.pop(old_key, None)
+            return payload
+        except requests.RequestException as exc:
+            # If the provider quota is temporarily exhausted, keep the site useful
+            # by serving the last successful response for up to 30 minutes.
+            if cached and now - cached["stored_at"] < MATCHES_STALE_MAX_SECONDS:
+                return cached["payload"]
+            print(f"Cricket matches provider request failed: {exc}")
+            raise HTTPException(status_code=502, detail="Cricket matches provider request failed")
+        except ValueError:
+            if cached and now - cached["stored_at"] < MATCHES_STALE_MAX_SECONDS:
+                return cached["payload"]
+            raise HTTPException(status_code=502, detail="Cricket matches provider returned invalid JSON")
 
 @app.post("/predict")
 def predict_match(match: MatchRequest):
