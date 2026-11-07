@@ -884,7 +884,8 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
 
     // Feed-provided coordinates are the most precise source for a ground.
     if (directCoords) {
-        let timezone = isValidIanaTimezone(timezoneHint) ? timezoneHint : '';
+        // Coordinates are authoritative; resolve their timezone instead of trusting a possibly stale feed hint.
+        let timezone = '';
         if (!timezone) {
             try {
                 const url = `https://api.open-meteo.com/v1/forecast?latitude=${directCoords.latitude}&longitude=${directCoords.longitude}&daily=sunrise&forecast_days=1&timezone=auto`;
@@ -958,8 +959,8 @@ async function fetchMaghribTime(location, dateStr) {
 
 // Validate a timezone supplied by the match feed without relying on a country list.
 function resolveGroundTimezone(location, hint = '') {
-    if (isValidIanaTimezone(hint)) return hint;
-    return isValidIanaTimezone(location?.timezone) ? location.timezone : '';
+    if (isValidIanaTimezone(location?.timezone)) return location.timezone;
+    return isValidIanaTimezone(hint) ? hint : '';
 }
 
 function getDatePartsInTimezone(date, timeZone) {
