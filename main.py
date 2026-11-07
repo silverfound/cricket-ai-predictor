@@ -25,7 +25,9 @@ class MatchRequest(BaseModel):
     team2: str             
     venue: str             
     toss_winner: Optional[str] = None  
-    toss_decision: Optional[str] = None 
+    toss_decision: Optional[str] = None
+    match_id: str
+    competition: str
 
 def get_elo(team_name: str) -> float:
     if team_name in elo_ratings: return elo_ratings[team_name]
@@ -165,6 +167,8 @@ def get_matches(date: str, per_paged: int = 10, paged: int = 1, _nocache: Option
 
 @app.post("/predict")
 def predict_match(match: MatchRequest, license=Depends(require_license)):
+    from licensing import require_match_permission
+    require_match_permission(license, match.match_id, match.competition)
     if not match.toss_winner or not match.toss_decision:
         t1_wins, t2_wins, is_fb = [], [], False
         for w, d in [(match.team1, 'bat'), (match.team1, 'field'), (match.team2, 'bat'), (match.team2, 'field')]:
