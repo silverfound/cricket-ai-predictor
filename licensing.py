@@ -69,7 +69,7 @@ class ResetDevice(BaseModel):
 @router.post("/license/activate")
 def activate(data: Activation):
     code, device = data.code.strip().upper(), data.device_id.strip()
-    if len(code) < 8 or len(device) < 16 or len(device) > 128:
+    if len(code) < 12 or len(device) < 16 or len(device) > 128:
         raise HTTPException(400, "Invalid activation code or device")
     digest = hashlib.sha256(code.encode()).hexdigest()
     with db() as conn:
@@ -103,7 +103,7 @@ def create(data: CreateLicense, x_admin_key: Optional[str] = Header(default=None
     result = []
     with db() as conn:
         for _ in range(data.count):
-            code = secrets.token_hex(5).upper()
+            code = secrets.token_hex(8).upper()
             digest = hashlib.sha256(code.encode()).hexdigest()
             conn.execute("INSERT INTO app_licenses(code_hash,label,duration_days) VALUES(%s,%s,%s)", (digest, data.label.strip()[:120], data.duration_days))
             result.append({"code": code, "label": data.label, "duration_days": data.duration_days})
