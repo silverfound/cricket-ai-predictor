@@ -1,6 +1,12 @@
+const LICENSE_DEVICE_KEY = 'cricket_ai_installation_id_v1';
+function getLicenseDeviceId(){let id=localStorage.getItem(LICENSE_DEVICE_KEY);if(!id){id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'inst-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2);localStorage.setItem(LICENSE_DEVICE_KEY,id)}return id}
+function licenseHeaders(){return {'X-Device-ID':getLicenseDeviceId()}}
+async function startLicenseGate(){try{const r=await fetch(BACKEND_URL+'/license/status',{headers:licenseHeaders()});if(r.ok){fetchMatches();return}}catch(e){}showLicenseActivation()}
+function showLicenseActivation(message=''){let old=document.getElementById('license-gate');if(old)old.remove();let g=document.createElement('div');g.id='license-gate';g.style.cssText='position:fixed;inset:0;z-index:99999;background:#0a0f1a;color:white;display:flex;align-items:center;justify-content:center;padding:22px;font-family:Arial';g.innerHTML='<div style="width:100%;max-width:420px;background:#131b2e;border:1px solid #00ffcc;border-radius:12px;padding:22px;text-align:center"><h2 style="color:#00ffcc">🏏 Cricket AI Pro</h2><p>App activate karne ke liye apna unique activation code enter karein.</p><input id="license-code" placeholder="ACTIVATION CODE" autocapitalize="characters" style="box-sizing:border-box;width:100%;padding:13px;background:#0a0f1a;color:white;text-align:center;font-size:18px"><p id="license-error" style="color:#f87171;min-height:20px">'+message+'</p><button id="activate-license-btn" style="width:100%;padding:12px;background:#00ffcc;color:#001b18;font-weight:bold">Activate App</button><p style="font-size:12px;color:#94a3b8">Code sirf ek mobile par activate ho sakta hai.</p></div>';document.body.appendChild(g);document.getElementById('activate-license-btn').onclick=async()=>{let code=document.getElementById('license-code').value.trim().toUpperCase(),err=document.getElementById('license-error'),b=document.getElementById('activate-license-btn');if(!code){err.textContent='Activation code enter karein.';return}b.disabled=true;b.textContent='Activating...';try{let r=await fetch(BACKEND_URL+'/license/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,device_id:getLicenseDeviceId()})}),d=await r.json();if(!r.ok)throw Error(d.detail||'Activation failed');g.remove();fetchMatches()}catch(e){err.textContent=e.message;b.disabled=false;b.textContent='Activate App'}}}
 const BACKEND_URL = "https://cricket-ai-predictor-ciat.onrender.com"; 
 
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
+let allowedPredictionMatchIds = new Set();
 
 // ==========================================
 // NAME MAPPING (API Name -> Model Name)
@@ -1178,7 +1184,7 @@ function getAccuracyStats() {
     return { total: evaluated.length, correct: correct, pending: pending.length };
 }
 
-async function fetchMatches(forceRefresh = false) {
+async function fetchMatches() {
     let container = document.getElementById("dynamic-prediction-area");
     let stats = getAccuracyStats();
     let accPercent = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
@@ -1201,7 +1207,7 @@ async function fetchMatches(forceRefresh = false) {
                 <button id="tab-upcoming" onclick="switchTab('upcoming')" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">⏳ Upcoming</button>
                 <button id="tab-finished" onclick="switchTab('finished')" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #334155; font-weight: bold; cursor: pointer; background: #131b2e; color: white;">✅ Finished</button>
             </div>
-            <button onclick="fetchMatches(true)" style="background: transparent; color: #00ffcc; border: 1px solid #00ffcc; padding: 8px 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">🔄 Refresh</button>
+
         </div>
         <div id="matches-container"></div>`;
     
@@ -1224,14 +1230,14 @@ async function fetchMatches(forceRefresh = false) {
     let allMatches = [];
 
     try {
-        if (forceRefresh) { localStorage.removeItem(cacheKeyToday); localStorage.removeItem(cacheKeyTomorrow); }
+
 
         for (let date of [today, tomorrow]) {
             let cacheKey = date === today ? cacheKeyToday : cacheKeyTomorrow;
             let cachedData = localStorage.getItem(cacheKey);
             let fetchNeeded = true;
 
-            if (cachedData && !forceRefresh) {
+            if (cachedData) {
                 let parsed = JSON.parse(cachedData);
                 if (Date.now() - parsed.time < cacheExpiry && parsed.data.length > 0) { allMatches.push(...parsed.data); fetchNeeded = false; }
             }
@@ -1244,7 +1250,7 @@ async function fetchMatches(forceRefresh = false) {
                         per_paged: "10",
                         paged: String(page)
                     });
-                    const res = await fetch(`${BACKEND_URL}/matches?${params.toString()}`);
+                    const res = await fetch(`${BACKEND_URL}/matches?${params.toString()}`, { headers: licenseHeaders() });
                     if (!res.ok) throw new Error(`Matches API failed for ${date}, page ${page}: HTTP ${res.status}`);
                     return await res.json();
                 };
@@ -1294,6 +1300,11 @@ async function fetchMatches(forceRefresh = false) {
             else { upcomingMatches.push(m); }
         });
 
+        const permissionResponse = await fetch(BACKEND_URL + '/license/match-permissions', { headers: licenseHeaders() });
+        if (!permissionResponse.ok) throw new Error('Prediction permissions could not be loaded');
+        const permissionData = await permissionResponse.json();
+        allowedPredictionMatchIds = new Set((permissionData.allowed_match_ids || []).map(String));
+
         upcomingMatches.sort((a,b) => a.timestamp_start - b.timestamp_start);
         finishedMatches.sort((a,b) => b.timestamp_start - a.timestamp_start);
         switchTab(liveMatches.length > 0 ? 'live' : 'upcoming');
@@ -1320,7 +1331,7 @@ function switchTab(tab) {
 function renderMatches(matches) {
     let container = document.getElementById("matches-container");
     if (!matches.length) {
-        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Is category mein filhal koi match nahi hai. Refresh dabayein.</div>`;
+        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Is category mein filhal koi match nahi hai. Matches automatic update honge.</div>`;
         return;
     }
     let html = "";
@@ -1333,6 +1344,9 @@ function renderMatches(matches) {
         else if (fmt.toLowerCase().includes("odi") || fmt.toLowerCase().includes("list a")) matchType = "ODI";
 
         let time = new Date(m.timestamp_start * 1000).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        let permissionMatchId = String(m.match_id || m.timestamp_start || '');
+        let competitionTitle = m.competition?.title || m.competition?.name || m.competition_name || m.league?.name || m.tournament?.name || '';
+        let predictionAllowed = allowedPredictionMatchIds.has(permissionMatchId);
         
         let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
         
@@ -1357,12 +1371,13 @@ function renderMatches(matches) {
 
         html += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
-                <p style="color: #00ffcc; font-size: 0.8rem; margin: 0 0 5px 0;">${m.competition?.title.toUpperCase() || 'MATCH'} | ${matchType}</p>
+                <p style="color: #00ffcc; font-size: 0.8rem; margin: 0 0 5px 0;">${(competitionTitle || 'MATCH').toUpperCase()} | ${matchType}</p>
                 <h4 style="color: #fff; margin: 0 0 5px 0;">${m.teama.name} vs ${m.teamb.name}</h4>
                 <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0 0 5px 0;">🏟️ ${m.venue?.name || 'Unknown'}</p>
                 ${statusText}
+                <p style="color: #64748b; font-size: 0.7rem; margin: 0 0 4px 0;">Match ID: ${permissionMatchId} | Competition: ${competitionTitle || 'Unknown'}</p>
                 <p style="color: #fbbf24; font-size: 0.85rem; margin: 0 0 10px 0;">📅 ${time}</p>
-                ${currentTab !== 'finished' ? `<button class="predict-btn" data-index="${index}" style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : ''}
+                ${currentTab !== 'finished' ? (predictionAllowed ? `<button class="predict-btn" data-index="${index}" style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : `<button disabled style="width: 100%; padding: 8px; background: #475569; color: #cbd5e1; border: none; border-radius: 6px; font-weight: bold; cursor: not-allowed;">🔒 Subscription / Admin approval required</button>`) : ''}
             </div>`;
     });
     container.innerHTML = html;
@@ -1383,6 +1398,7 @@ function renderMatches(matches) {
                 let v = match.venue && match.venue.name ? match.venue.name : '';
                 let safeVenue = v.replace(/'/g, ""); 
                 let matchId = match.match_id ? match.match_id : match.timestamp_start;
+                let competitionTitle = match.competition?.title || match.competition?.name || match.competition_name || match.league?.name || match.tournament?.name || '';
                 
                 const venueMeta = match.venue || {};
                 const city = venueMeta.location || venueMeta.city || venueMeta.town || venueMeta.locality || "";
@@ -1390,12 +1406,12 @@ function renderMatches(matches) {
                 const venueTimezoneHint = venueMeta.timezone || venueMeta.time_zone || venueMeta.tz || "";
                 const matchContext = {
                     team1: t1, team2: t2,
-                    competition: match.competition?.title || "",
+                    competition: competitionTitle,
                     format: match.format_str || matchType,
                     startTime: match.timestamp_start || ""
                 };
 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '', venueTimezoneHint, venueMeta, matchContext);
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, competitionTitle, venueTimezoneHint, venueMeta, matchContext);
             }
         });
     });
@@ -1427,8 +1443,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
     try {
         const res = await fetch(`${BACKEND_URL}/predict`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue })
+            method: 'POST', headers: { 'Content-Type': 'application/json', ...licenseHeaders() },
+            body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue, match_id: String(matchId), competition: competitionTitle })
         });
         const pred = await res.json();
         
@@ -1640,8 +1656,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
         try {
             const res = await fetch(`${BACKEND_URL}/predict`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue, toss_winner: modelTw, toss_decision: td })
+                method: 'POST', headers: { 'Content-Type': 'application/json', ...licenseHeaders() },
+                body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue, match_id: String(matchId), competition: competitionTitle, toss_winner: modelTw, toss_decision: td })
             });
             const pred = await res.json();
             if (pred.success) {
@@ -1670,4 +1686,4 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     };
 }
 
-document.addEventListener("DOMContentLoaded", () => { wakeUpBackend(); fetchMatches(); });
+document.addEventListener("DOMContentLoaded", () => { wakeUpBackend(); startLicenseGate(); });

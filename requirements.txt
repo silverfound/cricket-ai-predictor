@@ -9,3 +9,5 @@ lightgbm
 pydantic
 requests
 scikit-learn
+
+psycopg[binary]
