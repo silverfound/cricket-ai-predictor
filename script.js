@@ -1375,6 +1375,7 @@ function renderMatches(matches) {
                 <h4 style="color: #fff; margin: 0 0 5px 0;">${m.teama.name} vs ${m.teamb.name}</h4>
                 <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0 0 5px 0;">🏟️ ${m.venue?.name || 'Unknown'}</p>
                 ${statusText}
+                <p style="color: #64748b; font-size: 0.7rem; margin: 0 0 4px 0;">Match ID: ${permissionMatchId} | Competition: ${competitionTitle || 'Unknown'}</p>
                 <p style="color: #fbbf24; font-size: 0.85rem; margin: 0 0 10px 0;">📅 ${time}</p>
                 ${currentTab !== 'finished' ? (predictionAllowed ? `<button class="predict-btn" data-index="${index}" style="width: 100%; padding: 8px; background: #00ffcc; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">🔮 Predict Winner</button>` : `<button disabled style="width: 100%; padding: 8px; background: #475569; color: #cbd5e1; border: none; border-radius: 6px; font-weight: bold; cursor: not-allowed;">🔒 Subscription / Admin approval required</button>`) : ''}
             </div>`;
@@ -1409,7 +1410,7 @@ function renderMatches(matches) {
                     startTime: match.timestamp_start || ""
                 };
 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, match.competition?.title || '', venueTimezoneHint, venueMeta, matchContext);
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, competitionTitle, venueTimezoneHint, venueMeta, matchContext);
             }
         });
     });
