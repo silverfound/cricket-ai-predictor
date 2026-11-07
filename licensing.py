@@ -4,7 +4,7 @@ from typing import Optional
 import psycopg
 from psycopg.rows import dict_row
 from fastapi import APIRouter, Header, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel
 
 router = APIRouter()
@@ -237,6 +237,10 @@ def reset_device(license_id: int, data: ResetDevice, x_admin_key: Optional[str] 
         if result.rowcount == 0:
             raise HTTPException(404, "License not found")
     return {"success": True}
+
+@router.get("/admin.js", include_in_schema=False)
+def admin_javascript():
+    return FileResponse(os.path.join(os.path.dirname(__file__), "admin.js"), media_type="application/javascript")
 
 @router.get("/admin", response_class=HTMLResponse)
 def admin_page():
