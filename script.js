@@ -981,6 +981,7 @@ async function fetchMatches(forceRefresh = false) {
     const today = getFormattedDate(0), tomorrow = getFormattedDate(1);
     // Bump cache version so older first-page-only data is not reused.
     const cacheKeyToday = `cricket_data_v26_${today}`;
+    const cacheKeyTomorrow = `cricket_data_v26_${tomorrow}`;
     const cacheExpiry = 10 * 60 * 1000;
 
     let allMatches = [];
