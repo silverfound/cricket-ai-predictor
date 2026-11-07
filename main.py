@@ -1,12 +1,16 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import joblib, pandas as pd, numpy as np
 import os, requests, time
 from threading import Lock
 from pydantic import BaseModel
 from typing import Optional
+from licensing import router as licensing_router, init_db, require_license
 
 app = FastAPI(title="Cricket AI Win Predictor API")
+app.include_router(licensing_router)
+@app.on_event("startup")
+def startup_license_db(): init_db()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 models = joblib.load('cricket_ensemble_modern.joblib')
@@ -99,7 +103,7 @@ _matches_key_locks = {}
 
 
 @app.get("/matches")
-def get_matches(date: str, per_paged: int = 10, paged: int = 1, _nocache: Optional[str] = None):
+def get_matches(date: str, per_paged: int = 10, paged: int = 1, _nocache: Optional[str] = None, license=Depends(require_license)):
     """Cached server-side proxy for the RapidAPI cricket matches feed."""
     api_key = os.getenv("RAPIDAPI_KEY")
     if not api_key:
@@ -160,7 +164,7 @@ def get_matches(date: str, per_paged: int = 10, paged: int = 1, _nocache: Option
             raise HTTPException(status_code=502, detail="Cricket matches provider returned invalid JSON")
 
 @app.post("/predict")
-def predict_match(match: MatchRequest):
+def predict_match(match: MatchRequest, license=Depends(require_license)):
     if not match.toss_winner or not match.toss_decision:
         t1_wins, t2_wins, is_fb = [], [], False
         for w, d in [(match.team1, 'bat'), (match.team1, 'field'), (match.team2, 'bat'), (match.team2, 'field')]:
