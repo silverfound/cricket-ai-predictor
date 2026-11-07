@@ -14,7 +14,7 @@ def database():
     os.environ["ADMIN_API_KEY"] = "ci-test-admin-key"
     licensing.init_db()
     with psycopg.connect(os.environ["DATABASE_URL"]) as conn:
-        conn.execute("TRUNCATE match_prediction_permissions, app_licenses RESTART IDENTITY")
+        conn.execute("TRUNCATE license_match_permissions, match_prediction_permissions, app_licenses RESTART IDENTITY")
     yield
 
 
@@ -57,7 +57,11 @@ def test_prediction_requires_both_league_and_admin_match_approval():
         match_title="Team A v Team B",
         enabled=True,
     )
-    licensing.save_match_permission(permission, "ci-test-admin-key")
+    licensing.update_customer_matches(
+        license_row["id"],
+        licensing.CustomerMatchesUpdate(matches=[permission]),
+        "ci-test-admin-key",
+    )
     licensing.require_match_permission(license_row, "match-123", "Premier League")
 
     with pytest.raises(HTTPException) as wrong_league:
@@ -77,7 +81,11 @@ def test_disabled_match_is_not_predictable():
         competition="Premier League",
         enabled=False,
     )
-    licensing.save_match_permission(permission, "ci-test-admin-key")
+    licensing.update_customer_matches(
+        licensing.active_license(device)["id"],
+        licensing.CustomerMatchesUpdate(matches=[permission]),
+        "ci-test-admin-key",
+    )
     with pytest.raises(HTTPException) as error:
         licensing.require_match_permission(licensing.active_license(device), "match-disabled", "Premier League")
     assert error.value.status_code == 403
