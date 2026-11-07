@@ -1432,7 +1432,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
     try {
         const res = await fetch(`${BACKEND_URL}/predict`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json', ...licenseHeaders() },
             body: JSON.stringify({ match_type: type, team1: modelT1, team2: modelT2, venue })
         });
         const pred = await res.json();
