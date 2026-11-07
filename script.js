@@ -594,7 +594,7 @@ const urduCaptains = {
     "Meg Lanning": "میگ لیننگ",
     "Sophie Devine": "سوفی ڈیوائن",
     "Ashleigh Gardner": "ایشلی گارڈنر",
-    "Phoebe Litchfield": "فوبی لیچفیلڈ"
+    "Phoebe Litchfield": "فوبی لچفیلڈ"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
@@ -797,6 +797,10 @@ function applyIlmiTossTimeFactor() {
     const tossDecision = document.getElementById("toss-decision")?.value || "";
     if (![state.team1, state.team2].includes(tossWinner) || !tossDecision) {
         result.textContent = "Toss winner aur Bat/Field decision select karein.";
+        return;
+    }
+    if (state.matchStartTime && tossTimeNumber !== null && timeInput.value >= state.matchStartTime) {
+        result.textContent = "Toss time scheduled match start se pehle hona chahiye (venue local time).";
         return;
     }
     if (!state.nextSunrise) {
@@ -1501,28 +1505,25 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         : venueDateParts.iso;
     const hijriReferenceDate = new Date(`${finalGregorianDate}T12:00:00Z`);
 
-    let hijriDateStr = "";
-    try {
-        let gToHRes = await fetch(`https://api.aladhan.com/v1/gToH/${finalGregorianDate}`);
-        if (gToHRes.ok) {
-            let gToHData = await gToHRes.json();
-            if (gToHData.code === 200) {
-                let hDate = gToHData.data.hijri;
-                hijriDateStr = `${numberToUrdu(parseInt(hDate.day))} ${urduMonths[hDate.month.number - 1]} ${numberToUrdu(parseInt(hDate.year))}`;
-            }
-        }
-    } catch (e) { console.log("gToH API Error:", e); }
-
-    if (!hijriDateStr) {
-        let formatter = new Intl.DateTimeFormat('en-US-u-ca-islamic', {
-            timeZone: 'UTC', day: 'numeric', month: 'numeric', year: 'numeric'
-        });
-        let parts = formatter.formatToParts(hijriReferenceDate);
-        hijriDateStr = `${numberToUrdu(parseInt(parts.find(p => p.type === 'day').value))} ${urduMonths[parseInt(parts.find(p => p.type === 'month').value) - 1]} ${numberToUrdu(parseInt(parts.find(p => p.type === 'year').value.replace(' AH', '').replace(' BC', '')))}`;
+    // Use the Umm al-Qura calendar consistently. AlAdhan's default Hijri
+    // conversion can differ by one day from Umm al-Qura; do not apply a
+    // blanket API adjustment because that would shift unrelated dates too.
+    const hijriFormatter = new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura', {
+        timeZone: 'UTC', day: 'numeric', month: 'numeric', year: 'numeric'
+    });
+    const hijriParts = hijriFormatter.formatToParts(hijriReferenceDate);
+    const hijriDay = hijriParts.find(p => p.type === 'day')?.value;
+    const hijriMonth = hijriParts.find(p => p.type === 'month')?.value;
+    const hijriYear = hijriParts.find(p => p.type === 'year')?.value;
+    if (!hijriDay || !hijriMonth || !hijriYear) {
+        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Umm al-Qura Hijri date calculate nahi ho saki; Ilmi calculation rok di gayi hai.</div>';
+        return;
     }
+    const hijriDateStr = `${numberToUrdu(parseInt(hijriDay, 10))} ${urduMonths[parseInt(hijriMonth, 10) - 1]} ${numberToUrdu(parseInt(hijriYear.replace(' AH', '').replace(' BC', ''), 10))}`;
 
-    // Weekday follows the final venue-local calendar date.
-    const [localYear, localMonth, localDay] = finalGregorianDate.split("-").map(Number);
+    // Civil weekday remains the venue-local match weekday. Hijri date advances
+    // at Maghrib, but the Gregorian weekday does not advance until midnight.
+    const [localYear, localMonth, localDay] = venueDateParts.iso.split("-").map(Number);
     let dayUrdu = urduDays[new Date(Date.UTC(localYear, localMonth - 1, localDay, 12)).getUTCDay()];
 
     let urduT1 = getUrduTeamName(t1);
@@ -1595,7 +1596,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         contextMultA, contextMultB,
         matchTimeMultA: timeMultA, matchTimeMultB: timeMultB,
         sunrise: maghribData.sunrise, sunset: maghribData.sunset,
-        nextSunrise: nextDayPrayerData.sunrise, weekdayIndex: new Date(Date.UTC(...venueDateParts.iso.split("-").map((v,i)=>i===1?Number(v)-1:Number(v)))).getUTCDay()
+        nextSunrise: nextDayPrayerData.sunrise, matchStartTime: matchTimeStr,
+        weekdayIndex: new Date(Date.UTC(...venueDateParts.iso.split("-").map((v,i)=>i===1?Number(v)-1:Number(v)))).getUTCDay()
     };
 
     let ilmiHtml = `
