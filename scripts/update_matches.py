@@ -157,40 +157,52 @@ def make_prediction(m):
     return {'pre':{t1:f'{np.mean(p1s)*100:.2f}%',t2:f'{np.mean(p2s)*100:.2f}%'},
             'post_toss':post,'is_default':fallback}
 def main():
-    # One provider request covers UTC today and tomorrow, so the static site
-    # includes fixtures across midnight without spending a second daily quota call.
-    today=datetime.now(timezone.utc).date()
-    tomorrow=today.fromordinal(today.toordinal()+1)
-    start_date=today.isoformat()
-    end_date=tomorrow.isoformat()
-    date_range=f'{start_date}_{end_date}'
-    headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'}
-    # One provider request per run keeps the 15-minute schedule within
-    # the 100-requests/day quota. Fail safely rather than publish partial data
-    # if the provider says the date range spans multiple pages.
+    # Fetch every provider page for the UTC today-to-tomorrow window.
+    # The schedule runs every 30 minutes: 48 runs/day x at most 2 calls = 96/day.
+    # The provider's daily quota is 100 calls, so refuse ranges needing >2 pages.
     per_page=100
-    r=requests.get('https://cricket-live-line-advance.p.rapidapi.com/matches',
-        params={'date':date_range,'per_paged':per_page,'paged':1},
-        headers=headers,timeout=25)
+    base_url='https://cricket-live-line-advance.p.rapidapi.com/matches'
+    headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'}
+    params={'date':date_range,'per_paged':per_page,'paged':1}
+    r=requests.get(base_url,params=params,headers=headers,timeout=25)
     if r.status_code!=200:
-        raise SystemExit(f'Provider request failed HTTP {r.status_code}; prior snapshot left untouched.')
-    payload=r.json(); response=payload.get('response') or {}; items=response.get('items')
-    if not isinstance(items,list):
-        raise SystemExit('Provider payload missing response.items list; prior snapshot left untouched.')
+        raise SystemExit(f'Provider page 1 failed HTTP {r.status_code}; prior snapshot left untouched.')
+    payload=r.json(); response=payload.get('response') or {}; first_items=response.get('items')
+    if not isinstance(first_items,list):
+        raise SystemExit('Provider page 1 missing response.items list; prior snapshot left untouched.')
     total_pages=int(response.get('total_pages') or 1)
-    if total_pages>1:
-        raise SystemExit(f'Provider returned {total_pages} pages for {date_range}; single-request coverage limit exceeded, prior snapshot left untouched.')
-    expected_total=int(response.get('total_items') or len(items))
+    expected_total=int(response.get('total_items') or len(first_items))
+    if total_pages<1 or total_pages>2:
+        raise SystemExit(f'Provider returned {total_pages} pages for {date_range}; 30-minute schedule supports at most 2 pages within the daily quota. Prior snapshot left untouched.')
+    items=list(first_items)
+    if total_pages==2:
+        page2_params={'date':date_range,'per_paged':per_page,'paged':2}
+        r2=requests.get(base_url,params=page2_params,headers=headers,timeout=25)
+        if r2.status_code!=200:
+            raise SystemExit(f'Provider page 2 failed HTTP {r2.status_code}; prior snapshot left untouched.')
+        payload2=r2.json(); response2=payload2.get('response') or {}; second_items=response2.get('items')
+        if not isinstance(second_items,list):
+            raise SystemExit('Provider page 2 missing response.items list; prior snapshot left untouched.')
+        if int(response2.get('total_pages') or 1)!=total_pages or int(response2.get('total_items') or expected_total)!=expected_total:
+            raise SystemExit('Provider pagination metadata changed between page requests; prior snapshot left untouched.')
+        items.extend(second_items)
     if len(items)!=expected_total:
-        raise SystemExit(f'Incomplete provider feed: fetched {len(items)} of {expected_total} fixtures; prior snapshot left untouched.')
+        raise SystemExit(f'Incomplete provider feed: fetched {len(items)} of {expected_total} fixtures across {total_pages} page(s); prior snapshot left untouched.')
     if not items:
         raise SystemExit('Provider returned zero fixtures; prior snapshot left untouched.')
+    # Where the API supplies match IDs, reject duplicates instead of silently
+    # publishing a repeated fixture in place of a missing one.
+    match_ids=[str(item.get('match_id') or item.get('id') or item.get('matchId')) for item in items
+               if item.get('match_id') is not None or item.get('id') is not None or item.get('matchId') is not None]
+    if match_ids and (len(match_ids)!=len(items) or len(set(match_ids))!=len(match_ids)):
+        raise SystemExit('Provider pages contain missing or duplicate match IDs; prior snapshot left untouched.')
 
     # Verify the complete provider response BEFORE filtering, so pagination and
     # quota diagnostics continue to reflect the raw API feed accurately.
     response=dict(response)
     provider_total_items=response.get('total_items',len(items))
     response['fetched_pages']=total_pages
+    response['items']=items
 
     # Keep only formats/team levels represented by the trained prediction model.
     test_playing_nations = {
