@@ -4,7 +4,14 @@ import json, os
 from datetime import datetime, timezone
 from pathlib import Path
 import joblib, numpy as np, pandas as pd, requests
-from scripts.prediction_formats import match_type, elo_win_probability, is_t10_format
+# Support both direct script execution (python scripts/update_matches.py) and
+# package execution/imports (python -m scripts.update_matches).
+try:
+    from scripts.prediction_formats import match_type, elo_win_probability, is_t10_format
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from prediction_formats import match_type, elo_win_probability, is_t10_format
 API_KEY=os.environ.get("RAPIDAPI_KEY")
 if not API_KEY: raise SystemExit("RAPIDAPI_KEY GitHub Actions secret is missing.")
 MODELS=joblib.load("cricket_ensemble_modern.joblib")
