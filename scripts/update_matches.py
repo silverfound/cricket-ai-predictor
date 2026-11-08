@@ -157,6 +157,11 @@ def make_prediction(m):
     return {'pre':{t1:f'{np.mean(p1s)*100:.2f}%',t2:f'{np.mean(p2s)*100:.2f}%'},
             'post_toss':post,'is_default':fallback}
 def main():
+    today=datetime.now(timezone.utc).date()
+    tomorrow=today.fromordinal(today.toordinal()+1)
+    start_date=today.isoformat()
+    end_date=tomorrow.isoformat()
+    date_range=f'{start_date}_{end_date}'
     # Fetch every provider page for the UTC today-to-tomorrow window.
     # The schedule runs every 30 minutes: 48 runs/day x at most 2 calls = 96/day.
     # The provider's daily quota is 100 calls, so refuse ranges needing >2 pages.
