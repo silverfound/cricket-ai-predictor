@@ -618,7 +618,23 @@ const urduCaptains = {
     "Sophie Devine": "سوفی ڈیوائن",
     "Beth Mooney": "بیتھ مونی",
     "Ashleigh Gardner": "ایشلی گارڈنر",
-    "Phoebe Litchfield": "فوبی لچفیلڈ"
+    "Phoebe Litchfield": "فوبی لچفیلڈ",
+    "Imran Tahir": "عمران طاہر",
+    "Roston Chase": "روسٹن چیز",
+    "Moeen Ali": "معین علی",
+    "Chris Green": "کرس گرین",
+    "Rovman Powell": "روومین پاول",
+    "Matt Short": "میٹ شارٹ",
+    "Nathan Ellis": "نیتھن ایلس",
+    "Will Sutherland": "ول سدرلینڈ",
+    "Marcus Stoinis": "مارکس اسٹوئنس",
+    "Najmul Hossain Shanto": "نجمل حسین شانتو",
+    "Mahedi Hasan": "مہدی حسن",
+    "Mehidy Hasan Miraz": "مہدی حسن میراز",
+    "Nurul Hasan Sohan": "نور الحسن سوہان",
+    "Mohammad Mithun": "محمد متھن",
+    "Haider Ali": "حیدر علی",
+    "Azmatullah Omarzai": "عظمت اللہ عمرزئی"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
@@ -648,7 +664,35 @@ const teamCaptains = {
     "Kathmandu Gurkhas": "Karan KC",
     "Lumbini Lions": "Rohit Paudel",
     "Pokhara Avengers": "Kushal Bhurtel",
-    "Sudurpaschim Royals": "Dipendra Singh Airee"
+    "Sudurpaschim Royals": "Dipendra Singh Airee",
+    // Caribbean Premier League 2026
+    "Trinbago Knight Riders": "Nicholas Pooran",
+    "Guyana Amazon Warriors": "Imran Tahir",
+    "St Lucia Kings": "Roston Chase",
+    "Saint Lucia Kings": "Roston Chase",
+    "St Kitts & Nevis Patriots": "Jason Holder",
+    "Antigua & Barbuda Falcons": "Moeen Ali",
+    "Barbados Tridents": "Chris Green",
+    "Jamaica Kingsmen": "Rovman Powell",
+    // Big Bash League 2026-27: only publicly confirmed captains
+    "Adelaide Strikers": "Matt Short",
+    "Hobart Hurricanes": "Nathan Ellis",
+    "Melbourne Renegades": "Will Sutherland",
+    "Melbourne Stars": "Marcus Stoinis",
+    "Perth Scorchers": "Ashton Turner",
+    // Bangladesh Premier League 2026
+    "Rajshahi Warriors": "Najmul Hossain Shanto",
+    "Chattogram Royals": "Mahedi Hasan",
+    "Sylhet Titans": "Mehidy Hasan Miraz",
+    "Rangpur Riders": "Nurul Hasan Sohan",
+    "Dhaka Capitals": "Mohammad Mithun",
+    "Noakhali Express": "Haider Ali",
+    // Afghanistan Premier League 2026
+    "Akcel United Kabul": "Azmatullah Omarzai",
+    "Balkh Zwanan": "Ibrahim Zadran",
+    "Kandahar Warriors": "Rashid Khan",
+    "Nangarhar Cosmic": "Rahmat Shah",
+    "Paktia": "Rahmanullah Gurbaz",
     "Chennai Super Kings": "Ruturaj Gaikwad",
     "Delhi Capitals": "Axar Patel",
     "Gujarat Titans": "Shubman Gill",
