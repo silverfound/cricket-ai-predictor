@@ -456,6 +456,14 @@ function getUrduTeamName(value) {
 // --- CURRENT INTERNATIONAL / LEAGUE VENUES (API venue name -> Urdu) ---
 const urduVenues = {
     "Tribhuvan University International Cricket Ground": "تری بھون یونیورسٹی انٹرنیشنل کرکٹ گراؤنڈ",
+    "Rawalpindi Cricket Stadium": "راولپنڈی کرکٹ اسٹیڈیم",
+    "LC de Villiers Oval": "ایل سی ڈی ویلیئرز اوول",
+    "Tuks Cricket Oval": "ٹکس کرکٹ اوول",
+    "Willowmoore Park": "ولو مور پارک",
+    "Sahara Willowmoore Park": "سہارا ولو مور پارک",
+    "North Sydney Oval": "نارتھ سڈنی اوول",
+    "Entebbe Cricket Oval": "اینٹبے کرکٹ اوول",
+
     "TU International Cricket Ground": "ٹی یو انٹرنیشنل کرکٹ گراؤنڈ",
     "TU Cricket Ground": "ٹی یو کرکٹ گراؤنڈ",
     "Kirtipur Cricket Ground": "کیرتی پور کرکٹ گراؤنڈ",
@@ -1074,30 +1082,27 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
     // Verified venue registry: exact aliases bypass unreliable/missing feed geodata.
     // TU International Cricket Ground is in Kirtipur, Nepal (IANA zone Asia/Kathmandu).
     const verifiedGrounds = {
-        "zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
-        "sheikh zayed stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
-        "sheikh zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
-        "zayed sports city cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
-        "tribhuvan university international cricket ground": {
-            latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
-        },
-        "tu international cricket ground": {
-            latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
-        },
-        "tu cricket ground": {
-            latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
-        },
-        "kirtipur cricket ground": {
-            latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
-        }
+        "zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai", name: "Zayed Cricket Stadium", city: "Abu Dhabi", country: "United Arab Emirates" },
+        "sheikh zayed stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai", name: "Zayed Cricket Stadium", city: "Abu Dhabi", country: "United Arab Emirates" },
+        "sheikh zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai", name: "Zayed Cricket Stadium", city: "Abu Dhabi", country: "United Arab Emirates" },
+        "zayed sports city cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai", name: "Zayed Cricket Stadium", city: "Abu Dhabi", country: "United Arab Emirates" },
+        "abu dhabi cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai", name: "Zayed Cricket Stadium", city: "Abu Dhabi", country: "United Arab Emirates" },
+        "tribhuvan university international cricket ground": { latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu", name: "Tribhuvan University International Cricket Ground", city: "Kirtipur", country: "Nepal" },
+        "tu international cricket ground": { latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu", name: "Tribhuvan University International Cricket Ground", city: "Kirtipur", country: "Nepal" },
+        "tu cricket ground": { latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu", name: "Tribhuvan University International Cricket Ground", city: "Kirtipur", country: "Nepal" },
+        "kirtipur cricket ground": { latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu", name: "Tribhuvan University International Cricket Ground", city: "Kirtipur", country: "Nepal" },
+        "rawalpindi cricket stadium": { latitude: 33.65139, longitude: 73.07611, timezone: "Asia/Karachi", name: "Rawalpindi Cricket Stadium", city: "Rawalpindi", country: "Pakistan" },
+        "lc de villiers oval": { latitude: -25.750873, longitude: 28.247124, timezone: "Africa/Johannesburg", name: "LC de Villiers Oval", city: "Pretoria", country: "South Africa" },
+        "tuks cricket oval": { latitude: -25.750873, longitude: 28.247124, timezone: "Africa/Johannesburg", name: "LC de Villiers Oval", city: "Pretoria", country: "South Africa" },
+        "willowmoore park": { latitude: -26.19528, longitude: 28.31806, timezone: "Africa/Johannesburg", name: "Willowmoore Park", city: "Benoni", country: "South Africa" },
+        "sahara willowmoore park": { latitude: -26.19528, longitude: 28.31806, timezone: "Africa/Johannesburg", name: "Willowmoore Park", city: "Benoni", country: "South Africa" },
+        "north sydney oval": { latitude: -33.83194, longitude: 151.20944, timezone: "Australia/Sydney", name: "North Sydney Oval", city: "North Sydney", country: "Australia" }
     };
     const verifiedGround = verifiedGrounds[normalizeVenueText(venue)];
     if (verifiedGround && isValidIanaTimezone(verifiedGround.timezone)) {
-        const isZayed = normalizeVenueText(venue).includes("zayed");
-        return { ...verifiedGround, source: "verified-venue-registry", confidence: 100,
-            resolvedName: isZayed ? "Zayed Cricket Stadium" : "Tribhuvan University International Cricket Ground",
-            resolvedCity: isZayed ? "Abu Dhabi" : "Kirtipur",
-            resolvedCountry: isZayed ? "United Arab Emirates" : "Nepal" };
+        const { name, city, country, ...coordinates } = verifiedGround;
+        return { ...coordinates, source: "verified-venue-registry", confidence: 100,
+            resolvedName: name, resolvedCity: city, resolvedCountry: country };
     }
 
     const directCoords = extractVenueCoordinates(venueMeta);
