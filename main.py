@@ -11,7 +11,20 @@ app = FastAPI(title="Cricket AI Win Predictor API")
 app.include_router(licensing_router)
 @app.on_event("startup")
 def startup_license_db(): init_db()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+# Exact browser origins are configured by the deployment environment.
+# Example: CORS_ALLOWED_ORIGINS=https://silverfound.github.io
+_cors_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:5500").split(",")
+    if origin.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_cors_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-API-Key"],
+)
 
 models = joblib.load('cricket_ensemble_modern.joblib')
 elo_ratings = joblib.load('latest_elo_ratings.joblib')
