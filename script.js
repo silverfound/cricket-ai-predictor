@@ -1223,34 +1223,45 @@ async function fetchMatches() {
         allMatches = Array.isArray(snapshot.response?.items) ? snapshot.response.items : [];
 
         liveMatches = []; upcomingMatches = []; finishedMatches = [];
-        let seen = new Set();
+        const seen = new Set();
+        const nowSeconds = Math.floor(Date.now() / 1000);
 
         allMatches.forEach(m => {
-            if (!m.teama || !m.teamb) return;
-            let fmt = (m.format_str || '').toLowerCase(), isDom = m.domestic === "1";
-            const competitionText = [
-                m.competition?.title, m.competition?.name, m.competition?.abbr,
-                m.competition_name, m.league?.name, m.league?.title,
-                m.tournament?.name, m.tournament?.title, m.title
-            ].filter(Boolean).join(' ').toLowerCase();
+            if (!m?.teama?.name || !m?.teamb?.name) return;
 
-            // Show every fixture returned by the provider, regardless of format
-            // or domestic/international competition. Only suppress true duplicates.
+            // Deduplicate before classification so a fixture can appear in one tab only.
             const fixtureKey = String(m.match_id || [m.timestamp_start, m.teama.name, m.teamb.name].join('|'));
             if (seen.has(fixtureKey)) return;
             seen.add(fixtureKey);
 
-            let status = (m.status_str || '').toLowerCase();
-            if (status.includes('completed') || status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw') || status.includes('abandon')) { finishedMatches.push(m); }
-            else if (status.includes('live') || status.includes('progress') || status.includes('break') || status.includes('stumps') || status.includes('innings')) { liveMatches.push(m); }
-            else { upcomingMatches.push(m); }
+            const status = String(m.status_str || m.status_note || '').trim().toLowerCase();
+            const startSeconds = Number(m.timestamp_start);
+            const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
+
+            // Terminal states take priority over live keywords (e.g. "innings completed").
+            const isFinished = /\b(completed|complete|finished|finish|result|won|draw|tied|abandoned|abandon|cancelled|canceled)\b/.test(status);
+            const isLive = /\b(live|in progress|progress|break|stumps|innings|in play|day [1-5]|lunch|tea|drinks|rain delay|bad light)\b/.test(status);
+            const isScheduled = /\b(scheduled|upcoming|fixture|not started|yet to begin|match starts|toss)\b/.test(status);
+
+            if (isFinished) {
+                finishedMatches.push(m);
+            } else if (isLive) {
+                liveMatches.push(m);
+            } else if (isScheduled && hasStartTime && startSeconds > nowSeconds) {
+                // A scheduled fixture is Upcoming only while its start time is still in the future.
+                upcomingMatches.push(m);
+            }
+            // Stale "Scheduled" records with a past start time, and unknown statuses,
+            // are deliberately omitted instead of being incorrectly shown as Upcoming.
         });
 
-        allowedPredictionMatchIds = new Set(allMatches.map(m => String(m.match_id || m.timestamp_start || '')));
+        // Prediction eligibility follows the same visible, classified fixture set.
+        const visibleMatches = [...liveMatches, ...upcomingMatches, ...finishedMatches];
+        allowedPredictionMatchIds = new Set(visibleMatches.map(m => String(m.match_id || m.timestamp_start || '')));
 
-        upcomingMatches.sort((a,b) => a.timestamp_start - b.timestamp_start);
-        finishedMatches.sort((a,b) => b.timestamp_start - a.timestamp_start);
-        switchTab(liveMatches.length > 0 ? 'live' : 'upcoming');
+        upcomingMatches.sort((a,b) => Number(a.timestamp_start) - Number(b.timestamp_start));
+        finishedMatches.sort((a,b) => Number(b.timestamp_start) - Number(a.timestamp_start));
+        switchTab(liveMatches.length ? 'live' : (upcomingMatches.length ? 'upcoming' : 'finished'));
         
     } catch (e) { matchesContainer.innerHTML = `<div style="color:red; text-align:center;">Error: ${e.message}</div>`; }
 }
@@ -1314,7 +1325,7 @@ function renderMatches(matches) {
 
         html += `
             <div style="background: #131b2e; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid rgba(0,255,204,0.2);">
-                <p style="color: #00ffcc; font-size: 0.8rem; margin: 0 0 5px 0;">${(competitionTitle || 'MATCH').toUpperCase()} | ${matchType}</p>
+                <p style="color: #00ffcc; font-size: 0.8rem; margin: 0 0 5px 0;">${(competitionTitle || 'MATCH').toUpperCase()} | ${m.format_str || matchType}</p>
                 <h4 style="color: #fff; margin: 0 0 5px 0;">${m.teama.name} vs ${m.teamb.name}</h4>
                 <p style="color: #cbd5e1; font-size: 0.85rem; margin: 0 0 5px 0;">🏟️ ${m.venue?.name || 'Unknown'}</p>
                 ${statusText}
