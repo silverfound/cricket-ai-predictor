@@ -1229,8 +1229,26 @@ async function fetchMatches() {
         allMatches.forEach(m => {
             if (!m?.teama?.name || !m?.teamb?.name) return;
 
+            // Exclude formats and team levels that are not represented in model training.
+            const formatText = String(m.format_str || '').trim().toLowerCase();
+            const teamA = String(m.teama.name || '').trim();
+            const teamB = String(m.teamb.name || '').trim();
+            const isT10 = /\bt\s*10\b|\bten\s*10\b/.test(formatText);
+            const isYouthOrA = name => {
+                const value = String(name || '').trim();
+                return /\b(?:under\s*19|u\s*19|u19|under\s*19s|youth)\b/i.test(value) ||
+                    /\b(?:[a-z][a-z .'-]*\s+a|a\s+team|a\s+xi)\s*$/i.test(value);
+            };
+            const isTestFormat = /\btest\b|first\s*class/.test(formatText);
+            const isSeniorInternationalTest = isTestFormat &&
+                isIlmiInternationalTeam(teamA) && isIlmiInternationalTeam(teamB);
+
+            if (isT10 || isYouthOrA(teamA) || isYouthOrA(teamB)) return;
+            // Test/First-Class fixtures are allowed only when both sides are senior international teams.
+            if (isTestFormat && !isSeniorInternationalTest) return;
+
             // Deduplicate before classification so a fixture can appear in one tab only.
-            const fixtureKey = String(m.match_id || [m.timestamp_start, m.teama.name, m.teamb.name].join('|'));
+            const fixtureKey = String(m.match_id || [m.timestamp_start, teamA, teamB].join('|'));
             if (seen.has(fixtureKey)) return;
             seen.add(fixtureKey);
 
