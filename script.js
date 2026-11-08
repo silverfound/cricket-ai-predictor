@@ -1613,8 +1613,10 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             window.prePred = pred.predictions; 
             preDiv.innerHTML = `<div style="display:flex; justify-content:space-between;"><span style="color:#00ffcc;">${t1}: <b>${pred.predictions[modelT1]}</b></span><span style="color:#ff4d4d;">${t2}: <b>${pred.predictions[modelT2]}</b></span></div>`;
             
-            if (pred.is_default && (t1 === "Afghanistan" || t2 === "Afghanistan")) {
-                preDiv.innerHTML += `<p style="color: #fbbf24; font-size: 10px; margin-top: 5px;">⚠️ Afghanistan ka AI data missing hai. Fallback use ho raha hai.</p>`;
+            if (type === "T10" && pred.is_default) {
+                preDiv.innerHTML += `<p style="color:#fbbf24;font-size:10px;margin-top:5px;">⚠️ T10 ke liye dedicated trained AI model abhi available nahi. Yeh estimate Elo team ratings par based hai, is liye confidence limited hai.</p>`;
+            } else if (pred.is_default) {
+                preDiv.innerHTML += `<p style="color:#fbbf24;font-size:10px;margin-top:5px;">⚠️ Trained AI prediction unavailable; Elo fallback estimate shown.</p>`;
             }
 
             if (!isLiveMatch) {
