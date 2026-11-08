@@ -14,7 +14,7 @@ The production target preserves the current app UI and the four trained predicti
 Repository Settings → Pages → Build and deployment → Source: **GitHub Actions**. Confirm the `RAPIDAPI_KEY` Actions secret is configured.
 
 ## Feed coverage note
-Each run requests the UTC today-to-tomorrow date range in one provider call, page 1, up to 50 items. The frontend displays all returned fixtures (live, upcoming, finished; T10, domestic, and international) and only removes duplicate match IDs. If the provider reports more than one page for the requested date range, the refresh fails safely rather than publishing a knowingly incomplete snapshot.
+Each run requests the UTC today-to-tomorrow date range in one provider call, page 1, up to 100 items. The frontend displays all returned fixtures (live, upcoming, finished; T10, domestic, and international) and only removes duplicate match IDs. If the provider reports more than one page for the requested date range, the refresh fails safely rather than publishing a knowingly incomplete snapshot. This keeps the 15-minute schedule at 96 scheduled API calls/day, below the 100-call quota.
 
 ## Model artifacts preserved (immutable)
 - `cricket_ensemble_modern.joblib`
