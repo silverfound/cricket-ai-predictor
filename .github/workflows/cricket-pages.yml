@@ -3,6 +3,10 @@ on:
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [migration/github-actions-only]
 permissions:
   contents: read
   pages: write
@@ -11,7 +15,24 @@ concurrency:
   group: cricket-pages-refresh
   cancel-in-progress: false
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate source syntax and immutable model artifacts
+        run: |
+          python -m py_compile scripts/update_matches.py
+          node --check script.js
+          test "$(git hash-object cricket_ensemble_modern.joblib)" = "e6d7ba073174ddbafaa504c090702483063649a2"
+          test "$(git hash-object latest_elo_ratings.joblib)" = "ba9b707b9bb4915e812fd3b310616059154b0bf5"
+          test "$(git hash-object category_mappings.joblib)" = "682ae8a0568d4c2a88282ca78f5785ca0f761b7e"
+          test "$(git hash-object toss_stats.joblib)" = "e9952cb3c51a2c7b0843bd67bbacceac112a6fbc"
   refresh-and-deploy:
+    if: github.event_name != 'pull_request'
+    needs: validate
     runs-on: ubuntu-latest
     environment:
       name: github-pages
