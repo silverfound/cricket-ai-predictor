@@ -93,6 +93,11 @@ def get_match_features(fmt,t1,t2,venue,cutoff=None,gender=None):
 
 def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision,gender='male',match_date=None):
     e1,e2=get_elo(t1),get_elo(t2); toss_t1=1 if toss_winner==t1 else 0
+    # No T10-specific trained artifact exists. Never send T10 through the T20
+    # model: use the transparent Elo-only baseline and mark it as fallback.
+    if str(fmt).upper() == 'T10':
+        elo_p1=1/(1+10**((e2-e1)/400))
+        return float(elo_p1),float(1-elo_p1),True
     venue_clean=str(venue).split(',')[0].strip()
     form1,form2,h2h,venue1,venue2=get_match_features(fmt,t1,t2,venue_clean,cutoff=match_date,gender=gender)
     # Keep the exact 13-column training schema and its original order.
@@ -140,6 +145,7 @@ def match_type(fmt):
     s=str(fmt or 'T20').lower()
     if 'test' in s or 'first class' in s: return 'Test'
     if 'odi' in s or 'list a' in s: return 'ODI'
+    if 't10' in s or '10 over' in s or 'ten over' in s: return 'T10'
     return 'T20'
 def make_prediction(m):
     raw1=(m.get('teama') or {}).get('name') or ''; raw2=(m.get('teamb') or {}).get('name') or ''
