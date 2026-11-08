@@ -31,7 +31,7 @@ jobs:
           test "$(git hash-object category_mappings.joblib)" = "682ae8a0568d4c2a88282ca78f5785ca0f761b7e"
           test "$(git hash-object toss_stats.joblib)" = "e9952cb3c51a2c7b0843bd67bbacceac112a6fbc"
   refresh-and-deploy:
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     needs: validate
     runs-on: ubuntu-latest
     environment:
