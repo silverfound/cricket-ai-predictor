@@ -1,0 +1,71 @@
+name: Refresh cricket data and deploy Pages
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [migration/github-actions-only]
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: cricket-pages-refresh
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Validate source syntax and immutable model artifacts
+        run: |
+          python -m py_compile scripts/update_matches.py
+          node --check script.js
+          test "$(git hash-object cricket_ensemble_modern.joblib)" = "e6d7ba073174ddbafaa504c090702483063649a2"
+          test "$(git hash-object latest_elo_ratings.joblib)" = "ba9b707b9bb4915e812fd3b310616059154b0bf5"
+          test "$(git hash-object category_mappings.joblib)" = "682ae8a0568d4c2a88282ca78f5785ca0f761b7e"
+          test "$(git hash-object toss_stats.joblib)" = "e9952cb3c51a2c7b0843bd67bbacceac112a6fbc"
+  refresh-and-deploy:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install model runtime
+        run: python -m pip install -r requirements.txt
+      - name: Fetch single provider response and compute prediction snapshots
+        env:
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+        run: python scripts/update_matches.py
+      - name: Check frontend and immutable model files
+        run: |
+          node --check script.js
+          test "$(git hash-object cricket_ensemble_modern.joblib)" = "e6d7ba073174ddbafaa504c090702483063649a2"
+          test "$(git hash-object latest_elo_ratings.joblib)" = "ba9b707b9bb4915e812fd3b310616059154b0bf5"
+          test "$(git hash-object category_mappings.joblib)" = "682ae8a0568d4c2a88282ca78f5785ca0f761b7e"
+          test "$(git hash-object toss_stats.joblib)" = "e9952cb3c51a2c7b0843bd67bbacceac112a6fbc"
+      - uses: actions/configure-pages@v5
+      - name: Prepare site
+        run: |
+          mkdir -p _site/data
+          cp index.html script.js manifest.json _site/
+          cp data/matches.json _site/data/matches.json
+          touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
