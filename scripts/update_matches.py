@@ -165,30 +165,21 @@ def main():
     end_date=tomorrow.isoformat()
     date_range=f'{start_date}_{end_date}'
     headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'}
-    # Fetch up to two pages. The schedule runs every 30 minutes, so even
-    # a two-page feed stays within the 100-requests/day provider quota.
+    # One provider request per run keeps the 15-minute schedule within
+    # the 100-requests/day quota. Fail safely rather than publish partial data
+    # if the provider says the date range spans multiple pages.
     per_page=100
-    all_items=[]
-    response=None
-    total_pages=1
-    for page in (1,2):
-        r=requests.get('https://cricket-live-line-advance.p.rapidapi.com/matches',
-            params={'date':date_range,'per_paged':per_page,'paged':page},
-            headers=headers,timeout=25)
-        if r.status_code!=200:
-            raise SystemExit(f'Provider request failed HTTP {r.status_code} on page {page}; prior snapshot left untouched.')
-        payload=r.json(); current=payload.get('response') or {}; page_items=current.get('items')
-        if not isinstance(page_items,list):
-            raise SystemExit(f'Provider payload missing response.items list on page {page}; prior snapshot left untouched.')
-        if response is None:
-            response=current
-            total_pages=int(response.get('total_pages') or 1)
-            if total_pages>2:
-                raise SystemExit(f'Provider returned {total_pages} pages for {date_range}; safe two-page limit exceeded, prior snapshot left untouched.')
-        all_items.extend(page_items)
-        if page>=total_pages:
-            break
-    items=all_items
+    r=requests.get('https://cricket-live-line-advance.p.rapidapi.com/matches',
+        params={'date':date_range,'per_paged':per_page,'paged':1},
+        headers=headers,timeout=25)
+    if r.status_code!=200:
+        raise SystemExit(f'Provider request failed HTTP {r.status_code}; prior snapshot left untouched.')
+    payload=r.json(); response=payload.get('response') or {}; items=response.get('items')
+    if not isinstance(items,list):
+        raise SystemExit('Provider payload missing response.items list; prior snapshot left untouched.')
+    total_pages=int(response.get('total_pages') or 1)
+    if total_pages>1:
+        raise SystemExit(f'Provider returned {total_pages} pages for {date_range}; single-request coverage limit exceeded, prior snapshot left untouched.')
     expected_total=int(response.get('total_items') or len(items))
     if len(items)!=expected_total:
         raise SystemExit(f'Incomplete provider feed: fetched {len(items)} of {expected_total} fixtures; prior snapshot left untouched.')
