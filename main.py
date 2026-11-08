@@ -11,7 +11,20 @@ app = FastAPI(title="Cricket AI Win Predictor API")
 app.include_router(licensing_router)
 @app.on_event("startup")
 def startup_license_db(): init_db()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+# Exact browser origins are configured by the deployment environment.
+# Example: CORS_ALLOWED_ORIGINS=https://silverfound.github.io
+_cors_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:5500").split(",")
+    if origin.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_cors_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-API-Key", "X-Device-ID", "X-Admin-Key"],
+)
 
 models = joblib.load('cricket_ensemble_modern.joblib')
 elo_ratings = joblib.load('latest_elo_ratings.joblib')
@@ -89,6 +102,33 @@ def calculate_prediction(match, t_winner, t_decision):
         print(f"Fallback: {e}")
         exp_t1 = 1 / (1 + 10**((t2_elo - t1_elo) / 400))
         return exp_t1, (1 - exp_t1), True
+
+@app.get("/health/live")
+def health_live():
+    """Liveness probe: confirms the API process is responding."""
+    return {"status": "ok"}
+
+
+@app.get("/health/ready")
+def health_ready():
+    """Readiness probe: checks required model artifacts and database connectivity."""
+    required_models = {
+        "ensemble": models,
+        "elo": elo_ratings,
+        "category_mappings": cat_mappings,
+        "toss_stats": toss_stats,
+    }
+    if any(value is None for value in required_models.values()):
+        raise HTTPException(status_code=503, detail="Required prediction models are unavailable")
+
+    try:
+        with __import__("licensing").db() as conn:
+            conn.execute("SELECT 1")
+    except Exception:
+        raise HTTPException(status_code=503, detail="License database is not ready")
+
+    return {"status": "ready", "models": "loaded", "database": "connected"}
+
 
 @app.get("/")
 def home():

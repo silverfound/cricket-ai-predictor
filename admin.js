@@ -1,8 +1,9 @@
 let k="";
+const ADMIN_API_BASE=(window.CRICKET_AI_API_BASE||"https://cricket-ai-predictor-ciat.onrender.com").replace(/\/+$/, "");
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function headers(){return {"Content-Type":"application/json","X-Admin-Key":k}}
-async function api(url,opts={}){let r=await fetch(url,{...opts,headers:{...headers(),...(opts.headers||{})}});let j=await r.json();if(!r.ok)throw Error(j.detail||"Request failed");return j}
+async function api(url,opts={}){let r=await fetch(ADMIN_API_BASE+url,{...opts,headers:{...headers(),...(opts.headers||{})}});let j=await r.json();if(!r.ok)throw Error(j.detail||"Request failed");return j}
 async function saveKey(){k=$("key").value.trim();if(!k){$("connectionStatus").textContent="Admin key required";return}try{await api("/admin/licenses");$("connectionStatus").textContent="Connected";await loadList()}catch(e){$("connectionStatus").textContent="Connection failed: "+e.message}}
 async function createCodes(){try{let j=await api("/admin/licenses",{method:"POST",body:JSON.stringify({label:$("label").value,duration_days:+$("days").value,count:1,subscribed_leagues:[]})});$("created").innerHTML=j.licenses.map(x=>"<p><b>New code: "+esc(x.code)+"</b></p>").join("");await loadList()}catch(e){alert(e.message)}}
 async function loadList(){try{let j=await api("/admin/licenses");$("rows").innerHTML=j.licenses.map(x=>"<tr><td>"+esc(x.label||"Customer #"+x.id)+"</td><td>"+esc(x.duration_days)+" days</td><td>"+esc(x.status)+"</td><td>"+esc(x.expires_at||"Not activated")+"</td><td><button onclick='openCustomer("+x.id+")'>Open customer</button></td></tr>").join("")}catch(e){$("rows").innerHTML="<tr><td>"+esc(e.message)+"</td></tr>"}}
