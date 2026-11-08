@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Global cricket ground starter registry. Coordinates require user verification before authoritative use.",
+  "description": "Global cricket ground starter registry. Competition tags indicate known use; formats are intentionally omitted pending verification.",
   "count": 77,
   "grounds": [
     {
@@ -19,15 +19,9 @@
         "BBL",
         "WBBL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "sydney-cricket-ground",
@@ -45,15 +39,9 @@
         "BBL",
         "WBBL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "adelaide-oval",
@@ -68,15 +56,9 @@
         "International",
         "BBL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "the-gabba",
@@ -94,15 +76,9 @@
         "International",
         "BBL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "perth-stadium",
@@ -119,15 +95,9 @@
         "International",
         "BBL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "waca-ground",
@@ -143,15 +113,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "bellerive-oval",
@@ -169,15 +133,9 @@
         "International",
         "BBL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "manuka-oval",
@@ -192,15 +150,9 @@
         "International",
         "BBL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "eden-park",
@@ -215,15 +167,9 @@
         "International",
         "Super Smash"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "basin-reserve",
@@ -238,15 +184,9 @@
         "International",
         "Super Smash"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "hagley-oval",
@@ -261,15 +201,9 @@
         "International",
         "Super Smash"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "bay-oval",
@@ -284,15 +218,9 @@
         "International",
         "Super Smash"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "seddon-park",
@@ -306,15 +234,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "university-oval",
@@ -330,15 +252,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "lord-s",
@@ -356,15 +272,9 @@
         "International",
         "The Hundred"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "the-oval",
@@ -382,15 +292,9 @@
         "International",
         "The Hundred"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "edgbaston",
@@ -405,15 +309,9 @@
         "International",
         "The Hundred"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "trent-bridge",
@@ -428,15 +326,9 @@
         "International",
         "The Hundred"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "old-trafford",
@@ -453,15 +345,9 @@
         "International",
         "The Hundred"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "headingley",
@@ -476,15 +362,9 @@
         "International",
         "The Hundred"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "rose-bowl",
@@ -502,15 +382,9 @@
         "International",
         "The Hundred"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "sophia-gardens",
@@ -527,15 +401,9 @@
         "International",
         "The Hundred"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "bristol-county-ground",
@@ -550,15 +418,9 @@
         "International",
         "Domestic T20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "newlands",
@@ -573,15 +435,9 @@
         "International",
         "SA20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "wanderers",
@@ -599,15 +455,9 @@
         "International",
         "SA20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "super-sport-park",
@@ -624,15 +474,9 @@
         "International",
         "SA20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "kingsmead",
@@ -647,15 +491,9 @@
         "International",
         "SA20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "st-georges-park",
@@ -672,15 +510,9 @@
         "International",
         "SA20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "mangaung-oval",
@@ -697,15 +529,9 @@
         "International",
         "SA20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "gaddafi-stadium",
@@ -723,15 +549,9 @@
         "International",
         "PSL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "national-stadium-karachi",
@@ -749,15 +569,9 @@
         "International",
         "PSL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "rawalpindi-cricket-stadium",
@@ -774,15 +588,9 @@
         "International",
         "PSL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "multan-cricket-stadium",
@@ -797,15 +605,9 @@
         "International",
         "PSL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "arun-jaitley-stadium",
@@ -823,15 +625,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "wankhede-stadium",
@@ -846,15 +642,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "eden-gardens",
@@ -869,15 +659,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "m-chinnaswamy",
@@ -894,15 +678,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "ma-chidambaram",
@@ -920,15 +698,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "narendra-modi",
@@ -946,15 +718,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "rajiv-gandhi-hyderabad",
@@ -971,15 +737,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "sawai-mansingh",
@@ -996,15 +756,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "ekana",
@@ -1020,15 +774,9 @@
       "competitions": [
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "hpca-dharamshala",
@@ -1045,15 +793,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "pca-mohali",
@@ -1071,15 +813,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "shere-bangla",
@@ -1097,15 +833,9 @@
         "International",
         "BPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "zahur-ahmed",
@@ -1122,15 +852,9 @@
         "International",
         "BPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "sylhet-stadium",
@@ -1145,15 +869,9 @@
         "International",
         "BPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "r-premadasa",
@@ -1171,15 +889,9 @@
         "International",
         "LPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "pallekele",
@@ -1194,15 +906,9 @@
         "International",
         "LPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "galle",
@@ -1217,15 +923,9 @@
         "International",
         "LPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "rangiri-dambulla",
@@ -1240,15 +940,9 @@
         "International",
         "LPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "dubai-international",
@@ -1266,15 +960,9 @@
         "ILT20",
         "T10"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "sharjah-cricket",
@@ -1292,15 +980,9 @@
         "ILT20",
         "T10"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "zayed-stadium",
@@ -1319,15 +1001,9 @@
         "ILT20",
         "T10"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "tribhuvan-university",
@@ -1346,15 +1022,9 @@
         "International",
         "NPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "lc-de-villiers",
@@ -1371,15 +1041,9 @@
         "Domestic",
         "CSA T20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "willowmoore-park",
@@ -1396,15 +1060,9 @@
         "Domestic",
         "CSA T20"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "north-sydney-oval",
@@ -1419,15 +1077,9 @@
         "WBBL",
         "Domestic"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "entebbe-cricket-oval",
@@ -1443,15 +1095,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "sir-vivian-richards",
@@ -1468,15 +1114,9 @@
         "International",
         "CPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "kensington-oval",
@@ -1491,15 +1131,9 @@
         "International",
         "CPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "queen-s-park-oval",
@@ -1516,15 +1150,9 @@
         "International",
         "CPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "warner-park",
@@ -1541,15 +1169,9 @@
         "International",
         "CPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "sabina-park",
@@ -1564,15 +1186,9 @@
         "International",
         "CPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "national-cricket-stadium-grenada",
@@ -1589,15 +1205,9 @@
         "International",
         "CPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "daren-sammy",
@@ -1614,15 +1224,9 @@
         "International",
         "CPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "providence-stadium",
@@ -1639,15 +1243,9 @@
         "International",
         "CPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "grand-prairie",
@@ -1663,15 +1261,9 @@
       "competitions": [
         "MLC"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "church-street-park",
@@ -1687,15 +1279,9 @@
       "competitions": [
         "MLC"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "central-broward",
@@ -1712,15 +1298,9 @@
         "International",
         "MLC"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "maple-leaf-ground",
@@ -1736,15 +1316,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "harare-sports-club",
@@ -1760,15 +1334,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "queens-sports-club",
@@ -1782,15 +1350,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "takashinga",
@@ -1804,15 +1366,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "namibia-wanderers",
@@ -1828,15 +1384,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "al-amerat",
@@ -1852,15 +1402,9 @@
       "competitions": [
         "International"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
     {
       "id": "maharashtra-cricket",
@@ -1878,15 +1422,9 @@
         "International",
         "IPL"
       ],
-      "formats": [
-        "Test",
-        "ODI",
-        "T20I",
-        "T20"
-      ],
       "source_url": "https://cricketfieldguide.com/field-atlas",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     }
   ]
 }
