@@ -72,9 +72,9 @@ def _form_rate(matches, team_key, limit=5):
     wins=sum(1 for m in played if _team_key(m.get("winner"))==team_key)
     return float(wins/len(played))
 
-def get_match_features(fmt,t1,t2,venue,cutoff=None):
+def get_match_features(fmt,t1,t2,venue,cutoff=None,gender=None):
     cutoff=cutoff or datetime.now(timezone.utc).date().isoformat()
-    gender=_fixture_gender(t1,t2)
+    gender=str(gender or _fixture_gender(t1,t2)).casefold()
     prior,a,b,v=_prior_matches(t1,t2,fmt,venue,gender,cutoff)
     t1_matches=[m for m in prior if a in [_team_key(x) for x in m.get("teams",[])]]
     t2_matches=[m for m in prior if b in [_team_key(x) for x in m.get("teams",[])]]
@@ -86,10 +86,10 @@ def get_match_features(fmt,t1,t2,venue,cutoff=None):
     return (_form_rate(t1_matches,a),_form_rate(t2_matches,b),float(h2h_ratio),
             _form_rate(venue_t1,a),_form_rate(venue_t2,b))
 
-def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision):
+def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision,gender='male',match_date=None):
     e1,e2=get_elo(t1),get_elo(t2); toss_t1=1 if toss_winner==t1 else 0
     venue_clean=str(venue).split(',')[0].strip()
-    form1,form2,h2h,venue1,venue2=get_match_features(fmt,t1,t2,venue_clean)
+    form1,form2,h2h,venue1,venue2=get_match_features(fmt,t1,t2,venue_clean,cutoff=match_date,gender=gender)
     # Keep the exact 13-column training schema and its original order.
     row={'match_type':str(fmt),'team1':str(t1),'team2':str(t2),'venue':str(venue_clean),'toss_decision':str(toss_decision),
          'team1_elo':float(e1),'team2_elo':float(e2),'toss_win_team1':int(toss_t1),
@@ -119,10 +119,12 @@ def make_prediction(m):
     if not raw1 or not raw2: return None
     t1=TEAM_MAPPING.get(raw1,raw1); t2=TEAM_MAPPING.get(raw2,raw2)
     venue=(m.get('venue') or {}).get('name') or ''; fmt=match_type(m.get('format_str'))
+    gender=_fixture_gender(t1,t2)
+    match_date=datetime.fromtimestamp(int(m.get('timestamp_start') or 0),timezone.utc).date().isoformat() if m.get('timestamp_start') else datetime.now(timezone.utc).date().isoformat()
     p1s=[];p2s=[];fallback=False;post={}
     for side,winner in [('t1',t1),('t2',t2)]:
         for decision in ('bat','field'):
-            p1,p2,fb=calculate_prediction(fmt,t1,t2,venue,winner,decision)
+            p1,p2,fb=calculate_prediction(fmt,t1,t2,venue,winner,decision,gender=gender,match_date=match_date)
             p1s.append(p1);p2s.append(p2);fallback=fallback or fb
             post[f'{side}_{decision}']={t1:f'{p1*100:.2f}%',t2:f'{p2*100:.2f}%'}
     return {'pre':{t1:f'{np.mean(p1s)*100:.2f}%',t2:f'{np.mean(p2s)*100:.2f}%'},
