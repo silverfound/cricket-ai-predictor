@@ -103,6 +103,33 @@ def calculate_prediction(match, t_winner, t_decision):
         exp_t1 = 1 / (1 + 10**((t2_elo - t1_elo) / 400))
         return exp_t1, (1 - exp_t1), True
 
+@app.get("/health/live")
+def health_live():
+    """Liveness probe: confirms the API process is responding."""
+    return {"status": "ok"}
+
+
+@app.get("/health/ready")
+def health_ready():
+    """Readiness probe: checks required model artifacts and database connectivity."""
+    required_models = {
+        "ensemble": models,
+        "elo": elo_ratings,
+        "category_mappings": cat_mappings,
+        "toss_stats": toss_stats,
+    }
+    if any(value is None for value in required_models.values()):
+        raise HTTPException(status_code=503, detail="Required prediction models are unavailable")
+
+    try:
+        with __import__("licensing").db() as conn:
+            conn.execute("SELECT 1")
+    except Exception:
+        raise HTTPException(status_code=503, detail="License database is not ready")
+
+    return {"status": "ready", "models": "loaded", "database": "connected"}
+
+
 @app.get("/")
 def home():
     return {"status": "Online", "message": "Cricket AI Win Predictor API Active"}
