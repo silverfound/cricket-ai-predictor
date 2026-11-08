@@ -1,8 +1,6 @@
 name: Deploy static frontend to GitHub Pages
 
 on:
-  push:
-    branches: [migration/github-pages-frontend]
   workflow_dispatch:
 
 permissions:
