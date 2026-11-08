@@ -1040,6 +1040,36 @@ function normalizeVenueText(value) {
     return String(value || "").normalize("NFKD").toLowerCase()
         .replace(/&/g, "and").replace(/[^a-z0-9]+/g, " ").trim();
 }
+let globalGroundRegistryPromise = null;
+async function loadGlobalGroundRegistry() {
+    if (!globalGroundRegistryPromise) {
+        globalGroundRegistryPromise = fetch("./data/grounds.json", { cache: "force-cache" })
+            .then(response => response.ok ? response.json() : null)
+            .then(data => Array.isArray(data?.grounds) ? data.grounds : [])
+            .catch(() => []);
+    }
+    return globalGroundRegistryPromise;
+}
+async function findGlobalGround(venue) {
+    const target = normalizeVenueText(venue);
+    if (!target) return null;
+    const grounds = await loadGlobalGroundRegistry();
+    const matches = grounds.filter(ground => {
+        const names = [ground.name, ...(ground.aliases || [])];
+        return names.some(name => normalizeVenueText(name) === target);
+    });
+    if (matches.length !== 1) return null;
+    const ground = matches[0];
+    const coords = validVenueCoordinates(ground.latitude, ground.longitude);
+    if (!coords || !isValidIanaTimezone(ground.timezone)) return null;
+    return {
+        ...coords, timezone: ground.timezone, source: "global-ground-directory",
+        confidence: ground.verification_status === "verified" ? 100 : 85,
+        resolvedName: ground.name, resolvedCity: ground.city,
+        resolvedCountry: ground.country,
+        verificationStatus: ground.verification_status || "needs_user_verification"
+    };
+}
 function readVenueCache(key) {
     try {
         const cache = JSON.parse(localStorage.getItem(VENUE_CACHE_KEY) || "{}");
@@ -1099,6 +1129,8 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
         "north sydney oval": { latitude: -33.83194, longitude: 151.20944, timezone: "Australia/Sydney", name: "North Sydney Oval", city: "North Sydney", country: "Australia" },
         "entebbe cricket oval": { latitude: 0.0525425, longitude: 32.4675322, timezone: "Africa/Kampala", name: "Entebbe Cricket Oval", city: "Entebbe", country: "Uganda" }
     };
+    const globalGround = await findGlobalGround(venue);
+    if (globalGround) return globalGround;
     const verifiedGround = verifiedGrounds[normalizeVenueText(venue)];
     if (verifiedGround && isValidIanaTimezone(verifiedGround.timezone)) {
         const { name, city, country, ...coordinates } = verifiedGround;
