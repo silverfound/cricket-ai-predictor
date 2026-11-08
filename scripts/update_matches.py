@@ -104,10 +104,32 @@ def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision,gender='male'
         df=pd.DataFrame([row])
         for col in ['match_type','team1','team2','venue','toss_decision']:
             if df[col].iloc[0] not in MAPPINGS[col]: df[col]="__UNKNOWN__"
-            cats=MAPPINGS[col]
-            if "__UNKNOWN__" not in cats: cats=cats+["__UNKNOWN__"]
+            cats=list(MAPPINGS[col])
+            if "__UNKNOWN__" not in cats: cats.append("__UNKNOWN__")
             df[col]=pd.Categorical(df[col],categories=cats)
-        cp=MODELS['cat'].predict_proba(df)[0]; lp=MODELS['lgb'].predict_proba(df)[0]
+
+        # Each immutable artifact carries its own training feature schema.
+        # The former code passed all 13 engineered columns to both models;
+        # the LightGBM artifact was trained with 11 and rejected inference.
+        def model_input(model, frame, label):
+            names=getattr(model,"feature_names_",None)
+            if not names and hasattr(model,"feature_name_"):
+                names=model.feature_name_
+            if not names and hasattr(model,"feature_name"):
+                names=model.feature_name()
+            if not names:
+                raise ValueError(f"{label} artifact does not expose its training feature names")
+            names=list(names)
+            missing=[name for name in names if name not in frame.columns]
+            if missing:
+                raise ValueError(f"{label} requires unavailable trained features: {missing}")
+            return frame.loc[:,names]
+
+        cat_model=MODELS['cat']; lgb_model=MODELS['lgb']
+        cat_frame=model_input(cat_model,df,"CatBoost")
+        lgb_frame=model_input(lgb_model,df,"LightGBM")
+        cp=cat_model.predict_proba(cat_frame)[0]
+        lp=lgb_model.predict_proba(lgb_frame)[0]
         probs=(cp+lp)/2.0
         return float(probs[1]),float(probs[0]),False
     except Exception as exc:
