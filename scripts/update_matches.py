@@ -188,9 +188,9 @@ def main():
         fmt=str(item.get('format_str') or '').strip().lower()
         team1=str((item.get('teama') or {}).get('name') or '').strip()
         team2=str((item.get('teamb') or {}).get('name') or '').strip()
-        # T10 is not part of this model's training formats.
-        if 't10' in fmt or 'ten10' in fmt.replace(' ',''):
-            return True
+        # T10 fixtures are allowed through for a controlled prediction test.
+        # The current trained predictor has no T10-specific model, so match_type()
+        # intentionally routes T10 through the existing T20 inference path.
         # Exclude U19/youth and A-side fixtures regardless of competition title.
         def is_a_or_youth(name):
             n=str(name or '').strip().lower()
