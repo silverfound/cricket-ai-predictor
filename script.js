@@ -1060,6 +1060,7 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
     const verifiedGrounds = {
         "zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
         "sheikh zayed stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
+        "sheikh zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
         "zayed sports city cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
         "tribhuvan university international cricket ground": {
             latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
