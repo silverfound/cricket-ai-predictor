@@ -655,7 +655,8 @@ const urduCaptains = {
     "Fakhar Zaman": "فخر زمان",
     "Smriti Mandhana": "اسمرتی مندھانا",
     "Fatima Sana": "فاطمہ ثنا",
-    "Esha Oza": "ایشا اوزا"
+    "Esha Oza": "ایشا اوزا",
+    "Harpreet Singh": "ہربریت سنگھ"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
