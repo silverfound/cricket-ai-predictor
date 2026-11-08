@@ -23,7 +23,7 @@ app.add_middleware(
     allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "X-API-Key"],
+    allow_headers=["Authorization", "Content-Type", "X-API-Key", "X-Device-ID", "X-Admin-Key"],
 )
 
 models = joblib.load('cricket_ensemble_modern.joblib')
