@@ -1,5 +1,5 @@
 let k="";
-const ADMIN_API_BASE=(window.CRICKET_AI_API_BASE||"https://cricket-ai-predictor-ciat.onrender.com").replace(/\\/+$/, "");
+const ADMIN_API_BASE=(window.CRICKET_AI_API_BASE||"https://cricket-ai-predictor-ciat.onrender.com").replace(/\/+$/, "");
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function headers(){return {"Content-Type":"application/json","X-Admin-Key":k}}
