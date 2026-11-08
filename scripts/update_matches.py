@@ -10,6 +10,8 @@ MODELS=joblib.load("cricket_ensemble_modern.joblib")
 ELO=joblib.load("latest_elo_ratings.joblib")
 MAPPINGS=joblib.load("category_mappings.joblib")
 TOSS_STATS=joblib.load("toss_stats.joblib")
+HISTORY_PATH=Path("data/cricsheet_match_history_2024_2026.json")
+HISTORY=json.loads(HISTORY_PATH.read_text(encoding="utf-8")) if HISTORY_PATH.exists() else []
 DEFAULT_ELO=1500
 TEAM_MAPPING={'Saint Lucia Kings':'St Lucia Kings','Northern Brave':'Northern Districts','Northern Brave Women':'Northern Districts Women','Central Hinds':'Central Districts Women','Sudurpaschim Royals':'Sudur Paschim Royals','Antigua & Barbuda Falcons':'Antigua and Barbuda Falcons','St Kitts & Nevis Patriots':'St Kitts and Nevis Patriots','Canterbury Kings':'Canterbury','Auckland Hearts':'Auckland Women','Canterbury Magicians':'Canterbury Women','Otago Sparks':'Otago Women','Wellington Blaze':'Wellington Women'}
 def get_elo(name):
@@ -26,13 +28,73 @@ def get_toss_rates(venue, decision):
     else:
         dt=TOSS_STATS['v_fld_tot'].get(v,0); dw=TOSS_STATS['v_fld_wins'].get(v,0)
     return tw, (dw/dt if dt>0 else 0.5)
+def _team_key(name):
+    # Cricsheet often omits the Women suffix while the live feed includes it.
+    value=str(name or "").casefold().replace("&","and")
+    value=value.replace("women","").replace("(w)","").replace(" w "," ")
+    return " ".join(value.split())
+
+def _history_format(value):
+    s=str(value or "").upper()
+    if s in {"T20","IT20"}: return "T20"
+    if s in {"ODI","ODM"}: return "ODI"
+    if s in {"TEST","MDM"}: return "Test"
+    return s
+
+def _fixture_gender(t1,t2):
+    names=(str(t1)+" "+str(t2)).casefold()
+    return "female" if ("women" in names or "(w)" in names) else "male"
+
+def _prior_matches(t1,t2,fmt,venue,gender,cutoff):
+    a,b=_team_key(t1),_team_key(t2)
+    target_format=_history_format(fmt)
+    v=str(venue or "").split(",")[0].strip().casefold()
+    found=[]
+    for match in HISTORY:
+        if not match.get("winner") or str(match.get("date","")) >= cutoff:
+            continue
+        if match.get("gender","male") != gender:
+            continue
+        if _history_format(match.get("match_type")) != target_format:
+            continue
+        names=match.get("teams") or []
+        if len(names)!=2:
+            continue
+        keys=[_team_key(x) for x in names]
+        if a in keys or b in keys:
+            found.append(match)
+    return sorted(found,key=lambda x:x.get("date",""),reverse=True),a,b,v
+
+def _form_rate(matches, team_key, limit=5):
+    played=matches[:limit]
+    if not played:
+        return 0.5
+    wins=sum(1 for m in played if _team_key(m.get("winner"))==team_key)
+    return float(wins/len(played))
+
+def get_match_features(fmt,t1,t2,venue,cutoff=None):
+    cutoff=cutoff or datetime.now(timezone.utc).date().isoformat()
+    gender=_fixture_gender(t1,t2)
+    prior,a,b,v=_prior_matches(t1,t2,fmt,venue,gender,cutoff)
+    t1_matches=[m for m in prior if a in [_team_key(x) for x in m.get("teams",[])]]
+    t2_matches=[m for m in prior if b in [_team_key(x) for x in m.get("teams",[])]]
+    h2h=[m for m in prior if {a,b}=={_team_key(x) for x in m.get("teams",[])}]
+    venue_t1=[m for m in t1_matches if str(m.get("venue","")).split(",")[0].strip().casefold()==v]
+    venue_t2=[m for m in t2_matches if str(m.get("venue","")).split(",")[0].strip().casefold()==v]
+    h2h_recent=h2h[:10]
+    h2h_ratio=(sum(1 for m in h2h_recent if _team_key(m.get("winner"))==a)/len(h2h_recent)) if h2h_recent else 0.5
+    return (_form_rate(t1_matches,a),_form_rate(t2_matches,b),float(h2h_ratio),
+            _form_rate(venue_t1,a),_form_rate(venue_t2,b))
+
 def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision):
     e1,e2=get_elo(t1),get_elo(t2); toss_t1=1 if toss_winner==t1 else 0
-    venue_clean=str(venue).split(',')[0].strip(); twr,tdr=get_toss_rates(venue_clean,toss_decision)
+    venue_clean=str(venue).split(',')[0].strip()
+    form1,form2,h2h,venue1,venue2=get_match_features(fmt,t1,t2,venue_clean)
+    # Keep the exact 13-column training schema and its original order.
     row={'match_type':str(fmt),'team1':str(t1),'team2':str(t2),'venue':str(venue_clean),'toss_decision':str(toss_decision),
          'team1_elo':float(e1),'team2_elo':float(e2),'toss_win_team1':int(toss_t1),
-         'team1_form':0.60,'team2_form':0.60,'h2h_team1_ratio':0.50,
-         'toss_winner_win_rate':float(twr),'toss_decision_win_rate':float(tdr)}
+         'team1_form':form1,'team2_form':form2,'h2h_team1_ratio':h2h,
+         'venue_form_t1':venue1,'venue_form_t2':venue2}
     try:
         df=pd.DataFrame([row])
         for col in ['match_type','team1','team2','venue','toss_decision']:
