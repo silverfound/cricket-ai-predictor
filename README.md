@@ -7,7 +7,7 @@ The production target preserves the current app UI and the four trained predicti
 - GitHub Actions scheduled refresh: every 30 minutes (UTC; GitHub schedules can be delayed).
 - Each workflow run makes up to two RapidAPI calls to Cricket Live Line Advance, using the Actions secret `RAPIDAPI_KEY`.
 - Existing CatBoost/LightGBM ensemble and Elo fallback calculations are mirrored in the workflow generator. It precomputes neutral and four toss scenarios for each fixture, which the existing modal UI reads from a JSON snapshot.
-- Runs are serialized to avoid concurrent provider requests. A manual workflow dispatch also consumes one API request.
+- Runs are serialized to avoid concurrent provider requests. A manual workflow dispatch consumes up to two API requests; avoid manual dispatches unless needed.
 - Scheduled maximum use: 48 runs/day × 2 pages = 96 calls/day against the 100-call/day quota; avoid manual re-runs to preserve the 4-call buffer.
 
 ## Configure Pages
