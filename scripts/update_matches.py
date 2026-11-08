@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """One-request-per-run feed snapshot generator; inference math mirrors existing main.py."""
-import json, os
+import json, os, re
 from datetime import datetime, timezone
 from pathlib import Path
 import joblib, numpy as np, pandas as pd, requests
@@ -103,17 +103,53 @@ def main():
         raise SystemExit(f'Incomplete provider feed: fetched {len(items)} of {expected_total} fixtures; prior snapshot left untouched.')
     if not items:
         raise SystemExit('Provider returned zero fixtures; prior snapshot left untouched.')
+
+    # Verify the complete provider response BEFORE filtering, so pagination and
+    # quota diagnostics continue to reflect the raw API feed accurately.
     response=dict(response)
-    response['items']=items
+    provider_total_items=response.get('total_items',len(items))
     response['fetched_pages']=total_pages
+
+    # Keep only formats/team levels represented by the trained prediction model.
+    test_playing_nations = {
+        'afghanistan','australia','bangladesh','england','india','ireland',
+        'new zealand','pakistan','south africa','sri lanka','west indies','zimbabwe'
+    }
+    def is_untrained_fixture(item):
+        fmt=str(item.get('format_str') or '').strip().lower()
+        team1=str((item.get('teama') or {}).get('name') or '').strip()
+        team2=str((item.get('teamb') or {}).get('name') or '').strip()
+        # T10 is not part of this model's training formats.
+        if 't10' in fmt or 'ten10' in fmt.replace(' ',''):
+            return True
+        # Exclude U19/youth and A-side fixtures regardless of competition title.
+        youth_or_a = re.compile(r'\b(?:under\s*19|u\s*19|u19|youth)\b|\b(?:a\s+team|a\s+xi)\s*$|\b[a-z][a-z .\'-]*\s+a\s*
+if __name__=='__main__': main()
+, re.I)
+        if youth_or_a.search(team1) or youth_or_a.search(team2):
+            return True
+        # First-Class/Test formats are accepted only for senior Test-playing nations.
+        is_test = 'test' in fmt or 'first class' in fmt or 'first-class' in fmt
+        if is_test and not (team1.casefold() in test_playing_nations and team2.casefold() in test_playing_nations):
+            return True
+        return False
+
+    raw_count=len(items)
+    items=[item for item in items if not is_untrained_fixture(item)]
+    if not items:
+        raise SystemExit('All provider fixtures were excluded by training-eligibility filters; prior snapshot left untouched.')
     for item in items:
         pred=make_prediction(item)
         if pred: item['ai_prediction']=pred
+    response['items']=items
+    response['provider_total_items']=provider_total_items
+    response['filtered_out_items']=raw_count-len(items)
     output={'updated_at':datetime.now(timezone.utc).isoformat(),
             'provider_date_start':start_date,'provider_date_end':end_date,
-            'provider_total_items':response.get('total_items',len(items)),
+            'provider_total_items':provider_total_items,
+            'filtered_out_items':raw_count-len(items),
             'provider_total_pages':total_pages,'response':response}
     Path('data').mkdir(exist_ok=True)
     Path('data/matches.json').write_text(json.dumps(output,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-    print(f'Generated snapshot for {len(items)} fixtures across {start_date} to {end_date} using {total_pages} provider page(s).')
+    print(f'Generated snapshot with {len(items)} eligible fixtures (filtered {raw_count-len(items)} of {raw_count} API fixtures) across {start_date} to {end_date} using {total_pages} provider page(s).')
 if __name__=='__main__': main()
