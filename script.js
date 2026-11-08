@@ -797,7 +797,7 @@ const ilmiInternationalTeams = new Set(["Afghanistan","Africa XI","Argentina","A
 const ilmiMajorCompetitions = new Set(["Indian Premier League","Pakistan Super League","Big Bash League","Women's Big Bash League","Bangladesh Premier League","Caribbean Premier League","Women's Caribbean Premier League","The Hundred Men's Competition","The Hundred Women's Competition","Lanka Premier League","International League T20","Major League Cricket","SA20","Nepal Premier League","Mzansi Super League","FairBreak Invitational Tournament","Women's Premier League","Women's Cricket Super League","Women's T20 Challenge","European T20 Premier League","Abu Dhabi T10","Abu Dhabi T10 League","IPL","PSL","BBL","WBBL","BPL","CPL","WCPL","The Hundred","LPL","ILT20","MLC","WPL","T10"].map(normalizeIlmiName));
 function isIlmiInternationalTeam(name) {
     const raw = String(name || "").trim();
-    const base = raw.replace(/\\s+women$/i, "");
+    const base = raw.replace(/\s+women$/i, "");
     const key = normalizeIlmiName(base);
     const aliases = { "usa":"unitedstatesofamerica", "unitedstates":"unitedstatesofamerica", "uae":"unitedarabemirates" };
     return ilmiInternationalTeams.has(aliases[key] || key);
