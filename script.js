@@ -1096,7 +1096,8 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
         "tuks cricket oval": { latitude: -25.750873, longitude: 28.247124, timezone: "Africa/Johannesburg", name: "LC de Villiers Oval", city: "Pretoria", country: "South Africa" },
         "willowmoore park": { latitude: -26.19528, longitude: 28.31806, timezone: "Africa/Johannesburg", name: "Willowmoore Park", city: "Benoni", country: "South Africa" },
         "sahara willowmoore park": { latitude: -26.19528, longitude: 28.31806, timezone: "Africa/Johannesburg", name: "Willowmoore Park", city: "Benoni", country: "South Africa" },
-        "north sydney oval": { latitude: -33.83194, longitude: 151.20944, timezone: "Australia/Sydney", name: "North Sydney Oval", city: "North Sydney", country: "Australia" }
+        "north sydney oval": { latitude: -33.83194, longitude: 151.20944, timezone: "Australia/Sydney", name: "North Sydney Oval", city: "North Sydney", country: "Australia" },
+        "entebbe cricket oval": { latitude: 0.0525425, longitude: 32.4675322, timezone: "Africa/Kampala", name: "Entebbe Cricket Oval", city: "Entebbe", country: "Uganda" }
     };
     const verifiedGround = verifiedGrounds[normalizeVenueText(venue)];
     if (verifiedGround && isValidIanaTimezone(verifiedGround.timezone)) {
