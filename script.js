@@ -166,6 +166,31 @@ Object.assign(urduTeams, {
     "Auckland": "آکلینڈ", "Canterbury": "کینٹربری", "Otago": "اوٹاگو", "Wellington": "ویلنگٹن"
 });
 
+// Current Abu Dhabi T10 2026 franchise names (official tournament roster).
+Object.assign(urduTeams, {
+    "UAE Bulls": "یو اے ای بلز",
+    "Yas Lions": "یاس لائنز",
+    "Royal Desert Champions": "رائل ڈیزرٹ چیمپئنز",
+    "Emirates Eagles": "امارات ایگلز",
+    "United Tigers": "یونائیٹڈ ٹائیگرز",
+    "Arabian Aces": "عربین ایسز",
+    "Trinbago Knight Riders": "ٹرینیباگو نائٹ رائیڈرز",
+    "Guyana Amazon Warriors": "گیانا ایمازون وارئیرز",
+    "Barbados Tridents": "بارباڈوس ٹرائیڈنٹس",
+    "Jamaica Kingsmen": "جمیکا کنگز مین",
+    "Rajshahi Warriors": "راجشاہی وارئیرز",
+    "Chattogram Royals": "چٹگرام رائلز",
+    "Sylhet Titans": "سلہٹ ٹائٹنز",
+    "Rangpur Riders": "رنگپور رائیڈرز",
+    "Dhaka Capitals": "ڈھاکہ کیپیٹلز",
+    "Noakhali Express": "نوکھالی ایکسپریس",
+    "Akcel United Kabul": "اکسل یونائیٹڈ کابل",
+    "Balkh Zwanan": "بلخ جوانان",
+    "Kandahar Warriors": "قندھار وارئیرز",
+    "Nangarhar Cosmic": "ننگرہار کاسمک",
+    "Paktia": "پکتیا"
+});
+
 // Domestic provincial/county sides are intentionally excluded from Ilmi mappings.
 [
     "Auckland Hearts","Canterbury Magicians","Otago Sparks","Wellington Blaze",
@@ -489,6 +514,9 @@ const urduVenues = {
     "Sharjah Cricket Stadium": "شارجہ کرکٹ اسٹیڈیم",
     "Sheikh Zayed Cricket Stadium": "شیخ زاید کرکٹ اسٹیڈیم",
     "Zayed Cricket Stadium": "زاید کرکٹ اسٹیڈیم",
+    "Sheikh Zayed Stadium": "شیخ زاید کرکٹ اسٹیڈیم",
+    "Zayed Sports City Cricket Stadium": "زاید اسپورٹس سٹی کرکٹ اسٹیڈیم",
+    "Abu Dhabi Cricket Stadium": "ابو ظہبی کرکٹ اسٹیڈیم",
     "Kensington Oval": "کینسنگٹن اوول",
     "Brian Lara Cricket Academy": "برائن لارا کرکٹ اکیڈمی",
     "Sir Vivian Richards Stadium": "سر ویوین رچرڈز اسٹیڈیم",
@@ -531,9 +559,12 @@ const urduVenues = {
     "Riverway Stadium": "ریور وے اسٹیڈیم"
 };
 function getUrduVenueName(value) {
-    if (urduVenues[value]) return urduVenues[value];
-    const key = Object.keys(urduVenues).find(k => normalizeIlmiName(k) === normalizeIlmiName(value));
-    return key ? urduVenues[key] : "";
+    const raw = String(value || "").trim();
+    if (!raw) return "";
+    if (urduVenues[raw]) return urduVenues[raw];
+    const key = Object.keys(urduVenues).find(k => normalizeIlmiName(k) === normalizeIlmiName(raw));
+    // Unknown venue labels are transliterated; geographic verification remains strict.
+    return key ? urduVenues[key] : transliterateIlmiName(raw);
 }
 
 // --- CAPTAINS DICTIONARY (Urdu spellings for international captains) ---
@@ -634,7 +665,13 @@ const urduCaptains = {
     "Nurul Hasan Sohan": "نور الحسن سوہان",
     "Mohammad Mithun": "محمد متھن",
     "Haider Ali": "حیدر علی",
-    "Azmatullah Omarzai": "عظمت اللہ عمرزئی"
+    "Azmatullah Omarzai": "عظمت اللہ عمرزئی",
+    "Kieron Pollard": "کیرون پولارڈ",
+    "Fakhar Zaman": "فخر زمان",
+    "Smriti Mandhana": "اسمرتی مندھانا",
+    "Fatima Sana": "فاطمہ ثنا",
+    "Esha Oza": "ایشا اوزا",
+    "Harpreet Singh": "ہربریت سنگھ"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
@@ -693,6 +730,13 @@ const teamCaptains = {
     "Kandahar Warriors": "Rashid Khan",
     "Nangarhar Cosmic": "Rahmat Shah",
     "Paktia": "Rahmanullah Gurbaz",
+    // Abu Dhabi T10 2026: captains announced by the official tournament
+    "UAE Bulls": "Kieron Pollard",
+    "Yas Lions": "Jason Holder",
+    "Royal Desert Champions": "Nicholas Pooran",
+    "Emirates Eagles": "Rovman Powell",
+    "United Tigers": "Fakhar Zaman",
+    "Arabian Aces": "Moeen Ali",
     "Chennai Super Kings": "Ruturaj Gaikwad",
     "Delhi Capitals": "Axar Patel",
     "Gujarat Titans": "Shubman Gill",
@@ -757,24 +801,43 @@ const internationalCaptains = {
     "Zimbabwe": { "Test": "Richard Ngarava", "ODI": "Sikandar Raza", "T20": "Sikandar Raza" },
     "United Arab Emirates": { "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
     "UAE": { "ODI": "Harpreet Singh", "T20": "Muhammad Waseem" },
-    "Oman": { "ODI": "Vinayak Shukla", "T20": "Vinayak Shukla" }
+    "Oman": { "ODI": "Vinayak Shukla", "T20": "Vinayak Shukla" },
+    // Women's national captaincies confirmed by 2026 board/tournament announcements
+    "India Women": { "ODI": "Smriti Mandhana", "T20": "Smriti Mandhana" },
+    "Pakistan Women": { "ODI": "Fatima Sana", "T20": "Fatima Sana" },
+    "UAE Women": { "ODI": "Esha Oza", "T20": "Esha Oza" }
 };
 
 // Strict Ilmi eligibility: international fixtures + franchise leagues present in the Cricsheet training export.
 const ilmiInternationalTeams = new Set(["Afghanistan","Africa XI","Argentina","Asia XI","Australia","Austria","Bahamas","Bahrain","Bangladesh","Barbados","Belgium","Belize","Bermuda","Bhutan","Botswana","Brazil","Bulgaria","Cambodia","Cameroon","Canada","Cayman Islands","Chile","China","Cook Islands","Costa Rica","Croatia","Cyprus","Czech Republic","Denmark","England","Estonia","Eswatini","Fiji","Finland","France","Gambia","Germany","Ghana","Gibraltar","Greece","Guernsey","Hong Kong","Hungary","ICC World XI","India","Indonesia","Iran","Ireland","Isle of Man","Israel","Italy","Ivory Coast","Japan","Jersey","Kenya","Kuwait","Lesotho","Luxembourg","Malawi","Malaysia","Maldives","Mali","Malta","Mexico","Mongolia","Mozambique","Myanmar","Namibia","Nepal","Netherlands","New Zealand","Nigeria","Norway","Oman","Pakistan","Panama","Papua New Guinea","Peru","Philippines","Portugal","Qatar","Romania","Rwanda","Samoa","Saudi Arabia","Scotland","Serbia","Seychelles","Sierra Leone","Singapore","Slovenia","South Africa","South Korea","Spain","Sri Lanka","St Helena","Suriname","Swaziland","Sweden","Switzerland","Tanzania","Thailand","Timor-Leste","Turkey","Turks and Caicos Island","Uganda","United Arab Emirates","United States of America","Uzbekistan","Vanuatu","West Indies","Zambia","Zimbabwe"].map(normalizeIlmiName));
-const ilmiMajorCompetitions = new Set(["Indian Premier League","Pakistan Super League","Big Bash League","Women's Big Bash League","Bangladesh Premier League","Caribbean Premier League","Women's Caribbean Premier League","The Hundred Men's Competition","The Hundred Women's Competition","Lanka Premier League","International League T20","Major League Cricket","SA20","Nepal Premier League","Mzansi Super League","FairBreak Invitational Tournament","Women's Premier League","Women's Cricket Super League","Women's T20 Challenge","European T20 Premier League","IPL","PSL","BBL","WBBL","BPL","CPL","WCPL","The Hundred","LPL","ILT20","MLC","WPL"].map(normalizeIlmiName));
+const ilmiMajorCompetitions = new Set(["Indian Premier League","Pakistan Super League","Big Bash League","Women's Big Bash League","Bangladesh Premier League","Caribbean Premier League","Women's Caribbean Premier League","The Hundred Men's Competition","The Hundred Women's Competition","Lanka Premier League","International League T20","Major League Cricket","SA20","Nepal Premier League","Mzansi Super League","FairBreak Invitational Tournament","Women's Premier League","Women's Cricket Super League","Women's T20 Challenge","European T20 Premier League","Abu Dhabi T10","Abu Dhabi T10 League","IPL","PSL","BBL","WBBL","BPL","CPL","WCPL","The Hundred","LPL","ILT20","MLC","WPL","T10"].map(normalizeIlmiName));
 function isIlmiInternationalTeam(name) {
-    const base = String(name || "").trim().replace(/\s+women$/i, "");
+    const raw = String(name || "").trim();
+    const base = raw.replace(/\s+women$/i, "");
     const key = normalizeIlmiName(base);
     const aliases = { "usa":"unitedstatesofamerica", "unitedstates":"unitedstatesofamerica", "uae":"unitedarabemirates" };
     return ilmiInternationalTeams.has(aliases[key] || key);
 }
-function isIlmiEligibleFixture(team1, team2, competitionTitle) {
+function ilmiCaptainForEligibility(name, format) {
+    const normalized = normalizeIlmiName(name);
+    const internationalKey = Object.keys(internationalCaptains)
+        .find(key => normalizeIlmiName(key) === normalized);
+    if (internationalKey) return internationalCaptains[internationalKey][format] || "";
+    const franchiseKey = Object.keys(teamCaptains)
+        .find(key => normalizeIlmiName(key) === normalized);
+    return franchiseKey ? teamCaptains[franchiseKey] : "";
+}
+function isIlmiEligibleFixture(team1, team2, competitionTitle, format = "T20") {
     const isInternational = isIlmiInternationalTeam(team1) && isIlmiInternationalTeam(team2);
     const competitionKey = normalizeIlmiName(competitionTitle);
     const isMajorLeague = ilmiMajorCompetitions.has(competitionKey) ||
         Array.from(ilmiMajorCompetitions).some(name => competitionKey.startsWith(name));
-    return isInternational || isMajorLeague;
+    if (!isInternational && !isMajorLeague) return false;
+    // Fail closed until both teams have a current captain and Urdu mappings.
+    return [team1, team2].every(name => {
+        const captain = ilmiCaptainForEligibility(name, format);
+        return Boolean(captain && urduCaptains[captain] && getUrduTeamName(name));
+    });
 }
 
 const friendshipMatrix = {
@@ -1011,6 +1074,10 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
     // Verified venue registry: exact aliases bypass unreliable/missing feed geodata.
     // TU International Cricket Ground is in Kirtipur, Nepal (IANA zone Asia/Kathmandu).
     const verifiedGrounds = {
+        "zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
+        "sheikh zayed stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
+        "sheikh zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
+        "zayed sports city cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
         "tribhuvan university international cricket ground": {
             latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
         },
@@ -1026,9 +1093,11 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
     };
     const verifiedGround = verifiedGrounds[normalizeVenueText(venue)];
     if (verifiedGround && isValidIanaTimezone(verifiedGround.timezone)) {
+        const isZayed = normalizeVenueText(venue).includes("zayed");
         return { ...verifiedGround, source: "verified-venue-registry", confidence: 100,
-            resolvedName: "Tribhuvan University International Cricket Ground",
-            resolvedCity: "Kirtipur", resolvedCountry: "Nepal" };
+            resolvedName: isZayed ? "Zayed Cricket Stadium" : "Tribhuvan University International Cricket Ground",
+            resolvedCity: isZayed ? "Abu Dhabi" : "Kirtipur",
+            resolvedCountry: isZayed ? "United Arab Emirates" : "Nepal" };
     }
 
     const directCoords = extractVenueCoordinates(venueMeta);
@@ -1516,7 +1585,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     // 2. ILMI CALCULATION
     document.getElementById('ilmi-area').style.display = 'block';
     let ilmiDiv = document.getElementById('ilmi-content');
-    if (!isIlmiEligibleFixture(t1, t2, competitionTitle)) {
+    if (!isIlmiEligibleFixture(t1, t2, competitionTitle, type)) {
         ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Ilmi Prediction sirf international matches aur Cricsheet-trained major franchise leagues ke liye available hai. Domestic matches is se excluded hain.</div>';
         return;
     }
