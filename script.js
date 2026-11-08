@@ -1058,9 +1058,9 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
     // Verified venue registry: exact aliases bypass unreliable/missing feed geodata.
     // TU International Cricket Ground is in Kirtipur, Nepal (IANA zone Asia/Kathmandu).
     const verifiedGrounds = {
-        "zayed cricket stadium": { latitude: 24.4253, longitude: 54.6132, timezone: "Asia/Dubai" },
-        "sheikh zayed stadium": { latitude: 24.4253, longitude: 54.6132, timezone: "Asia/Dubai" },
-        "zayed sports city cricket stadium": { latitude: 24.4253, longitude: 54.6132, timezone: "Asia/Dubai" },
+        "zayed cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
+        "sheikh zayed stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
+        "zayed sports city cricket stadium": { latitude: 24.3966, longitude: 54.5407, timezone: "Asia/Dubai" },
         "tribhuvan university international cricket ground": {
             latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
         },
