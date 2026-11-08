@@ -22,12 +22,12 @@ The migration must copy these files without loading/saving them back out, retrai
 
 1. Build a static frontend deployment workflow with a configurable API base URL.
 2. Package the existing FastAPI app and model files in a Python runtime; add readiness checks and bounded startup/model-load diagnostics without changing inference math.
-3. Restrict CORS to the exact Pages origin; keep admin credentials and provider keys server-side.
+3. Set `CORS_ALLOWED_ORIGINS` to the exact browser origin (for this repository Pages site: `https://silverfound.github.io`); keep admin credentials and provider keys server-side. The API no longer uses wildcard CORS.
 4. Back up PostgreSQL, restore into the new database, and compare license counts/IDs/permissions before any cutover.
 5. Run regression tests for model output parity, activation/device binding, admin actions, match feed caching, and browser API calls.
 6. Cut over only after tests pass; retain the old host and database backup for rollback.
 
-## Blockers before a live release
+## Validation added on the migration branch\n\nA GitHub Actions validation workflow checks Python syntax, JavaScript syntax, required static files, and the four trained model Git blob identities. The Pages deployment workflow remains manual-only and has not been triggered.\n\n## Blockers before a live release
 
 - Select and authorize a reliable Python host capable of the app's ML dependencies and memory footprint.
 - Provision its secrets: `RAPIDAPI_KEY`, `DATABASE_URL`, `ADMIN_API_KEY`.
