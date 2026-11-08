@@ -124,6 +124,9 @@ Object.assign(urduTeams, {
     "Quetta Gladiators": "کوئٹہ گلیڈی ایٹرز", "Multan Sultans": "ملتان سلطانز",
     "Hyderabad Kingsmen": "حیدرآباد کنگزمین", "Pindiz": "پنڈیز",
 
+    "Pokhara Avengers": "پوکھرا ایونجرز",
+    "Karnali Yaks": "کرنالی یاکس",
+
     "Durban's Super Giants": "ڈربن سپر جائنٹس", "Joburg Super Kings": "جوبرگ سپر کنگز",
     "MI Cape Town": "ایم آئی کیپ ٹاؤن", "Paarl Royals": "پارل رائلز",
     "Pretoria Capitals": "پریٹوریا کیپیٹلز", "Sunrisers Eastern Cape": "سن رائزرز ایسٹرن کیپ",
