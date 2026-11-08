@@ -73,15 +73,39 @@ def main():
     start_date=today.isoformat()
     end_date=tomorrow.isoformat()
     date_range=f'{start_date}_{end_date}'
-    r=requests.get('https://cricket-live-line-advance.p.rapidapi.com/matches',
-        params={'date':date_range,'per_paged':50,'paged':1},
-        headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'},timeout=25)
-    if r.status_code!=200: raise SystemExit(f'Provider request failed HTTP {r.status_code}; prior snapshot left untouched.')
-    payload=r.json(); response=payload.get('response') or {}; items=response.get('items')
-    if not isinstance(items,list): raise SystemExit('Provider payload missing response.items list; prior snapshot left untouched.')
-    total_pages=int(response.get('total_pages') or 1)
-    if total_pages>1:
-        raise SystemExit(f'Provider returned {total_pages} pages for {date_range}; refusing to publish an incomplete one-page snapshot.')
+    headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'}
+    # Fetch up to two pages. The schedule runs every 30 minutes, so even
+    # a two-page feed stays within the 100-requests/day provider quota.
+    per_page=100
+    all_items=[]
+    response=None
+    total_pages=1
+    for page in (1,2):
+        r=requests.get('https://cricket-live-line-advance.p.rapidapi.com/matches',
+            params={'date':date_range,'per_paged':per_page,'paged':page},
+            headers=headers,timeout=25)
+        if r.status_code!=200:
+            raise SystemExit(f'Provider request failed HTTP {r.status_code} on page {page}; prior snapshot left untouched.')
+        payload=r.json(); current=payload.get('response') or {}; page_items=current.get('items')
+        if not isinstance(page_items,list):
+            raise SystemExit(f'Provider payload missing response.items list on page {page}; prior snapshot left untouched.')
+        if response is None:
+            response=current
+            total_pages=int(response.get('total_pages') or 1)
+            if total_pages>2:
+                raise SystemExit(f'Provider returned {total_pages} pages for {date_range}; safe two-page limit exceeded, prior snapshot left untouched.')
+        all_items.extend(page_items)
+        if page>=total_pages:
+            break
+    items=all_items
+    expected_total=int(response.get('total_items') or len(items))
+    if len(items)!=expected_total:
+        raise SystemExit(f'Incomplete provider feed: fetched {len(items)} of {expected_total} fixtures; prior snapshot left untouched.')
+    if not items:
+        raise SystemExit('Provider returned zero fixtures; prior snapshot left untouched.')
+    response=dict(response)
+    response['items']=items
+    response['fetched_pages']=total_pages
     for item in items:
         pred=make_prediction(item)
         if pred: item['ai_prediction']=pred
@@ -91,5 +115,5 @@ def main():
             'provider_total_pages':total_pages,'response':response}
     Path('data').mkdir(exist_ok=True)
     Path('data/matches.json').write_text(json.dumps(output,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-    print(f'Generated snapshot for {len(items)} fixtures across {start_date} to {end_date} from one API request (page 1/{total_pages}).')
+    print(f'Generated snapshot for {len(items)} fixtures across {start_date} to {end_date} using {total_pages} provider page(s).')
 if __name__=='__main__': main()
