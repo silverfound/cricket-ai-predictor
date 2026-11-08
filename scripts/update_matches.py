@@ -11,7 +11,9 @@ ELO=joblib.load("latest_elo_ratings.joblib")
 MAPPINGS=joblib.load("category_mappings.joblib")
 TOSS_STATS=joblib.load("toss_stats.joblib")
 HISTORY_PATH=Path("data/cricsheet_match_history_2024_2026.json")
-HISTORY=json.loads(HISTORY_PATH.read_text(encoding="utf-8")) if HISTORY_PATH.exists() else []
+if not HISTORY_PATH.exists(): raise SystemExit(f"Required historical data file missing: {HISTORY_PATH}")
+HISTORY=json.loads(HISTORY_PATH.read_text(encoding="utf-8"))
+if not HISTORY: raise SystemExit("Historical data file is empty; refusing default-form predictions.")
 DEFAULT_ELO=1500
 TEAM_MAPPING={'Saint Lucia Kings':'St Lucia Kings','Northern Brave':'Northern Districts','Northern Brave Women':'Northern Districts Women','Central Hinds':'Central Districts Women','Sudurpaschim Royals':'Sudur Paschim Royals','Antigua & Barbuda Falcons':'Antigua and Barbuda Falcons','St Kitts & Nevis Patriots':'St Kitts and Nevis Patriots','Canterbury Kings':'Canterbury','Auckland Hearts':'Auckland Women','Canterbury Magicians':'Canterbury Women','Otago Sparks':'Otago Women','Wellington Blaze':'Wellington Women'}
 def get_elo(name):
@@ -31,8 +33,10 @@ def get_toss_rates(venue, decision):
 def _team_key(name):
     # Cricsheet often omits the Women suffix while the live feed includes it.
     value=str(name or "").casefold().replace("&","and")
-    value=value.replace("women","").replace("(w)","").replace(" w "," ")
-    return " ".join(value.split())
+    value=value.replace("women"," ").replace("(w)"," ")
+    parts=value.split()
+    if parts and parts[-1] == "w": parts=parts[:-1]
+    return " ".join(parts)
 
 def _history_format(value):
     s=str(value or "").upper()
@@ -43,7 +47,8 @@ def _history_format(value):
 
 def _fixture_gender(t1,t2):
     names=(str(t1)+" "+str(t2)).casefold()
-    return "female" if ("women" in names or "(w)" in names) else "male"
+    tokens=names.replace("(w)"," women").split()
+    return "female" if ("women" in tokens or (tokens and tokens[-1] == "w")) else "male"
 
 def _prior_matches(t1,t2,fmt,venue,gender,cutoff):
     a,b=_team_key(t1),_team_key(t2)
