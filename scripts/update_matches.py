@@ -11,6 +11,7 @@ ELO=joblib.load("latest_elo_ratings.joblib")
 MAPPINGS=joblib.load("category_mappings.joblib")
 TOSS_STATS=joblib.load("toss_stats.joblib")
 DEFAULT_ELO=1500
+TEAM_MAPPING={'Saint Lucia Kings':'St Lucia Kings','Northern Brave':'Northern Districts','Northern Brave Women':'Northern Districts Women','Central Hinds':'Central Districts Women','Sudurpaschim Royals':'Sudur Paschim Royals','Antigua & Barbuda Falcons':'Antigua and Barbuda Falcons','St Kitts & Nevis Patriots':'St Kitts and Nevis Patriots','Canterbury Kings':'Canterbury','Auckland Hearts':'Auckland Women','Canterbury Magicians':'Canterbury Women','Otago Sparks':'Otago Women','Wellington Blaze':'Wellington Women'}
 def get_elo(name):
     if name in ELO: return ELO[name]
     for key in ELO:
@@ -52,8 +53,9 @@ def match_type(fmt):
     if 'odi' in s or 'list a' in s: return 'ODI'
     return 'T20'
 def make_prediction(m):
-    t1=(m.get('teama') or {}).get('name') or ''; t2=(m.get('teamb') or {}).get('name') or ''
-    if not t1 or not t2: return None
+    raw1=(m.get('teama') or {}).get('name') or ''; raw2=(m.get('teamb') or {}).get('name') or ''
+    if not raw1 or not raw2: return None
+    t1=TEAM_MAPPING.get(raw1,raw1); t2=TEAM_MAPPING.get(raw2,raw2)
     venue=(m.get('venue') or {}).get('name') or ''; fmt=match_type(m.get('format_str'))
     p1s=[];p2s=[];fallback=False;post={}
     for side,winner in [('t1',t1),('t2',t2)]:
