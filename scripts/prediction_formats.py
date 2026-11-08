@@ -6,7 +6,7 @@ def match_type(fmt):
         return "Test"
     if "odi" in value or "list a" in value or "one day" in value:
         return "ODI"
-    if "t10" in value or "10 over" in value or "ten over" in value:
+    if "t10" in value or "10 over" in value or "10-over" in value or "ten over" in value or "ten-over" in value:
         return "T10"
     return "T20"
 
