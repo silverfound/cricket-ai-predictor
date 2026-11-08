@@ -1,7 +1,7 @@
 name: Refresh cricket data and deploy Pages
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/15 * * * *"
   workflow_dispatch:
   pull_request:
     branches: [main]
@@ -49,8 +49,9 @@ jobs:
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
         run: python scripts/update_matches.py
-      - name: Check frontend and immutable model files
+      - name: Check generated snapshot, frontend, and immutable model files
         run: |
+          test -s data/matches.json
           node --check script.js
           test "$(git hash-object cricket_ensemble_modern.joblib)" = "e6d7ba073174ddbafaa504c090702483063649a2"
           test "$(git hash-object latest_elo_ratings.joblib)" = "ba9b707b9bb4915e812fd3b310616059154b0bf5"
