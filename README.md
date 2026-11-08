@@ -1,44 +1,25 @@
-# Cricket AI Predictor
+# Cricket AI Pro — GitHub-only deployment
 
-Migration preparation is isolated on `migration/github-pages-frontend`. Production `main` remains unchanged.
+The production target preserves the current app UI and the four trained prediction artifacts while removing Render, FastAPI hosting, admin/customer licensing, and match permissions.
 
-## Immutable trained models
+## Refresh
+- Frontend/data hosting: GitHub Pages.
+- GitHub Actions scheduled refresh: every 15 minutes (UTC; GitHub schedules can be delayed).
+- Each workflow run makes exactly one RapidAPI call to Cricket Live Line Advance, using the Actions secret `RAPIDAPI_KEY`.
+- Existing CatBoost/LightGBM ensemble and Elo fallback calculations are mirrored in the workflow generator. It precomputes neutral and four toss scenarios for each fixture, which the existing modal UI reads from a JSON snapshot.
+- Runs are serialized to avoid concurrent provider requests. A manual workflow dispatch also consumes one API request.
+- Scheduled nominal use: 96 calls/day against a 100-call/day quota; leave room by avoiding manual re-runs.
 
-These existing trained artifacts must remain byte-for-byte unchanged throughout the hosting migration:
+## Configure Pages
+Repository Settings → Pages → Build and deployment → Source: **GitHub Actions**. Confirm the `RAPIDAPI_KEY` Actions secret is configured.
 
+## Feed coverage note
+The workflow requests UTC today's feed, page 1, up to 50 items. It makes no additional pagination requests due to the quota constraint. If the provider has more than 50 fixtures on that page, only the returned items are shown.
+
+## Model artifacts preserved (immutable)
 - `cricket_ensemble_modern.joblib`
 - `latest_elo_ratings.joblib`
 - `category_mappings.joblib`
 - `toss_stats.joblib`
 
-Do not retrain, regenerate, replace, or resave them. Any future model change requires separate explicit approval.
-
-## Target architecture
-
-- **GitHub Pages:** static customer frontend and PWA.
-- **Python FastAPI service:** existing model inference, live cricket feed proxy, and protected licensing API.
-- **PostgreSQL:** persistent license and permission data, migrated only after verified backup/restore.
-- **Admin panel:** authenticated API operations; secrets stay server-side.
-
-GitHub Pages alone cannot execute Python/joblib models, keep provider credentials secret, or provide a persistent authenticated API/database. GitHub Actions are finite workflow runs, not a 24/7 API server.
-
-## Release gates
-
-1. Select a Python host capable of the existing ML dependencies and memory requirements.
-2. Back up PostgreSQL and verify restore; compare license IDs, counts, and permissions.
-3. Record and compare SHA-256 hashes for all four model artifacts.
-4. Test model inference parity, match feed, activation/device binding, admin operations, and frontend CORS on staging.
-5. Configure the Pages frontend to use the staging API URL.
-6. Cut over only after all tests pass; keep the old host and backup for rollback.
-
-## Runtime secrets
-
-- `RAPIDAPI_KEY`
-- `DATABASE_URL`
-- `ADMIN_API_KEY`
-
-Store these only in the selected host's secret manager. Never commit them or expose them in browser JavaScript.
-
-## Current status
-
-Preparation only. No production deployment, database migration, DNS change, or customer cutover has occurred. The Python hosting provider, secrets, production database backup, and staging smoke test are still required before release.
+Workflow verifies the tracked Git blob SHA of all four files. They are not retrained or rewritten.
