@@ -126,7 +126,8 @@ def main():
         def is_a_or_youth(name):
             n=str(name or '').strip().lower()
             words=n.replace('-', ' ').split()
-            if re.search(r'\\b(?:under\\s*19|u\\s*19|u19|youth)\\b', n):
+            compact=n.replace('-', ' ').replace('_', ' ')
+            if any(token in compact for token in ('under 19','u 19','u19','youth')):
                 return True
             # A-side naming: "Team A", "A XI", "England A", "Australia A",
             # and common "England Lions" / "India A" variants.
