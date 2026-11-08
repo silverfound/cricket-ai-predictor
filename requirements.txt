@@ -5,5 +5,4 @@ catboost
 xgboost
 lightgbm
 requests
-scikit-learn
-
+scikit-learn==1.6.1
