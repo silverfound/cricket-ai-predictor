@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """One-request-per-run feed snapshot generator; inference math mirrors existing main.py."""
-import json, os, re
+import json, os
 from datetime import datetime, timezone
 from pathlib import Path
 import joblib, numpy as np, pandas as pd, requests
