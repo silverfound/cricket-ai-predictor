@@ -1,4 +1,4 @@
-name: Build backend container
+name: Build and smoke-test backend container
 
 on:
   pull_request:
@@ -9,10 +9,45 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  build-and-smoke-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: cricket_test
+          POSTGRES_PASSWORD: cricket_test
+          POSTGRES_DB: cricket_runtime_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U cricket_test -d cricket_runtime_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build Docker image (no push)
         run: docker build --tag cricket-ai-predictor:ci .
+      - name: Start API container
+        run: |
+          docker run --detach --name cricket-api --network host \
+            -e PORT=8000 \
+            -e DATABASE_URL=postgresql://cricket_test:cricket_test@127.0.0.1:5432/cricket_runtime_test \
+            -e CORS_ALLOWED_ORIGINS=https://silverfound.github.io \
+            cricket-ai-predictor:ci
+      - name: Verify liveness and readiness
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8000/health/live >/dev/null; then
+              break
+            fi
+            sleep 2
+          done
+          curl --fail --silent http://127.0.0.1:8000/health/live
+          curl --fail --silent http://127.0.0.1:8000/health/ready
+      - name: Stop API container
+        if: always()
+        run: docker rm --force cricket-api || true
