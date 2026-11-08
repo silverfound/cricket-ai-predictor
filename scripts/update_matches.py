@@ -123,10 +123,17 @@ def main():
         if 't10' in fmt or 'ten10' in fmt.replace(' ',''):
             return True
         # Exclude U19/youth and A-side fixtures regardless of competition title.
-        youth_or_a = re.compile(r'\b(?:under\s*19|u\s*19|u19|youth)\b|\b(?:a\s+team|a\s+xi|lions)\s*$|\b[a-z][a-z .\'-]*\s+a\s*
-if __name__=='__main__': main()
-, re.I)
-        if youth_or_a.search(team1) or youth_or_a.search(team2):
+        def is_a_or_youth(name):
+            n=str(name or '').strip().lower()
+            words=n.replace('-', ' ').split()
+            if re.search(r'\\b(?:under\\s*19|u\\s*19|u19|youth)\\b', n):
+                return True
+            # A-side naming: "Team A", "A XI", "England A", "Australia A",
+            # and common "England Lions" / "India A" variants.
+            if len(words)>=2 and (words[-1] in {'lions','xi'} or words[-1]=='a'):
+                return True
+            return n.endswith(' a team') or n.endswith(' a xi')
+        if is_a_or_youth(team1) or is_a_or_youth(team2):
             return True
         # First-Class/Test formats are accepted only for senior Test-playing nations.
         is_test = 'test' in fmt or 'first class' in fmt or 'first-class' in fmt
