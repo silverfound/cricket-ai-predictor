@@ -166,6 +166,16 @@ Object.assign(urduTeams, {
     "Auckland": "آکلینڈ", "Canterbury": "کینٹربری", "Otago": "اوٹاگو", "Wellington": "ویلنگٹن"
 });
 
+// Current Abu Dhabi T10 2026 franchise names (official tournament roster).
+Object.assign(urduTeams, {
+    "UAE Bulls": "یو اے ای بلز",
+    "Yas Lions": "یاس لائنز",
+    "Royal Desert Champions": "رائل ڈیزرٹ چیمپئنز",
+    "Emirates Eagles": "امارات ایگلز",
+    "United Tigers": "یونائیٹڈ ٹائیگرز",
+    "Arabian Aces": "عربین ایسز"
+});
+
 // Domestic provincial/county sides are intentionally excluded from Ilmi mappings.
 [
     "Auckland Hearts","Canterbury Magicians","Otago Sparks","Wellington Blaze",
@@ -642,7 +652,10 @@ const urduCaptains = {
     "Haider Ali": "حیدر علی",
     "Azmatullah Omarzai": "عظمت اللہ عمرزئی",
     "Kieron Pollard": "کیرون پولارڈ",
-    "Fakhar Zaman": "فخر زمان"
+    "Fakhar Zaman": "فخر زمان",
+    "Smriti Mandhana": "اسمرتی مندھانا",
+    "Fatima Sana": "فاطمہ ثنا",
+    "Esha Oza": "ایشا اوزا"
 };
 
 // --- TEAM TO CAPTAIN MAPPING ---
