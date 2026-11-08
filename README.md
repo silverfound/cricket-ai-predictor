@@ -4,17 +4,17 @@ The production target preserves the current app UI and the four trained predicti
 
 ## Refresh
 - Frontend/data hosting: GitHub Pages.
-- GitHub Actions scheduled refresh: every 15 minutes (UTC; GitHub schedules can be delayed).
-- Each workflow run makes exactly one RapidAPI call to Cricket Live Line Advance, using the Actions secret `RAPIDAPI_KEY`.
+- GitHub Actions scheduled refresh: every 30 minutes (UTC; GitHub schedules can be delayed).
+- Each workflow run makes up to two RapidAPI calls to Cricket Live Line Advance, using the Actions secret `RAPIDAPI_KEY`.
 - Existing CatBoost/LightGBM ensemble and Elo fallback calculations are mirrored in the workflow generator. It precomputes neutral and four toss scenarios for each fixture, which the existing modal UI reads from a JSON snapshot.
 - Runs are serialized to avoid concurrent provider requests. A manual workflow dispatch also consumes one API request.
-- Scheduled nominal use: 96 calls/day against a 100-call/day quota; leave room by avoiding manual re-runs.
+- Scheduled maximum use: 48 runs/day × 2 pages = 96 calls/day against the 100-call/day quota; avoid manual re-runs to preserve the 4-call buffer.
 
 ## Configure Pages
 Repository Settings → Pages → Build and deployment → Source: **GitHub Actions**. Confirm the `RAPIDAPI_KEY` Actions secret is configured.
 
 ## Feed coverage note
-Each run requests the UTC today-to-tomorrow date range in one provider call, page 1, up to 100 items. The frontend displays all returned fixtures (live, upcoming, finished; T10, domestic, and international) and only removes duplicate match IDs. If the provider reports more than one page for the requested date range, the refresh fails safely rather than publishing a knowingly incomplete snapshot. This keeps the 15-minute schedule at 96 scheduled API calls/day, below the 100-call quota.
+Each run requests the UTC today-to-tomorrow date range, up to 100 items per page, and fetches every reported page (currently up to 2). The frontend displays all returned fixtures (live, upcoming, finished; T10, domestic, and international) and only removes duplicate match IDs. If the provider reports more than 2 pages, any page fails, pagination metadata changes between requests, the fetched count differs from the provider total, or IDs are missing/duplicated, the refresh fails safely and leaves the previous snapshot untouched. The 30-minute schedule allows up to 2 calls per run: 96 scheduled calls/day, below the 100-call quota.
 
 ## Model artifacts preserved (immutable)
 - `cricket_ensemble_modern.joblib`
