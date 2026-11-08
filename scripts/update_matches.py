@@ -66,18 +66,30 @@ def make_prediction(m):
     return {'pre':{t1:f'{np.mean(p1s)*100:.2f}%',t2:f'{np.mean(p2s)*100:.2f}%'},
             'post_toss':post,'is_default':fallback}
 def main():
-    today=datetime.now(timezone.utc).date().isoformat()
+    # One provider request covers UTC today and tomorrow, so the static site
+    # includes fixtures across midnight without spending a second daily quota call.
+    today=datetime.now(timezone.utc).date()
+    tomorrow=today.fromordinal(today.toordinal()+1)
+    start_date=today.isoformat()
+    end_date=tomorrow.isoformat()
+    date_range=f'{start_date}_{end_date}'
     r=requests.get('https://cricket-live-line-advance.p.rapidapi.com/matches',
-        params={'date':today,'per_paged':50,'paged':1},
+        params={'date':date_range,'per_paged':50,'paged':1},
         headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'},timeout=25)
     if r.status_code!=200: raise SystemExit(f'Provider request failed HTTP {r.status_code}; prior snapshot left untouched.')
     payload=r.json(); response=payload.get('response') or {}; items=response.get('items')
     if not isinstance(items,list): raise SystemExit('Provider payload missing response.items list; prior snapshot left untouched.')
+    total_pages=int(response.get('total_pages') or 1)
+    if total_pages>1:
+        raise SystemExit(f'Provider returned {total_pages} pages for {date_range}; refusing to publish an incomplete one-page snapshot.')
     for item in items:
         pred=make_prediction(item)
         if pred: item['ai_prediction']=pred
-    output={'updated_at':datetime.now(timezone.utc).isoformat(),'provider_date':today,'response':response}
+    output={'updated_at':datetime.now(timezone.utc).isoformat(),
+            'provider_date_start':start_date,'provider_date_end':end_date,
+            'provider_total_items':response.get('total_items',len(items)),
+            'provider_total_pages':total_pages,'response':response}
     Path('data').mkdir(exist_ok=True)
     Path('data/matches.json').write_text(json.dumps(output,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-    print(f'Generated snapshot for {len(items)} fixtures from one API request.')
+    print(f'Generated snapshot for {len(items)} fixtures across {start_date} to {end_date} from one API request (page 1/{total_pages}).')
 if __name__=='__main__': main()

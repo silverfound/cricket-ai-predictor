@@ -1234,14 +1234,11 @@ async function fetchMatches() {
                 m.tournament?.name, m.tournament?.title, m.title
             ].filter(Boolean).join(' ').toLowerCase();
 
-            // Hide all T10 fixtures and Ford Trophy fixtures from match lists.
-            if (fmt.includes('t10') || fmt.includes('10 overs')) return;
-            if (competitionText.includes('ford trophy')) return;
-            if (fmt.includes('first class') && isDom) return;
-            if (fmt.includes('odi') && isDom) return;
-
-            if (seen.has(m.timestamp_start + m.teama.name + m.teamb.name)) return;
-            seen.add(m.timestamp_start + m.teama.name + m.teamb.name);
+            // Show every fixture returned by the provider, regardless of format
+            // or domestic/international competition. Only suppress true duplicates.
+            const fixtureKey = String(m.match_id || [m.timestamp_start, m.teama.name, m.teamb.name].join('|'));
+            if (seen.has(fixtureKey)) return;
+            seen.add(fixtureKey);
 
             let status = (m.status_str || '').toLowerCase();
             if (status.includes('completed') || status.includes('finish') || status.includes('result') || status.includes('won') || status.includes('draw') || status.includes('abandon')) { finishedMatches.push(m); }
