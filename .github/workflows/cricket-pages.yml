@@ -62,6 +62,7 @@ jobs:
           mkdir -p _site/data
           cp index.html script.js manifest.json _site/
           cp data/matches.json _site/data/matches.json
+          cp data/grounds.json _site/data/grounds.json
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
