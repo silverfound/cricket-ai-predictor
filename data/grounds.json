@@ -1,0 +1,1892 @@
+{
+  "schema_version": 1,
+  "description": "Global cricket ground starter registry. Coordinates require user verification before authoritative use.",
+  "count": 77,
+  "grounds": [
+    {
+      "id": "melbourne-cricket-ground",
+      "name": "Melbourne Cricket Ground",
+      "aliases": [
+        "MCG"
+      ],
+      "city": "Melbourne",
+      "country": "Australia",
+      "latitude": -37.82,
+      "longitude": 144.9834,
+      "timezone": "Australia/Melbourne",
+      "competitions": [
+        "International",
+        "BBL",
+        "WBBL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "sydney-cricket-ground",
+      "name": "Sydney Cricket Ground",
+      "aliases": [
+        "SCG"
+      ],
+      "city": "Sydney",
+      "country": "Australia",
+      "latitude": -33.8915,
+      "longitude": 151.2249,
+      "timezone": "Australia/Sydney",
+      "competitions": [
+        "International",
+        "BBL",
+        "WBBL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "adelaide-oval",
+      "name": "Adelaide Oval",
+      "aliases": [],
+      "city": "Adelaide",
+      "country": "Australia",
+      "latitude": -34.9155,
+      "longitude": 138.596,
+      "timezone": "Australia/Adelaide",
+      "competitions": [
+        "International",
+        "BBL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "the-gabba",
+      "name": "The Gabba",
+      "aliases": [
+        "Brisbane Cricket Ground",
+        "Woolloongabba"
+      ],
+      "city": "Brisbane",
+      "country": "Australia",
+      "latitude": -27.4858,
+      "longitude": 153.0381,
+      "timezone": "Australia/Brisbane",
+      "competitions": [
+        "International",
+        "BBL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "perth-stadium",
+      "name": "Perth Stadium",
+      "aliases": [
+        "Optus Stadium"
+      ],
+      "city": "Perth",
+      "country": "Australia",
+      "latitude": -31.9514,
+      "longitude": 115.889,
+      "timezone": "Australia/Perth",
+      "competitions": [
+        "International",
+        "BBL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "waca-ground",
+      "name": "WACA Ground",
+      "aliases": [
+        "Western Australia Cricket Association Ground"
+      ],
+      "city": "Perth",
+      "country": "Australia",
+      "latitude": -31.9609,
+      "longitude": 115.8798,
+      "timezone": "Australia/Perth",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "bellerive-oval",
+      "name": "Bellerive Oval",
+      "aliases": [
+        "Blundstone Arena",
+        "Ninja Stadium"
+      ],
+      "city": "Hobart",
+      "country": "Australia",
+      "latitude": -42.8747,
+      "longitude": 147.366,
+      "timezone": "Australia/Hobart",
+      "competitions": [
+        "International",
+        "BBL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "manuka-oval",
+      "name": "Manuka Oval",
+      "aliases": [],
+      "city": "Canberra",
+      "country": "Australia",
+      "latitude": -35.3187,
+      "longitude": 149.1353,
+      "timezone": "Australia/Sydney",
+      "competitions": [
+        "International",
+        "BBL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "eden-park",
+      "name": "Eden Park",
+      "aliases": [],
+      "city": "Auckland",
+      "country": "New Zealand",
+      "latitude": -36.8748,
+      "longitude": 174.744,
+      "timezone": "Pacific/Auckland",
+      "competitions": [
+        "International",
+        "Super Smash"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "basin-reserve",
+      "name": "Basin Reserve",
+      "aliases": [],
+      "city": "Wellington",
+      "country": "New Zealand",
+      "latitude": -41.292,
+      "longitude": 174.781,
+      "timezone": "Pacific/Auckland",
+      "competitions": [
+        "International",
+        "Super Smash"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "hagley-oval",
+      "name": "Hagley Oval",
+      "aliases": [],
+      "city": "Christchurch",
+      "country": "New Zealand",
+      "latitude": -43.5309,
+      "longitude": 172.6205,
+      "timezone": "Pacific/Auckland",
+      "competitions": [
+        "International",
+        "Super Smash"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "bay-oval",
+      "name": "Bay Oval",
+      "aliases": [],
+      "city": "Mount Maunganui",
+      "country": "New Zealand",
+      "latitude": -37.68,
+      "longitude": 176.215,
+      "timezone": "Pacific/Auckland",
+      "competitions": [
+        "International",
+        "Super Smash"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "seddon-park",
+      "name": "Seddon Park",
+      "aliases": [],
+      "city": "Hamilton",
+      "country": "New Zealand",
+      "latitude": -37.787,
+      "longitude": 175.2793,
+      "timezone": "Pacific/Auckland",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "university-oval",
+      "name": "University Oval",
+      "aliases": [
+        "Otago Oval"
+      ],
+      "city": "Dunedin",
+      "country": "New Zealand",
+      "latitude": -45.863,
+      "longitude": 170.51,
+      "timezone": "Pacific/Auckland",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "lord-s",
+      "name": "Lord's Cricket Ground",
+      "aliases": [
+        "Lord's",
+        "Lords"
+      ],
+      "city": "London",
+      "country": "England",
+      "latitude": 51.5294,
+      "longitude": -0.1728,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "The Hundred"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "the-oval",
+      "name": "The Oval",
+      "aliases": [
+        "Kennington Oval",
+        "Kia Oval"
+      ],
+      "city": "London",
+      "country": "England",
+      "latitude": 51.4837,
+      "longitude": -0.1149,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "The Hundred"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "edgbaston",
+      "name": "Edgbaston",
+      "aliases": [],
+      "city": "Birmingham",
+      "country": "England",
+      "latitude": 52.4558,
+      "longitude": -1.9025,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "The Hundred"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "trent-bridge",
+      "name": "Trent Bridge",
+      "aliases": [],
+      "city": "Nottingham",
+      "country": "England",
+      "latitude": 52.9369,
+      "longitude": -1.1327,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "The Hundred"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "old-trafford",
+      "name": "Old Trafford Cricket Ground",
+      "aliases": [
+        "Emirates Old Trafford"
+      ],
+      "city": "Manchester",
+      "country": "England",
+      "latitude": 53.4631,
+      "longitude": -2.2913,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "The Hundred"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "headingley",
+      "name": "Headingley",
+      "aliases": [],
+      "city": "Leeds",
+      "country": "England",
+      "latitude": 53.8177,
+      "longitude": -1.5822,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "The Hundred"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "rose-bowl",
+      "name": "The Rose Bowl",
+      "aliases": [
+        "Ageas Bowl",
+        "Utilita Bowl"
+      ],
+      "city": "Southampton",
+      "country": "England",
+      "latitude": 50.924,
+      "longitude": -1.3221,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "The Hundred"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "sophia-gardens",
+      "name": "Sophia Gardens",
+      "aliases": [
+        "Cardiff Wales Stadium"
+      ],
+      "city": "Cardiff",
+      "country": "Wales",
+      "latitude": 51.4857,
+      "longitude": -3.201,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "The Hundred"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "bristol-county-ground",
+      "name": "Bristol County Ground",
+      "aliases": [],
+      "city": "Bristol",
+      "country": "England",
+      "latitude": 51.455,
+      "longitude": -2.59,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International",
+        "Domestic T20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "newlands",
+      "name": "Newlands Cricket Ground",
+      "aliases": [],
+      "city": "Cape Town",
+      "country": "South Africa",
+      "latitude": -33.9817,
+      "longitude": 18.468,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "International",
+        "SA20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "wanderers",
+      "name": "The Wanderers Stadium",
+      "aliases": [
+        "New Wanderers Stadium",
+        "Bullring"
+      ],
+      "city": "Johannesburg",
+      "country": "South Africa",
+      "latitude": -26.131,
+      "longitude": 28.057,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "International",
+        "SA20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "super-sport-park",
+      "name": "SuperSport Park",
+      "aliases": [
+        "Centurion Park"
+      ],
+      "city": "Centurion",
+      "country": "South Africa",
+      "latitude": -25.86,
+      "longitude": 28.195,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "International",
+        "SA20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "kingsmead",
+      "name": "Kingsmead Cricket Ground",
+      "aliases": [],
+      "city": "Durban",
+      "country": "South Africa",
+      "latitude": -29.848,
+      "longitude": 31.029,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "International",
+        "SA20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "st-georges-park",
+      "name": "St George's Park",
+      "aliases": [
+        "St Georges Park"
+      ],
+      "city": "Gqeberha",
+      "country": "South Africa",
+      "latitude": -33.961,
+      "longitude": 25.6,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "International",
+        "SA20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "mangaung-oval",
+      "name": "Mangaung Oval",
+      "aliases": [
+        "Goodyear Park"
+      ],
+      "city": "Bloemfontein",
+      "country": "South Africa",
+      "latitude": -29.119,
+      "longitude": 26.217,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "International",
+        "SA20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "gaddafi-stadium",
+      "name": "Gaddafi Stadium",
+      "aliases": [
+        "Lahore Stadium",
+        "Qaddafi Stadium"
+      ],
+      "city": "Lahore",
+      "country": "Pakistan",
+      "latitude": 31.5133,
+      "longitude": 74.3333,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "International",
+        "PSL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "national-stadium-karachi",
+      "name": "National Bank Cricket Arena",
+      "aliases": [
+        "National Stadium Karachi",
+        "National Stadium"
+      ],
+      "city": "Karachi",
+      "country": "Pakistan",
+      "latitude": 24.8936,
+      "longitude": 67.0822,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "International",
+        "PSL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "rawalpindi-cricket-stadium",
+      "name": "Rawalpindi Cricket Stadium",
+      "aliases": [
+        "Pindi Cricket Stadium"
+      ],
+      "city": "Rawalpindi",
+      "country": "Pakistan",
+      "latitude": 33.6514,
+      "longitude": 73.0761,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "International",
+        "PSL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "multan-cricket-stadium",
+      "name": "Multan Cricket Stadium",
+      "aliases": [],
+      "city": "Multan",
+      "country": "Pakistan",
+      "latitude": 30.203,
+      "longitude": 71.522,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "International",
+        "PSL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "arun-jaitley-stadium",
+      "name": "Arun Jaitley Stadium",
+      "aliases": [
+        "Feroz Shah Kotla",
+        "Kotla Ground"
+      ],
+      "city": "Delhi",
+      "country": "India",
+      "latitude": 28.6378,
+      "longitude": 77.2432,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "wankhede-stadium",
+      "name": "Wankhede Stadium",
+      "aliases": [],
+      "city": "Mumbai",
+      "country": "India",
+      "latitude": 18.9388,
+      "longitude": 72.8258,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "eden-gardens",
+      "name": "Eden Gardens",
+      "aliases": [],
+      "city": "Kolkata",
+      "country": "India",
+      "latitude": 22.5646,
+      "longitude": 88.3433,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "m-chinnaswamy",
+      "name": "M Chinnaswamy Stadium",
+      "aliases": [
+        "M. Chinnaswamy Stadium"
+      ],
+      "city": "Bengaluru",
+      "country": "India",
+      "latitude": 12.9788,
+      "longitude": 77.5996,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "ma-chidambaram",
+      "name": "MA Chidambaram Stadium",
+      "aliases": [
+        "Chepauk",
+        "Madras Cricket Club Ground"
+      ],
+      "city": "Chennai",
+      "country": "India",
+      "latitude": 13.0627,
+      "longitude": 80.2792,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "narendra-modi",
+      "name": "Narendra Modi Stadium",
+      "aliases": [
+        "Motera Stadium",
+        "Sardar Patel Stadium"
+      ],
+      "city": "Ahmedabad",
+      "country": "India",
+      "latitude": 23.0917,
+      "longitude": 72.597,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "rajiv-gandhi-hyderabad",
+      "name": "Rajiv Gandhi International Cricket Stadium",
+      "aliases": [
+        "Uppal Stadium"
+      ],
+      "city": "Hyderabad",
+      "country": "India",
+      "latitude": 17.4065,
+      "longitude": 78.5505,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "sawai-mansingh",
+      "name": "Sawai Mansingh Stadium",
+      "aliases": [
+        "SMS Stadium"
+      ],
+      "city": "Jaipur",
+      "country": "India",
+      "latitude": 26.894,
+      "longitude": 75.803,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "ekana",
+      "name": "Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium",
+      "aliases": [
+        "Ekana Stadium"
+      ],
+      "city": "Lucknow",
+      "country": "India",
+      "latitude": 26.812,
+      "longitude": 81.02,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "hpca-dharamshala",
+      "name": "Himachal Pradesh Cricket Association Stadium",
+      "aliases": [
+        "HPCA Stadium"
+      ],
+      "city": "Dharamshala",
+      "country": "India",
+      "latitude": 32.197,
+      "longitude": 76.326,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "pca-mohali",
+      "name": "Punjab Cricket Association IS Bindra Stadium",
+      "aliases": [
+        "Mohali Stadium",
+        "PCA Stadium"
+      ],
+      "city": "Mohali",
+      "country": "India",
+      "latitude": 30.69,
+      "longitude": 76.737,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "shere-bangla",
+      "name": "Sher-e-Bangla National Cricket Stadium",
+      "aliases": [
+        "Mirpur Stadium",
+        "Shere Bangla National Stadium"
+      ],
+      "city": "Dhaka",
+      "country": "Bangladesh",
+      "latitude": 23.8069,
+      "longitude": 90.363,
+      "timezone": "Asia/Dhaka",
+      "competitions": [
+        "International",
+        "BPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "zahur-ahmed",
+      "name": "Zahur Ahmed Chowdhury Stadium",
+      "aliases": [
+        "Chattogram Stadium"
+      ],
+      "city": "Chattogram",
+      "country": "Bangladesh",
+      "latitude": 22.3569,
+      "longitude": 91.7832,
+      "timezone": "Asia/Dhaka",
+      "competitions": [
+        "International",
+        "BPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "sylhet-stadium",
+      "name": "Sylhet International Cricket Stadium",
+      "aliases": [],
+      "city": "Sylhet",
+      "country": "Bangladesh",
+      "latitude": 24.899,
+      "longitude": 91.87,
+      "timezone": "Asia/Dhaka",
+      "competitions": [
+        "International",
+        "BPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "r-premadasa",
+      "name": "R Premadasa Stadium",
+      "aliases": [
+        "Khettarama Stadium",
+        "RPS"
+      ],
+      "city": "Colombo",
+      "country": "Sri Lanka",
+      "latitude": 6.9395,
+      "longitude": 79.873,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "International",
+        "LPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "pallekele",
+      "name": "Pallekele International Cricket Stadium",
+      "aliases": [],
+      "city": "Kandy",
+      "country": "Sri Lanka",
+      "latitude": 7.28,
+      "longitude": 80.723,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "International",
+        "LPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "galle",
+      "name": "Galle International Stadium",
+      "aliases": [],
+      "city": "Galle",
+      "country": "Sri Lanka",
+      "latitude": 6.0329,
+      "longitude": 80.2168,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "International",
+        "LPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "rangiri-dambulla",
+      "name": "Rangiri Dambulla International Stadium",
+      "aliases": [],
+      "city": "Dambulla",
+      "country": "Sri Lanka",
+      "latitude": 7.868,
+      "longitude": 80.651,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "International",
+        "LPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "dubai-international",
+      "name": "Dubai International Cricket Stadium",
+      "aliases": [
+        "Dubai Sports City Stadium"
+      ],
+      "city": "Dubai",
+      "country": "United Arab Emirates",
+      "latitude": 25.0467,
+      "longitude": 55.2189,
+      "timezone": "Asia/Dubai",
+      "competitions": [
+        "International",
+        "ILT20",
+        "T10"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "sharjah-cricket",
+      "name": "Sharjah Cricket Stadium",
+      "aliases": [
+        "Sharjah Cricket Association Stadium"
+      ],
+      "city": "Sharjah",
+      "country": "United Arab Emirates",
+      "latitude": 25.33,
+      "longitude": 55.42,
+      "timezone": "Asia/Dubai",
+      "competitions": [
+        "International",
+        "ILT20",
+        "T10"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "zayed-stadium",
+      "name": "Zayed Cricket Stadium",
+      "aliases": [
+        "Sheikh Zayed Stadium",
+        "Abu Dhabi Cricket Stadium"
+      ],
+      "city": "Abu Dhabi",
+      "country": "United Arab Emirates",
+      "latitude": 24.3966,
+      "longitude": 54.5407,
+      "timezone": "Asia/Dubai",
+      "competitions": [
+        "International",
+        "ILT20",
+        "T10"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "tribhuvan-university",
+      "name": "Tribhuvan University International Cricket Ground",
+      "aliases": [
+        "TU Ground",
+        "TU International Cricket Ground",
+        "Kirtipur Cricket Ground"
+      ],
+      "city": "Kirtipur",
+      "country": "Nepal",
+      "latitude": 27.67806,
+      "longitude": 85.29056,
+      "timezone": "Asia/Kathmandu",
+      "competitions": [
+        "International",
+        "NPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "lc-de-villiers",
+      "name": "LC de Villiers Oval",
+      "aliases": [
+        "Tuks Cricket Oval"
+      ],
+      "city": "Pretoria",
+      "country": "South Africa",
+      "latitude": -25.750873,
+      "longitude": 28.247124,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "Domestic",
+        "CSA T20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "willowmoore-park",
+      "name": "Willowmoore Park",
+      "aliases": [
+        "Sahara Willowmoore Park"
+      ],
+      "city": "Benoni",
+      "country": "South Africa",
+      "latitude": -26.19528,
+      "longitude": 28.31806,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "Domestic",
+        "CSA T20"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "north-sydney-oval",
+      "name": "North Sydney Oval",
+      "aliases": [],
+      "city": "North Sydney",
+      "country": "Australia",
+      "latitude": -33.83194,
+      "longitude": 151.20944,
+      "timezone": "Australia/Sydney",
+      "competitions": [
+        "WBBL",
+        "Domestic"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "entebbe-cricket-oval",
+      "name": "Entebbe Cricket Oval",
+      "aliases": [
+        "Entebbe Oval"
+      ],
+      "city": "Entebbe",
+      "country": "Uganda",
+      "latitude": 0.0525425,
+      "longitude": 32.4675322,
+      "timezone": "Africa/Kampala",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "sir-vivian-richards",
+      "name": "Sir Vivian Richards Stadium",
+      "aliases": [
+        "SVRS"
+      ],
+      "city": "North Sound",
+      "country": "Antigua and Barbuda",
+      "latitude": 17.108,
+      "longitude": -61.792,
+      "timezone": "America/Antigua",
+      "competitions": [
+        "International",
+        "CPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "kensington-oval",
+      "name": "Kensington Oval",
+      "aliases": [],
+      "city": "Bridgetown",
+      "country": "Barbados",
+      "latitude": 13.109,
+      "longitude": -59.62,
+      "timezone": "America/Barbados",
+      "competitions": [
+        "International",
+        "CPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "queen-s-park-oval",
+      "name": "Queen's Park Oval",
+      "aliases": [
+        "Queens Park Oval"
+      ],
+      "city": "Port of Spain",
+      "country": "Trinidad and Tobago",
+      "latitude": 10.659,
+      "longitude": -61.523,
+      "timezone": "America/Port_of_Spain",
+      "competitions": [
+        "International",
+        "CPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "warner-park",
+      "name": "Warner Park",
+      "aliases": [
+        "Warner Park Sporting Complex"
+      ],
+      "city": "Basseterre",
+      "country": "Saint Kitts and Nevis",
+      "latitude": 17.302,
+      "longitude": -62.718,
+      "timezone": "America/St_Kitts",
+      "competitions": [
+        "International",
+        "CPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "sabina-park",
+      "name": "Sabina Park",
+      "aliases": [],
+      "city": "Kingston",
+      "country": "Jamaica",
+      "latitude": 17.971,
+      "longitude": -76.787,
+      "timezone": "America/Jamaica",
+      "competitions": [
+        "International",
+        "CPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "national-cricket-stadium-grenada",
+      "name": "National Cricket Stadium",
+      "aliases": [
+        "Queen's Park Grenada"
+      ],
+      "city": "St George's",
+      "country": "Grenada",
+      "latitude": 12.056,
+      "longitude": -61.753,
+      "timezone": "America/Grenada",
+      "competitions": [
+        "International",
+        "CPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "daren-sammy",
+      "name": "Daren Sammy Cricket Ground",
+      "aliases": [
+        "Beausejour Stadium"
+      ],
+      "city": "Gros Islet",
+      "country": "Saint Lucia",
+      "latitude": 14.077,
+      "longitude": -60.953,
+      "timezone": "America/St_Lucia",
+      "competitions": [
+        "International",
+        "CPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "providence-stadium",
+      "name": "Providence Stadium",
+      "aliases": [
+        "Guyana National Stadium"
+      ],
+      "city": "Providence",
+      "country": "Guyana",
+      "latitude": 6.801,
+      "longitude": -58.166,
+      "timezone": "America/Guyana",
+      "competitions": [
+        "International",
+        "CPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "grand-prairie",
+      "name": "Grand Prairie Stadium",
+      "aliases": [
+        "AirHogs Stadium"
+      ],
+      "city": "Grand Prairie",
+      "country": "United States",
+      "latitude": 32.746,
+      "longitude": -96.999,
+      "timezone": "America/Chicago",
+      "competitions": [
+        "MLC"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "church-street-park",
+      "name": "Church Street Park",
+      "aliases": [
+        "Morrisville Cricket Ground"
+      ],
+      "city": "Morrisville",
+      "country": "United States",
+      "latitude": 35.823,
+      "longitude": -78.827,
+      "timezone": "America/New_York",
+      "competitions": [
+        "MLC"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "central-broward",
+      "name": "Central Broward Regional Park Stadium",
+      "aliases": [
+        "Lauderhill Cricket Stadium"
+      ],
+      "city": "Lauderhill",
+      "country": "United States",
+      "latitude": 26.116,
+      "longitude": -80.286,
+      "timezone": "America/New_York",
+      "competitions": [
+        "International",
+        "MLC"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "maple-leaf-ground",
+      "name": "Maple Leaf Cricket Club",
+      "aliases": [
+        "Maple Leaf North-West Ground"
+      ],
+      "city": "King City",
+      "country": "Canada",
+      "latitude": 43.93,
+      "longitude": -79.55,
+      "timezone": "America/Toronto",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "harare-sports-club",
+      "name": "Harare Sports Club",
+      "aliases": [
+        "HSC"
+      ],
+      "city": "Harare",
+      "country": "Zimbabwe",
+      "latitude": -17.819,
+      "longitude": 31.049,
+      "timezone": "Africa/Harare",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "queens-sports-club",
+      "name": "Queens Sports Club",
+      "aliases": [],
+      "city": "Bulawayo",
+      "country": "Zimbabwe",
+      "latitude": -20.151,
+      "longitude": 28.588,
+      "timezone": "Africa/Harare",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "takashinga",
+      "name": "Takashinga Sports Club",
+      "aliases": [],
+      "city": "Harare",
+      "country": "Zimbabwe",
+      "latitude": -17.829,
+      "longitude": 31.13,
+      "timezone": "Africa/Harare",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "namibia-wanderers",
+      "name": "Wanderers Cricket Ground",
+      "aliases": [
+        "Wanderers Ground Windhoek"
+      ],
+      "city": "Windhoek",
+      "country": "Namibia",
+      "latitude": -22.592,
+      "longitude": 17.083,
+      "timezone": "Africa/Windhoek",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "al-amerat",
+      "name": "Al Amerat Cricket Ground",
+      "aliases": [
+        "Al Amerat Cricket Stadium"
+      ],
+      "city": "Al Amerat",
+      "country": "Oman",
+      "latitude": 23.501,
+      "longitude": 58.623,
+      "timezone": "Asia/Muscat",
+      "competitions": [
+        "International"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    },
+    {
+      "id": "maharashtra-cricket",
+      "name": "Maharashtra Cricket Association Stadium",
+      "aliases": [
+        "MCA Stadium",
+        "Gahunje Stadium"
+      ],
+      "city": "Pune",
+      "country": "India",
+      "latitude": 18.672,
+      "longitude": 73.706,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "formats": [
+        "Test",
+        "ODI",
+        "T20I",
+        "T20"
+      ],
+      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "verification_status": "needs_user_verification",
+      "notes": "Starter coordinates and aliases; user verification requested before treating as authoritative."
+    }
+  ]
+}
