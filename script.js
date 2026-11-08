@@ -419,6 +419,10 @@ function getUrduTeamName(value) {
 
 // --- CURRENT INTERNATIONAL / LEAGUE VENUES (API venue name -> Urdu) ---
 const urduVenues = {
+    "Tribhuvan University International Cricket Ground": "تری بھون یونیورسٹی انٹرنیشنل کرکٹ گراؤنڈ",
+    "TU International Cricket Ground": "ٹی یو انٹرنیشنل کرکٹ گراؤنڈ",
+    "TU Cricket Ground": "ٹی یو کرکٹ گراؤنڈ",
+    "Kirtipur Cricket Ground": "کیرتی پور کرکٹ گراؤنڈ",
     "Narendra Modi Stadium": "نریندر مودی اسٹیڈیم",
     "M. A. Chidambaram Stadium": "ایم اے چدمبرم اسٹیڈیم",
     "MA Chidambaram Stadium": "ایم اے چدمبرم اسٹیڈیم",
@@ -932,6 +936,29 @@ async function timezoneForCoordinates(coords) {
     } catch (_) { return ""; }
 }
 async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezoneHint = '', matchContext = {}) {
+    // Verified venue registry: exact aliases bypass unreliable/missing feed geodata.
+    // TU International Cricket Ground is in Kirtipur, Nepal (IANA zone Asia/Kathmandu).
+    const verifiedGrounds = {
+        "tribhuvan university international cricket ground": {
+            latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
+        },
+        "tu international cricket ground": {
+            latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
+        },
+        "tu cricket ground": {
+            latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
+        },
+        "kirtipur cricket ground": {
+            latitude: 27.67806, longitude: 85.29056, timezone: "Asia/Kathmandu"
+        }
+    };
+    const verifiedGround = verifiedGrounds[normalizeVenueText(venue)];
+    if (verifiedGround && isValidIanaTimezone(verifiedGround.timezone)) {
+        return { ...verifiedGround, source: "verified-venue-registry", confidence: 100,
+            resolvedName: "Tribhuvan University International Cricket Ground",
+            resolvedCity: "Kirtipur", resolvedCountry: "Nepal" };
+    }
+
     const directCoords = extractVenueCoordinates(venueMeta);
     if (directCoords) {
         const timezone = await timezoneForCoordinates(directCoords);
