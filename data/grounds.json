@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "description": "Expanded global cricket grounds directory. All new entries require user verification.",
-  "count": 171,
+  "description": "Expanded worldwide cricket ground directory. All records require user verification.",
+  "count": 238,
   "grounds": [
     {
       "id": "melbourne-cricket-ground",
@@ -2999,6 +2999,1106 @@
       "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
       "verification_status": "needs_user_verification",
       "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+    },
+    {
+      "id": "nairobi-gymkhana",
+      "name": "Nairobi Gymkhana Club Ground",
+      "aliases": [],
+      "city": "Nairobi",
+      "country": "Kenya",
+      "latitude": -1.2833,
+      "longitude": 36.8167,
+      "timezone": "Africa/Nairobi",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "aga-khan",
+      "name": "Aga Khan Sports Club Ground",
+      "aliases": [],
+      "city": "Nairobi",
+      "country": "Kenya",
+      "latitude": -1.26,
+      "longitude": 36.82,
+      "timezone": "Africa/Nairobi",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "ruiru-sports",
+      "name": "Ruiru Sports Club",
+      "aliases": [],
+      "city": "Ruiru",
+      "country": "Kenya",
+      "latitude": -1.145,
+      "longitude": 36.96,
+      "timezone": "Africa/Nairobi",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "kyambogo",
+      "name": "Kyambogo Cricket Oval",
+      "aliases": [],
+      "city": "Kampala",
+      "country": "Uganda",
+      "latitude": 0.347,
+      "longitude": 32.631,
+      "timezone": "Africa/Kampala",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "mauritius-gymkhana",
+      "name": "Mauritius Gymkhana Club Ground",
+      "aliases": [],
+      "city": "Vacoas-Phoenix",
+      "country": "Mauritius",
+      "latitude": -20.298,
+      "longitude": 57.478,
+      "timezone": "Indian/Mauritius",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "lagos-tafawa",
+      "name": "Tafawa Balewa Square Cricket Oval",
+      "aliases": [],
+      "city": "Lagos",
+      "country": "Nigeria",
+      "latitude": 6.4541,
+      "longitude": 3.3947,
+      "timezone": "Africa/Lagos",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "abuja-national",
+      "name": "Abuja National Stadium Cricket Oval",
+      "aliases": [],
+      "city": "Abuja",
+      "country": "Nigeria",
+      "latitude": 9.0579,
+      "longitude": 7.4951,
+      "timezone": "Africa/Lagos",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "accra-achimota",
+      "name": "Achimota School Ground",
+      "aliases": [],
+      "city": "Accra",
+      "country": "Ghana",
+      "latitude": 5.6037,
+      "longitude": -0.187,
+      "timezone": "Africa/Accra",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "sierra-leone-national",
+      "name": "Kingtom Oval",
+      "aliases": [],
+      "city": "Freetown",
+      "country": "Sierra Leone",
+      "latitude": 8.4657,
+      "longitude": -13.2317,
+      "timezone": "Africa/Freetown",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "chile-las-condes",
+      "name": "Las Condes Cricket Club",
+      "aliases": [],
+      "city": "Santiago",
+      "country": "Chile",
+      "latitude": -33.401,
+      "longitude": -70.57,
+      "timezone": "America/Santiago",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "peru-lima",
+      "name": "Lima Cricket and Football Club",
+      "aliases": [],
+      "city": "Lima",
+      "country": "Peru",
+      "latitude": -12.0464,
+      "longitude": -77.0428,
+      "timezone": "America/Lima",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "canada-caledon",
+      "name": "Caledon Cricket Club Ground",
+      "aliases": [],
+      "city": "Caledon",
+      "country": "Canada",
+      "latitude": 43.87,
+      "longitude": -79.86,
+      "timezone": "America/Toronto",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-barsapara",
+      "name": "Barsapara Cricket Stadium",
+      "aliases": [],
+      "city": "Guwahati",
+      "country": "India",
+      "latitude": 26.1445,
+      "longitude": 91.7362,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-brabourne",
+      "name": "Brabourne Stadium",
+      "aliases": [],
+      "city": "Mumbai",
+      "country": "India",
+      "latitude": 18.9322,
+      "longitude": 72.8258,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "IPL",
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-dy-patil",
+      "name": "Dr DY Patil Sports Academy",
+      "aliases": [],
+      "city": "Navi Mumbai",
+      "country": "India",
+      "latitude": 19.043,
+      "longitude": 73.026,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "IPL",
+        "WPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-vizag",
+      "name": "ACA-VDCA Cricket Stadium",
+      "aliases": [
+        "Dr Y S Rajasekhara Reddy ACA-VDCA Stadium"
+      ],
+      "city": "Visakhapatnam",
+      "country": "India",
+      "latitude": 17.797,
+      "longitude": 83.352,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-holkar",
+      "name": "Holkar Cricket Stadium",
+      "aliases": [],
+      "city": "Indore",
+      "country": "India",
+      "latitude": 22.724,
+      "longitude": 75.879,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-greenfield",
+      "name": "Greenfield International Stadium",
+      "aliases": [],
+      "city": "Thiruvananthapuram",
+      "country": "India",
+      "latitude": 8.526,
+      "longitude": 76.883,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-rajkot",
+      "name": "Niranjan Shah Stadium",
+      "aliases": [
+        "Saurashtra Cricket Association Stadium"
+      ],
+      "city": "Rajkot",
+      "country": "India",
+      "latitude": 22.366,
+      "longitude": 70.016,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-raipur",
+      "name": "Shaheed Veer Narayan Singh International Cricket Stadium",
+      "aliases": [],
+      "city": "Raipur",
+      "country": "India",
+      "latitude": 21.212,
+      "longitude": 81.831,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-jodhpur",
+      "name": "Barkatullah Khan Stadium",
+      "aliases": [],
+      "city": "Jodhpur",
+      "country": "India",
+      "latitude": 26.238,
+      "longitude": 73.024,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-lucknow",
+      "name": "Ekana Cricket Stadium",
+      "aliases": [],
+      "city": "Lucknow",
+      "country": "India",
+      "latitude": 26.812,
+      "longitude": 81.02,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "IPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-gwalior",
+      "name": "Shrimant Madhavrao Scindia Cricket Stadium",
+      "aliases": [],
+      "city": "Gwalior",
+      "country": "India",
+      "latitude": 26.218,
+      "longitude": 78.182,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-mullanpur",
+      "name": "Maharaja Yadavindra Singh International Cricket Stadium",
+      "aliases": [],
+      "city": "Mullanpur",
+      "country": "India",
+      "latitude": 30.768,
+      "longitude": 76.7,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "IPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-nagpur",
+      "name": "Vidarbha Cricket Association Stadium",
+      "aliases": [],
+      "city": "Nagpur",
+      "country": "India",
+      "latitude": 21.038,
+      "longitude": 79.057,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-dharamsala",
+      "name": "HPCA Stadium",
+      "aliases": [],
+      "city": "Dharamshala",
+      "country": "India",
+      "latitude": 32.197,
+      "longitude": 76.326,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-mohali",
+      "name": "PCA IS Bindra Stadium",
+      "aliases": [],
+      "city": "Mohali",
+      "country": "India",
+      "latitude": 30.69,
+      "longitude": 76.737,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "International",
+        "IPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "india-vadodara",
+      "name": "Kotambi Stadium",
+      "aliases": [
+        "BCA Stadium"
+      ],
+      "city": "Vadodara",
+      "country": "India",
+      "latitude": 22.3,
+      "longitude": 73.18,
+      "timezone": "Asia/Kolkata",
+      "competitions": [
+        "WPL",
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "pakistan-imran-khan",
+      "name": "Imran Khan Cricket Stadium",
+      "aliases": [],
+      "city": "Peshawar",
+      "country": "Pakistan",
+      "latitude": 34.0151,
+      "longitude": 71.5249,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "pakistan-iqbal",
+      "name": "Iqbal Stadium",
+      "aliases": [],
+      "city": "Faisalabad",
+      "country": "Pakistan",
+      "latitude": 31.418,
+      "longitude": 73.079,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "International",
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "pakistan-jinnah-sialkot",
+      "name": "Jinnah Stadium",
+      "aliases": [],
+      "city": "Sialkot",
+      "country": "Pakistan",
+      "latitude": 32.4945,
+      "longitude": 74.5229,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "pakistan-lcca",
+      "name": "Lahore City Cricket Association Ground",
+      "aliases": [],
+      "city": "Lahore",
+      "country": "Pakistan",
+      "latitude": 31.5204,
+      "longitude": 74.3587,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "pakistan-zafar-ali",
+      "name": "Zafar Ali Stadium",
+      "aliases": [],
+      "city": "Sahiwal",
+      "country": "Pakistan",
+      "latitude": 30.67,
+      "longitude": 73.106,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "bangladesh-khulna",
+      "name": "Sheikh Abu Naser Stadium",
+      "aliases": [],
+      "city": "Khulna",
+      "country": "Bangladesh",
+      "latitude": 22.82,
+      "longitude": 89.55,
+      "timezone": "Asia/Dhaka",
+      "competitions": [
+        "International",
+        "BPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "bangladesh-bogra",
+      "name": "Shaheed Chandu Stadium",
+      "aliases": [],
+      "city": "Bogra",
+      "country": "Bangladesh",
+      "latitude": 24.8465,
+      "longitude": 89.377,
+      "timezone": "Asia/Dhaka",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "sri-lanka-ssc",
+      "name": "Sinhalese Sports Club Ground",
+      "aliases": [
+        "SSC Ground"
+      ],
+      "city": "Colombo",
+      "country": "Sri Lanka",
+      "latitude": 6.906,
+      "longitude": 79.867,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "International",
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "sri-lanka-p-sara",
+      "name": "P Sara Oval",
+      "aliases": [
+        "Paikiasothy Saravanamuttu Stadium"
+      ],
+      "city": "Colombo",
+      "country": "Sri Lanka",
+      "latitude": 6.934,
+      "longitude": 79.879,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "sri-lanka-colts",
+      "name": "Colts Cricket Club Ground",
+      "aliases": [],
+      "city": "Colombo",
+      "country": "Sri Lanka",
+      "latitude": 6.899,
+      "longitude": 79.866,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "sri-lanka-bloomfield",
+      "name": "Bloomfield Cricket and Athletic Club Ground",
+      "aliases": [],
+      "city": "Colombo",
+      "country": "Sri Lanka",
+      "latitude": 6.914,
+      "longitude": 79.868,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "sri-lanka-hambantota",
+      "name": "Mahinda Rajapaksa International Cricket Stadium",
+      "aliases": [],
+      "city": "Sooriyawewa",
+      "country": "Sri Lanka",
+      "latitude": 6.124,
+      "longitude": 81.027,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "sri-lanka-kurunegala",
+      "name": "Welagedara Stadium",
+      "aliases": [],
+      "city": "Kurunegala",
+      "country": "Sri Lanka",
+      "latitude": 7.486,
+      "longitude": 80.364,
+      "timezone": "Asia/Colombo",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "uae-icc-academy",
+      "name": "ICC Academy Ground",
+      "aliases": [],
+      "city": "Dubai",
+      "country": "United Arab Emirates",
+      "latitude": 25.033,
+      "longitude": 55.218,
+      "timezone": "Asia/Dubai",
+      "competitions": [
+        "ILT20",
+        "T10",
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "uae-tolerance-oval",
+      "name": "Tolerance Oval",
+      "aliases": [],
+      "city": "Abu Dhabi",
+      "country": "United Arab Emirates",
+      "latitude": 24.425,
+      "longitude": 54.61,
+      "timezone": "Asia/Dubai",
+      "competitions": [
+        "ILT20",
+        "T10"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "uae-sevens",
+      "name": "The Sevens Stadium",
+      "aliases": [],
+      "city": "Dubai",
+      "country": "United Arab Emirates",
+      "latitude": 24.98,
+      "longitude": 55.43,
+      "timezone": "Asia/Dubai",
+      "competitions": [
+        "ILT20",
+        "T10"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "uae-al-dhaid",
+      "name": "Al Dhaid Cricket Village",
+      "aliases": [],
+      "city": "Al Dhaid",
+      "country": "United Arab Emirates",
+      "latitude": 25.29,
+      "longitude": 55.88,
+      "timezone": "Asia/Dubai",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "nepal-mulpani",
+      "name": "Mulpani Cricket Ground",
+      "aliases": [],
+      "city": "Kathmandu",
+      "country": "Nepal",
+      "latitude": 27.735,
+      "longitude": 85.376,
+      "timezone": "Asia/Kathmandu",
+      "competitions": [
+        "International",
+        "NPL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "nepal-upper-mulpani",
+      "name": "Upper Mulpani Cricket Ground",
+      "aliases": [],
+      "city": "Kathmandu",
+      "country": "Nepal",
+      "latitude": 27.742,
+      "longitude": 85.378,
+      "timezone": "Asia/Kathmandu",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "oman-al-amerat",
+      "name": "Al Amerat Cricket Ground (Ministry Turf 1)",
+      "aliases": [],
+      "city": "Al Amerat",
+      "country": "Oman",
+      "latitude": 23.501,
+      "longitude": 58.623,
+      "timezone": "Asia/Muscat",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "oman-ministry-turf2",
+      "name": "Al Amerat Cricket Ground (Ministry Turf 2)",
+      "aliases": [],
+      "city": "Al Amerat",
+      "country": "Oman",
+      "latitude": 23.501,
+      "longitude": 58.623,
+      "timezone": "Asia/Muscat",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "hongkong-tin-kwong",
+      "name": "Tin Kwong Road Recreation Ground",
+      "aliases": [],
+      "city": "Kowloon",
+      "country": "Hong Kong",
+      "latitude": 22.32,
+      "longitude": 114.17,
+      "timezone": "Asia/Hong_Kong",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "scotland-grange",
+      "name": "The Grange Club",
+      "aliases": [],
+      "city": "Edinburgh",
+      "country": "Scotland",
+      "latitude": 55.963,
+      "longitude": -3.21,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "scotland-forthill",
+      "name": "Forthill",
+      "aliases": [],
+      "city": "Dundee",
+      "country": "Scotland",
+      "latitude": 56.478,
+      "longitude": -2.936,
+      "timezone": "Europe/London",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "germany-berlin",
+      "name": "Maifeld",
+      "aliases": [],
+      "city": "Berlin",
+      "country": "Germany",
+      "latitude": 52.514,
+      "longitude": 13.239,
+      "timezone": "Europe/Berlin",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "spain-la-manga",
+      "name": "La Manga Club",
+      "aliases": [],
+      "city": "Cartagena",
+      "country": "Spain",
+      "latitude": 37.6,
+      "longitude": -0.81,
+      "timezone": "Europe/Madrid",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "croatia-mladost",
+      "name": "Mladost Cricket Ground",
+      "aliases": [],
+      "city": "Zagreb",
+      "country": "Croatia",
+      "latitude": 45.815,
+      "longitude": 15.982,
+      "timezone": "Europe/Zagreb",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "belgium-meersen",
+      "name": "Meersen Cricket Ground",
+      "aliases": [],
+      "city": "Ghent",
+      "country": "Belgium",
+      "latitude": 51.054,
+      "longitude": 3.717,
+      "timezone": "Europe/Brussels",
+      "competitions": [
+        "International"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "canada-toronto",
+      "name": "Toronto Cricket Club Ground",
+      "aliases": [],
+      "city": "Toronto",
+      "country": "Canada",
+      "latitude": 43.6532,
+      "longitude": -79.3832,
+      "timezone": "America/Toronto",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "australia-gmhba",
+      "name": "GMHBA Stadium",
+      "aliases": [],
+      "city": "Geelong",
+      "country": "Australia",
+      "latitude": -38.1582,
+      "longitude": 144.354,
+      "timezone": "Australia/Melbourne",
+      "competitions": [
+        "BBL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "england-aigburth",
+      "name": "Aigburth",
+      "aliases": [],
+      "city": "Liverpool",
+      "country": "England",
+      "latitude": 53.372,
+      "longitude": -2.939,
+      "timezone": "Europe/London",
+      "competitions": [
+        "Domestic T20"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "england-woodbridge",
+      "name": "Woodbridge Road",
+      "aliases": [],
+      "city": "Guildford",
+      "country": "England",
+      "latitude": 51.24,
+      "longitude": -0.57,
+      "timezone": "Europe/London",
+      "competitions": [
+        "Domestic T20"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "england-north-marine",
+      "name": "North Marine Road Ground",
+      "aliases": [],
+      "city": "Scarborough",
+      "country": "England",
+      "latitude": 54.285,
+      "longitude": -0.4,
+      "timezone": "Europe/London",
+      "competitions": [
+        "Domestic T20"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "england-county-cheltenham",
+      "name": "College Ground",
+      "aliases": [],
+      "city": "Cheltenham",
+      "country": "England",
+      "latitude": 51.9,
+      "longitude": -2.08,
+      "timezone": "Europe/London",
+      "competitions": [
+        "Domestic T20"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "england-beckenham",
+      "name": "Kent County Cricket Ground",
+      "aliases": [],
+      "city": "Beckenham",
+      "country": "England",
+      "latitude": 51.409,
+      "longitude": -0.025,
+      "timezone": "Europe/London",
+      "competitions": [
+        "Domestic T20"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "southafrica-old-wanderers",
+      "name": "Old Wanderers",
+      "aliases": [],
+      "city": "Johannesburg",
+      "country": "South Africa",
+      "latitude": -26.131,
+      "longitude": 28.057,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "Historical"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "southafrica-recreation",
+      "name": "Recreation Ground",
+      "aliases": [],
+      "city": "Oudtshoorn",
+      "country": "South Africa",
+      "latitude": -33.59,
+      "longitude": 22.201,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "southafrica-tuks",
+      "name": "Tuks Cricket Oval",
+      "aliases": [],
+      "city": "Pretoria",
+      "country": "South Africa",
+      "latitude": -25.750873,
+      "longitude": 28.247124,
+      "timezone": "Africa/Johannesburg",
+      "competitions": [
+        "Domestic"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+    },
+    {
+      "id": "pakistan-karachi",
+      "name": "National Stadium",
+      "aliases": [],
+      "city": "Karachi",
+      "country": "Pakistan",
+      "latitude": 24.8936,
+      "longitude": 67.0822,
+      "timezone": "Asia/Karachi",
+      "competitions": [
+        "International",
+        "PSL"
+      ],
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
     }
   ]
 }
