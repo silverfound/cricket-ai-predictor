@@ -173,7 +173,22 @@ Object.assign(urduTeams, {
     "Royal Desert Champions": "رائل ڈیزرٹ چیمپئنز",
     "Emirates Eagles": "امارات ایگلز",
     "United Tigers": "یونائیٹڈ ٹائیگرز",
-    "Arabian Aces": "عربین ایسز"
+    "Arabian Aces": "عربین ایسز",
+    "Trinbago Knight Riders": "ٹرینیباگو نائٹ رائیڈرز",
+    "Guyana Amazon Warriors": "گیانا ایمازون وارئیرز",
+    "Barbados Tridents": "بارباڈوس ٹرائیڈنٹس",
+    "Jamaica Kingsmen": "جمیکا کنگز مین",
+    "Rajshahi Warriors": "راجشاہی وارئیرز",
+    "Chattogram Royals": "چٹگرام رائلز",
+    "Sylhet Titans": "سلہٹ ٹائٹنز",
+    "Rangpur Riders": "رنگپور رائیڈرز",
+    "Dhaka Capitals": "ڈھاکہ کیپیٹلز",
+    "Noakhali Express": "نوکھالی ایکسپریس",
+    "Akcel United Kabul": "اکسل یونائیٹڈ کابل",
+    "Balkh Zwanan": "بلخ جوانان",
+    "Kandahar Warriors": "قندھار وارئیرز",
+    "Nangarhar Cosmic": "ننگرہار کاسمک",
+    "Paktia": "پکتیا"
 });
 
 // Domestic provincial/county sides are intentionally excluded from Ilmi mappings.
