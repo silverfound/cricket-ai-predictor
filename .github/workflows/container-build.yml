@@ -40,12 +40,25 @@ jobs:
       - name: Verify liveness and readiness
         run: |
           set -euo pipefail
+          ready=false
           for attempt in $(seq 1 60); do
             if curl --fail --silent http://127.0.0.1:8000/health/live >/dev/null; then
+              ready=true
               break
+            fi
+            if ! docker inspect --format '{{.State.Running}}' cricket-api 2>/dev/null | grep -qx true; then
+              echo "API container exited before becoming healthy."
+              docker logs cricket-api || true
+              exit 1
             fi
             sleep 2
           done
+          if [ "$ready" != true ]; then
+            echo "API did not become healthy within 120 seconds."
+            docker inspect cricket-api || true
+            docker logs cricket-api || true
+            exit 1
+          fi
           curl --fail --silent http://127.0.0.1:8000/health/live
           curl --fail --silent http://127.0.0.1:8000/health/ready
           curl --fail --silent --include --request OPTIONS \
