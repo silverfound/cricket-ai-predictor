@@ -1,3 +1,4 @@
+
 #!/usr/bin/env python3
 """One-request-per-run feed snapshot generator; inference math mirrors existing main.py."""
 import json, os
@@ -166,11 +167,10 @@ def make_prediction(m):
             'post_toss':post,'is_default':fallback}
 def main():
     today=datetime.now(timezone.utc).date()
-    tomorrow=today.fromordinal(today.toordinal()+1)
     start_date=today.isoformat()
-    end_date=tomorrow.isoformat()
-    date_range=f'{start_date}_{end_date}'
-    # Fetch every provider page for the UTC today-to-tomorrow window.
+    end_date=today.isoformat()
+    date_range=start_date
+    # Fetch every provider page for the UTC today-only window.
     # The schedule runs every 30 minutes: 48 runs/day x at most 2 calls = 96/day.
     # The provider's daily quota is 100 calls, so refuse ranges needing >2 pages.
     per_page=100
