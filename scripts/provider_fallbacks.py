@@ -14,6 +14,19 @@ TIMEOUT = 25
 HIGHLIGHTLY_HOST = "cricket-highlights-api.p.rapidapi.com"
 
 
+def should_refresh_cricketdata_enrichment(now=None, event_name=None):
+    """Return true once per hourly schedule slot; never spend enrichment quota on manual runs."""
+    event_name = event_name or os.getenv("GITHUB_EVENT_NAME", "")
+    if event_name != "schedule":
+        return False
+    now = now or datetime.now(timezone.utc)
+    # The workflow runs every 30 minutes. Only the :00 slot is eligible.
+    # If GitHub delays that run past :30, skip rather than risk two calls
+    # close together or accidentally spending the quota twice.
+    return int(now.minute) < 30
+
+
+
 
 def _name(value):
     if isinstance(value, dict):
