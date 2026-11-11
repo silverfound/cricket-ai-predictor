@@ -1615,7 +1615,7 @@ function sportScoreTeamName(value) {
 }
 
 function sportScoreIsWomen(value) {
-    return /\\b(women|woman|w)\\b/i.test(String(value || ""));
+    return /\b(women|woman|w)\b/i.test(String(value || ""));
 }
 
 async function getSportScoreFixtureList(dateIso) {
