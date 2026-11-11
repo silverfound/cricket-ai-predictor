@@ -28,6 +28,15 @@
         const formatModels = modelBundle && modelBundle.models && modelBundle.models[formatKey];
         if (!formatModels) return null;
 
+        const templateSpec = formatModels.early || formatModels.middle || formatModels.late;
+        if (!templateSpec) throw new Error("Missing live-model phase specification");
+        for (const name of templateSpec.features) {
+            const value = Number(features && features[name]);
+            if (!Number.isFinite(value)) {
+                throw new Error("Missing or invalid live-model feature: " + name);
+            }
+        }
+
         const legalBalls = Number(features && features.legal_balls);
         const scheduledBalls = Number(features && features.scheduled_balls);
         if (!Number.isFinite(legalBalls) || !Number.isFinite(scheduledBalls) ||
