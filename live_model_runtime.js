@@ -25,8 +25,19 @@
 
     function predictLiveWinProbability(modelBundle, format, features) {
         const formatKey = String(format || "").toUpperCase();
-        const spec = modelBundle && modelBundle.models && modelBundle.models[formatKey];
-        if (!spec) return null;
+        const formatModels = modelBundle && modelBundle.models && modelBundle.models[formatKey];
+        if (!formatModels) return null;
+
+        const legalBalls = Number(features && features.legal_balls);
+        const scheduledBalls = Number(features && features.scheduled_balls);
+        if (!Number.isFinite(legalBalls) || !Number.isFinite(scheduledBalls) ||
+            scheduledBalls <= 0) {
+            throw new Error("Invalid live-model innings progress");
+        }
+        const progress = Math.max(0, Math.min(1, legalBalls / scheduledBalls));
+        const phase = progress <= 0.25 ? "early" : progress <= 0.75 ? "middle" : "late";
+        const spec = formatModels[phase];
+        if (!spec) throw new Error("Missing live-model phase: " + phase);
 
         let rawScore = Number(spec.intercept);
         if (!Number.isFinite(rawScore)) throw new Error("Invalid live-model intercept");
@@ -50,16 +61,8 @@
         const baseProbability = rawScore >= 0
             ? 1 / (1 + Math.exp(-rawScore))
             : Math.exp(rawScore) / (1 + Math.exp(rawScore));
-        const legalBalls = Number(features.legal_balls);
-        const scheduledBalls = Number(features.scheduled_balls);
-        if (!Number.isFinite(legalBalls) || !Number.isFinite(scheduledBalls) ||
-            scheduledBalls <= 0) {
-            throw new Error("Invalid live-model innings progress");
-        }
-        const progress = Math.max(0, Math.min(1, legalBalls / scheduledBalls));
-        const phase = progress <= 0.25 ? "early" : progress <= 0.75 ? "middle" : "late";
-        const curve = spec.calibration && spec.calibration[phase];
-        if (!curve) throw new Error("Missing live-model calibration phase: " + phase);
+        const curve = spec.calibration;
+        if (!curve) throw new Error("Missing live-model calibration curve");
         const calibrated = interpolate(baseProbability, curve.x, curve.y);
         const probability = Math.max(0, Math.min(1, calibrated));
         return {
