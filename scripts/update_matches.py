@@ -15,7 +15,7 @@ except ModuleNotFoundError as exc:
     from prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 API_KEY=os.environ.get("RAPIDAPI_KEY")
 try:
-    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info
+    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
@@ -185,28 +185,6 @@ def _canonical_toss(item):
         winner = ""
     return {"winner": winner, "decision": raw} if winner and raw else None
 
-
-def _merge_provider_enrichment(primary_items, cricketdata_items):
-    """Merge unambiguous same-fixture score/team/toss details; preserve source names."""
-    def key(item):
-        names = [str((item.get(k) or {}).get("name") or "").strip().casefold()
-                 for k in ("teama", "teamb")]
-        if not all(names): return None
-        return (tuple(sorted(names)), _history_format(item.get("format_str")))
-    index = {}
-    for candidate in cricketdata_items or []:
-        index.setdefault(key(candidate), []).append(candidate)
-    merged = 0
-    for item in primary_items:
-        matches = index.get(key(item), [])
-        if len(matches) != 1: continue
-        extra = matches[0]
-        for field in ("score", "team_info", "scorecard", "toss_winner", "toss_decision"):
-            if extra.get(field) not in (None, "", [], {}):
-                item[field] = extra[field]
-        item["cricketdata_enriched"] = True
-        merged += 1
-    return merged
 
 
 def make_prediction(m):
