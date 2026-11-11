@@ -15,11 +15,11 @@ except ModuleNotFoundError as exc:
     from prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 API_KEY=os.environ.get("RAPIDAPI_KEY")
 try:
-    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly
+    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
-    from provider_fallbacks import fetch_cricketdata, fetch_highlightly
+    from provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info
 MODELS=joblib.load("cricket_ensemble_modern.joblib")
 ELO=joblib.load("latest_elo_ratings.joblib")
 MAPPINGS=joblib.load("category_mappings.joblib")
@@ -158,6 +158,57 @@ def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision,gender='male'
         print(f"Fallback model inference: {type(exc).__name__}")
         exp=1/(1+10**((e2-e1)/400))
         return exp,1-exp,True
+
+def _canonical_toss(item):
+    winner = item.get("toss_winner") or item.get("tossWinner") or item.get("toss_won")
+    decision = item.get("toss_decision") or item.get("tossDecision") or item.get("tossChoice")
+    toss_obj = item.get("toss")
+    if isinstance(toss_obj, dict):
+        winner = winner or toss_obj.get("winner") or toss_obj.get("tossWinner")
+        decision = decision or toss_obj.get("decision") or toss_obj.get("choice")
+    elif isinstance(toss_obj, str):
+        raw_toss = toss_obj.strip()
+        for name in ((item.get("teama") or {}).get("name", ""),
+                     (item.get("teamb") or {}).get("name", "")):
+            if name and name.casefold() in raw_toss.casefold():
+                winner = winner or name
+        if "bat" in raw_toss.casefold(): decision = decision or "bat"
+        elif "bowl" in raw_toss.casefold() or "field" in raw_toss.casefold():
+            decision = decision or "field"
+    winner = str(winner or "").strip()
+    raw = str(decision or "").strip().casefold()
+    if raw in {"bat", "batting", "elected to bat", "choose to bat"}: raw = "bat"
+    elif raw in {"bowl", "bowling", "field", "fielding", "elected to field", "elected to bowl", "choose to bowl"}: raw = "field"
+    else: raw = ""
+    teams = [str((item.get(k) or {}).get("name") or "").strip() for k in ("teama", "teamb")]
+    if winner and winner.casefold() not in {name.casefold() for name in teams if name}:
+        winner = ""
+    return {"winner": winner, "decision": raw} if winner and raw else None
+
+
+def _merge_provider_enrichment(primary_items, cricketdata_items):
+    """Merge unambiguous same-fixture score/team/toss details; preserve source names."""
+    def key(item):
+        names = [str((item.get(k) or {}).get("name") or "").strip().casefold()
+                 for k in ("teama", "teamb")]
+        if not all(names): return None
+        return (tuple(sorted(names)), _history_format(item.get("format_str")))
+    index = {}
+    for candidate in cricketdata_items or []:
+        index.setdefault(key(candidate), []).append(candidate)
+    merged = 0
+    for item in primary_items:
+        matches = index.get(key(item), [])
+        if len(matches) != 1: continue
+        extra = matches[0]
+        for field in ("score", "team_info", "scorecard", "toss_winner", "toss_decision"):
+            if extra.get(field) not in (None, "", [], {}):
+                item[field] = extra[field]
+        item["cricketdata_enriched"] = True
+        merged += 1
+    return merged
+
+
 def make_prediction(m):
     raw1=(m.get('teama') or {}).get('name') or ''; raw2=(m.get('teamb') or {}).get('name') or ''
     if not raw1 or not raw2: return None
@@ -172,7 +223,7 @@ def make_prediction(m):
             p1s.append(p1);p2s.append(p2);fallback=fallback or fb
             post[f'{side}_{decision}']={t1:f'{p1*100:.2f}%',t2:f'{p2*100:.2f}%'}
     return {'pre':{t1:f'{np.mean(p1s)*100:.2f}%',t2:f'{np.mean(p2s)*100:.2f}%'},
-            'post_toss':post,'is_default':fallback}
+            'post_toss':post,'actual_toss':_canonical_toss(m),'is_default':fallback}
 def main():
     # Primary feed remains first choice. Secondary providers are called only
     # when the primary request is unavailable, malformed, or returns no fixtures.
