@@ -14,24 +14,22 @@ def main() -> int:
     bundle = joblib.load(ARTIFACT_DIR / "live_winprob_candidate.joblib")
     exported = {}
     for match_type in bundle.get("supported_formats", []):
-        pipeline = bundle["models"][match_type]
-        scaler = pipeline.named_steps["standardscaler"]
-        classifier = pipeline.named_steps["logisticregression"]
-        calibrators = bundle["calibrators"][match_type]
-        calibration_curves = {}
-        for phase, calibrator in calibrators.items():
-            calibration_curves[phase] = {
-                "x": [float(value) for value in calibrator.X_thresholds_],
-                "y": [float(value) for value in calibrator.y_thresholds_],
+        exported[match_type] = {}
+        for phase, pipeline in bundle["models"][match_type].items():
+            scaler = pipeline.named_steps["standardscaler"]
+            classifier = pipeline.named_steps["logisticregression"]
+            calibrator = bundle["calibrators"][match_type][phase]
+            exported[match_type][phase] = {
+                "features": bundle["features"],
+                "mean": [float(value) for value in scaler.mean_],
+                "scale": [float(value) for value in scaler.scale_],
+                "coefficients": [float(value) for value in classifier.coef_[0]],
+                "intercept": float(classifier.intercept_[0]),
+                "calibration": {
+                    "x": [float(value) for value in calibrator.X_thresholds_],
+                    "y": [float(value) for value in calibrator.y_thresholds_],
+                },
             }
-        exported[match_type] = {
-            "features": bundle["features"],
-            "mean": [float(value) for value in scaler.mean_],
-            "scale": [float(value) for value in scaler.scale_],
-            "coefficients": [float(value) for value in classifier.coef_[0]],
-            "intercept": float(classifier.intercept_[0]),
-            "calibration": calibration_curves,
-        }
 
     if not exported:
         raise RuntimeError("No baseline format passed the research sanity gate")
