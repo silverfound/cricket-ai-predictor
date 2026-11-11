@@ -222,6 +222,13 @@ def build_live_prediction(detail: dict, bundle: dict, fetched_at: str | None = N
     }
 
 
+def _is_supported_limited_overs(value: object) -> bool:
+    raw = str(value or "").casefold().replace("-", " ").replace("_", " ")
+    if re.search(r"\\bt10\\b|10\\s*overs?", raw):
+        return False
+    return bool(re.search(r"\\b(t20i?|it20|twenty20|odi|odm|one day|50\\s*overs?)\\b", raw))
+
+
 def _is_live_fixture(item: dict) -> bool:
     status = str(item.get("status_str") or item.get("status_note") or item.get("status") or "").casefold()
     return any(token in status for token in ("live", "in play", "in progress", "drinks", "timeout"))
@@ -241,7 +248,7 @@ def enrich_live_predictions(fixtures: list[dict], provider_name: str) -> dict:
         print("LIVE_WINPROB_STATUS=SKIPPED_NO_HIGHLIGHTLY_SECRET")
         return {"attempted": 0, "predicted": 0}
     live = [item for item in fixtures if isinstance(item, dict) and _is_live_fixture(item)
-            and str(item.get("format_str") or "").upper() in {"T20", "IT20", "ODI", "ODM"}]
+            and _is_supported_limited_overs(item.get("format_str"))]
     if not live:
         print("LIVE_WINPROB_STATUS=NO_LIVE_FIXTURES_NO_HIGHLIGHTLY_CALLS")
         return {"attempted": 0, "predicted": 0}
