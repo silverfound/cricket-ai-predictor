@@ -292,7 +292,9 @@ def main():
     response['filtered_out_items']=raw_count-len(items)
     output={'updated_at':datetime.now(timezone.utc).isoformat(),
             'provider_date_start':start_date,'provider_date_end':end_date,
-            "'provider_total_items':provider_total_items,\n            'provider':provider_name,\n            'filtered_out_items":raw_count-len(items),
+            'provider_total_items':provider_total_items,
+            'provider':provider_name,
+            'filtered_out_items':raw_count-len(items),
             'provider_total_pages':total_pages,'response':response}
     Path('data').mkdir(exist_ok=True)
     Path('data/matches.json').write_text(json.dumps(output,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
