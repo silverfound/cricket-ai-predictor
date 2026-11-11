@@ -18,6 +18,9 @@ for (const vector of vectors) {
     assert.ok(Math.abs(
         result.battingTeamWinProbability - vector.expected_batting_team_win_probability
     ) < 1e-6, "browser probability must match Python inference");
+    const progress = vector.features.legal_balls / vector.features.scheduled_balls;
+    const expectedPhase = progress <= 0.25 ? "early" : progress <= 0.75 ? "middle" : "late";
+    assert.equal(result.phase, expectedPhase, "runtime must choose the matching calibration phase");
     assert.ok(Math.abs(
         result.battingTeamWinProbability + result.bowlingTeamWinProbability - 1
     ) < 1e-12, "team probabilities must sum to one");
