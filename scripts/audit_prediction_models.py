@@ -113,11 +113,11 @@ def main():
             t10_count += 1
 
     print("MODEL_RUNTIME_AUDIT=PASS")
-    print("MODEL_RESULTS=" + json.dumps(results, sort_keys=True))
+    print("MODEL_RESULTS=" + json.dumps(results, sort_keys=True, default=str))
     print(f"ELO_TEAM_COUNT={len(ELO)}")
     print(f"HISTORY_ROW_COUNT={len(HISTORY)}")
     print(f"HISTORY_T10_ROW_COUNT={t10_count}")
-    print("HISTORY_FORMAT_COUNTS=" + json.dumps(match_types, sort_keys=True))
+    print("HISTORY_FORMAT_COUNTS=" + json.dumps(match_types, sort_keys=True, default=str))
     print("TOSS_STATS_ARTIFACT=LOADED")
     print("TOSS_STATS_USED_AS_MODEL_FEATURES=NO")
     print("PROBABILITY_CALIBRATOR=NOT_PRESENT_IN_REPOSITORY_RUNTIME")
