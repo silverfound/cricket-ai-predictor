@@ -224,6 +224,9 @@ def main():
     }
     def is_untrained_fixture(item):
         fmt=str(item.get('format_str') or '').strip().lower()
+        # Exclude List A fixtures; retain ODI fixtures and other existing formats.
+        if fmt in {'list a', 'list-a', 'list a cricket'}:
+            return True
         team1=str((item.get('teama') or {}).get('name') or '').strip()
         team2=str((item.get('teamb') or {}).get('name') or '').strip()
         # T10 fixtures are allowed through, but receive only the explicit
