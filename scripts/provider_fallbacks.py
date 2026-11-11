@@ -5,6 +5,7 @@ The adapters intentionally normalize fixture metadata only; they do not
 fabricate scores, tosses, innings, or live-ball state.
 """
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 from email.utils import parsedate_to_datetime
 import os
 import requests
@@ -116,7 +117,10 @@ def normalize_highlightly(payload):
             continue
         home = item.get("homeTeam")
         away = item.get("awayTeam")
-        start = _timestamp(item.get("startDate"), item.get("startTime"))
+        date_value = item.get("startDate")
+        time_value = item.get("startTime")
+        combined_start = f"{date_value}T{time_value}" if date_value and time_value else date_value
+        start = _timestamp(combined_start, time_value)
         venue = item.get("venue")
         fixtures.append(_normalized_fixture(
             item.get("id"), home, away, item.get("format"), venue,
@@ -147,7 +151,7 @@ def fetch_highlightly():
     key = os.getenv("SECONDARY_API_KEY", "").strip()
     if not key:
         raise RuntimeError("SECONDARY_API_KEY is not configured")
-    today = datetime.now(timezone.utc).date().isoformat()
+    today = datetime.now(ZoneInfo("Asia/Riyadh")).date().isoformat()
     response = requests.get(
         f"https://{HIGHLIGHTLY_HOST}/matches",
         headers={"x-rapidapi-key": key, "x-rapidapi-host": HIGHLIGHTLY_HOST},
