@@ -181,14 +181,14 @@ def main() -> int:
     if isinstance(match_detail, dict):
         for key in ("id", "match_id", "matchId", "tracker_id"):
             value = match_detail.get(key)
-            if value is not None and str(value).strip().isdigit():
+            if value is not None and str(value).strip():
                 tracker_id = str(value).strip()
                 break
         tracker_value = match_detail.get("tracker")
         if tracker_id is None and isinstance(tracker_value, dict):
             for key in ("id", "match_id", "matchId"):
                 value = tracker_value.get(key)
-                if value is not None and str(value).strip().isdigit():
+                if value is not None and str(value).strip():
                     tracker_id = str(value).strip()
                     break
         print("SPORTSCORE_TRACKER_FIELD=" + str(tracker_value)[:500])
@@ -262,6 +262,31 @@ def main() -> int:
                     arrays = find_event_arrays(live_detail_payload)
                     print("SPORTSCORE_LIVE_NON_T10_DELIVERY_ARRAYS=" +
                           str(sum(1 for item in arrays if item["delivery_like"])))
+                    tracker = live_detail.get("tracker")
+                    tracker_id = tracker.get("id") if isinstance(tracker, dict) else None
+                    if tracker_id:
+                        try:
+                            tracker_response = requests.get(
+                                f"{BASE}/tracker/",
+                                params={"sport": "cricket", "id": str(tracker_id),
+                                        "src": "cricket-ai-predictor"},
+                                timeout=TIMEOUT,
+                            )
+                            print(f"SPORTSCORE_LIVE_NON_T10_TRACKER_HTTP={tracker_response.status_code}")
+                            if tracker_response.status_code == 200:
+                                tracker_payload = tracker_response.json()
+                                print("SPORTSCORE_LIVE_NON_T10_TRACKER_KEYS=" +
+                                      ",".join(sorted(tracker_payload.keys())[:50])
+                                      if isinstance(tracker_payload, dict) else
+                                      "SPORTSCORE_LIVE_NON_T10_TRACKER_TYPE=" +
+                                      type(tracker_payload).__name__)
+                                tracker_arrays = find_event_arrays(tracker_payload)
+                                for item in tracker_arrays[:15]:
+                                    print("SPORTSCORE_LIVE_NON_T10_TRACKER_ARRAY=" + str(item))
+                                print("SPORTSCORE_LIVE_NON_T10_TRACKER_DELIVERY_ARRAYS=" +
+                                      str(sum(1 for item in tracker_arrays if item["delivery_like"])))
+                        except (requests.RequestException, ValueError) as exc:
+                            print("SPORTSCORE_LIVE_NON_T10_TRACKER_ERROR=" + type(exc).__name__)
         except (requests.RequestException, ValueError) as exc:
             print("SPORTSCORE_LIVE_NON_T10_DETAIL_ERROR=" + type(exc).__name__)
 
