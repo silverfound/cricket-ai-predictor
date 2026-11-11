@@ -218,14 +218,12 @@ def main():
     response['items']=items
 
     # Keep only formats/team levels represented by the trained prediction model.
-    test_playing_nations = {
-        'afghanistan','australia','bangladesh','england','india','ireland',
-        'new zealand','pakistan','south africa','sri lanka','west indies','zimbabwe'
-    }
     def is_untrained_fixture(item):
         fmt=str(item.get('format_str') or '').strip().lower()
-        # Exclude List A fixtures; retain ODI fixtures and other existing formats.
+        # Exclude List A and all Test/First-Class fixtures from the live feed.
         if fmt in {'list a', 'list-a', 'list a cricket'}:
+            return True
+        if 'test' in fmt or 'first class' in fmt or 'first-class' in fmt:
             return True
         team1=str((item.get('teama') or {}).get('name') or '').strip()
         team2=str((item.get('teamb') or {}).get('name') or '').strip()
@@ -244,10 +242,6 @@ def main():
                 return True
             return n.endswith(' a team') or n.endswith(' a xi')
         if is_a_or_youth(team1) or is_a_or_youth(team2):
-            return True
-        # First-Class/Test formats are accepted only for senior Test-playing nations.
-        is_test = 'test' in fmt or 'first class' in fmt or 'first-class' in fmt
-        if is_test and not (team1.casefold() in test_playing_nations and team2.casefold() in test_playing_nations):
             return True
         return False
 
