@@ -1,0 +1,24 @@
+name: Free live-data source audit
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_sportscore_live.py"
+      - ".github/workflows/free-live-data-audit.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: free-live-data-source-audit
+  cancel-in-progress: false
+jobs:
+  sportscore-probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install HTTP client
+        run: python -m pip install requests
+      - name: Probe anonymous SportScore cricket endpoints
+        run: python scripts/audit_sportscore_live.py
