@@ -257,6 +257,8 @@ def main() -> int:
 
     models = {}
     calibrators = {}
+    baseline_models = {}
+    baseline_calibrators = {}
     categories_by_format = {}
     format_metrics = {}
     phase_metrics_by_format = {}
@@ -410,8 +412,8 @@ def main() -> int:
         models[match_type] = model
         calibrators[match_type] = calibrator
         categories_by_format[match_type] = category_map
-        models.setdefault("_state_only_baselines", {})[match_type] = baseline
-        models.setdefault("_state_only_calibrators", {})[match_type] = baseline_calibrator
+        baseline_models[match_type] = baseline
+        baseline_calibrators[match_type] = baseline_calibrator
 
     combined_labels = np.concatenate(all_test_labels)
     combined_base_probabilities = np.concatenate(all_test_base_probabilities)
@@ -451,6 +453,8 @@ def main() -> int:
     bundle = {
         "models": models,
         "calibrators": calibrators,
+        "state_only_baseline_models": baseline_models,
+        "state_only_baseline_calibrators": baseline_calibrators,
         "features": FEATURES,
         "categorical_features": CATEGORICAL,
         "categories": categories_by_format,
