@@ -226,6 +226,92 @@ def main() -> int:
     print("SPORTSCORE_BALL_BY_BALL_STATUS=" +
           ("PRESENT_CANDIDATE_REQUIRES_SEMANTIC_VALIDATION" if actual else
            "NOT_FOUND_IN_SELECTED_DETAIL"))
+    # Probe the configured primary RapidAPI feed once, using the same
+    # endpoint and parameters as the production daily fixture snapshot.
+    primary_key = __import__("os").environ.get("RAPIDAPI_KEY", "").strip()
+    print("PRIMARY_RAPIDAPI_KEY_CONFIGURED=" + str(bool(primary_key)))
+    if primary_key:
+        try:
+            primary_response = requests.get(
+                "https://cricket-live-line-advance.p.rapidapi.com/matches",
+                headers={
+                    "X-RapidAPI-Key": primary_key,
+                    "X-RapidAPI-Host": "cricket-live-line-advance.p.rapidapi.com",
+                },
+                params={"date": date_utc, "per_paged": 100, "paged": 1},
+                timeout=TIMEOUT,
+            )
+            print(f"PRIMARY_LIVE_FEED_HTTP={primary_response.status_code}")
+            if primary_response.status_code == 200:
+                primary_payload = primary_response.json()
+                primary_root = primary_payload.get("response", {}) if isinstance(primary_payload, dict) else {}
+                primary_items = primary_root.get("items", []) if isinstance(primary_root, dict) else []
+                live_items = [
+                    row for row in primary_items if isinstance(row, dict) and
+                    ("live" in str(row.get("status") or row.get("status_str") or "").casefold()
+                     or row.get("live") is True or row.get("match_live") is True)
+                ] if isinstance(primary_items, list) else []
+                print(f"PRIMARY_FIXTURE_COUNT={len(primary_items) if isinstance(primary_items, list) else 0}")
+                print(f"PRIMARY_LIVE_FIXTURE_COUNT={len(live_items)}")
+                if live_items:
+                    sample = live_items[0]
+                    print("PRIMARY_LIVE_ITEM_KEYS=" + ",".join(sorted(sample.keys())[:80]))
+                    for key in ("score", "scores", "scorecard", "status", "status_str",
+                                "live", "match_live", "overs", "innings", "target",
+                                "current_score", "runs", "wickets"):
+                        if sample.get(key) is not None:
+                            print(f"PRIMARY_LIVE_{key.upper()}={str(sample[key])[:900]}")
+                    arrays = find_event_arrays(sample)
+                    print("PRIMARY_LIVE_DELIVERY_ARRAYS=" +
+                          str(sum(1 for item in arrays if item["delivery_like"])))
+            else:
+                print("PRIMARY_LIVE_FEED_ACCESS=UNAVAILABLE")
+        except (requests.RequestException, ValueError) as exc:
+            print("PRIMARY_LIVE_FEED_ERROR=" + type(exc).__name__)
+    else:
+        print("PRIMARY_LIVE_FEED_STATUS=NO_SECRET_CONFIGURED")
+
+    # Probe the already-configured CricketData backup; report only field
+    # names and safe score values, never the credential or raw response.
+    cricketdata_key = __import__("os").environ.get("CRICKETDATA_API_KEY", "").strip()
+    print("CRICKETDATA_API_KEY_CONFIGURED=" + str(bool(cricketdata_key)))
+    if cricketdata_key:
+        try:
+            cricketdata_response = requests.get(
+                "https://api.cricapi.com/v1/currentMatches",
+                params={"apikey": cricketdata_key, "offset": 0},
+                timeout=TIMEOUT,
+            )
+            print(f"CRICKETDATA_CURRENT_HTTP={cricketdata_response.status_code}")
+            if cricketdata_response.status_code == 200:
+                cricketdata_payload = cricketdata_response.json()
+                records = cricketdata_payload.get("data", []) if isinstance(cricketdata_payload, dict) else []
+                live_records = [
+                    row for row in records if isinstance(row, dict) and (
+                        row.get("matchStarted") is True or
+                        "live" in str(row.get("status") or "").casefold()
+                    )
+                ] if isinstance(records, list) else []
+                print(f"CRICKETDATA_FIXTURE_COUNT={len(records) if isinstance(records, list) else 0}")
+                print(f"CRICKETDATA_LIVE_FIXTURE_COUNT={len(live_records)}")
+                if live_records:
+                    sample = live_records[0]
+                    print("CRICKETDATA_LIVE_ITEM_KEYS=" + ",".join(sorted(sample.keys())[:80]))
+                    for key in ("matchType", "status", "score", "scorecard",
+                                "matchStarted", "matchEnded", "teams", "tossWinner",
+                                "tossChoice"):
+                        if sample.get(key) is not None:
+                            print(f"CRICKETDATA_LIVE_{key.upper()}={str(sample[key])[:1000]}")
+                    arrays = find_event_arrays(sample)
+                    print("CRICKETDATA_LIVE_DELIVERY_ARRAYS=" +
+                          str(sum(1 for item in arrays if item["delivery_like"])))
+            else:
+                print("CRICKETDATA_CURRENT_ACCESS=UNAVAILABLE")
+        except (requests.RequestException, ValueError) as exc:
+            print("CRICKETDATA_CURRENT_ERROR=" + type(exc).__name__)
+    else:
+        print("CRICKETDATA_CURRENT_STATUS=NO_SECRET_CONFIGURED")
+
     # Probe anonymous access; docs do not guarantee that this account has a free key.
     try:
         live_response = requests.get(
