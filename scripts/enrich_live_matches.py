@@ -26,6 +26,16 @@ def main() -> int:
         raise SystemExit("Match snapshot has no response.items array")
     provider = str(payload.get("provider") or response.get("provider") or "")
     summary = enrich_live_predictions(fixtures, provider)
+    # The existing modal receives match.ai_prediction, so keep the live output
+    # inside that established payload instead of a disconnected top-level key.
+    for fixture in fixtures:
+        live_prediction = fixture.pop("live_winprob", None)
+        if live_prediction:
+            ai_prediction = fixture.get("ai_prediction")
+            if not isinstance(ai_prediction, dict):
+                ai_prediction = {}
+            ai_prediction["live_winprob"] = live_prediction
+            fixture["ai_prediction"] = ai_prediction
     payload["live_model"] = {
         "provider": "Highlightly RapidAPI",
         "attempted": summary["attempted"],
