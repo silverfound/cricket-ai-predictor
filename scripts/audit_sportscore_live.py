@@ -2,14 +2,14 @@
 """Read-only SportScore cricket API probe; never writes production data."""
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
+from urllib.parse import urlsplit
 from typing import Any
 
 import requests
 
 BASE = "https://sportscore.com/api/v1"
 TIMEOUT = 20
-DAYS_AHEAD = 7
 EVENT_KEYS = {"balls", "ball_by_ball", "ballbyball", "deliveries",
               "delivery_list", "timeline", "commentary", "overs", "events"}
 DELIVERY_MARKERS = {
@@ -47,7 +47,16 @@ def is_t10(item: dict) -> bool:
 
 
 def fixture_slug(item: dict) -> str:
-    return str(item.get("slug") or item.get("match_slug") or item.get("matchSlug") or "")
+    direct = item.get("slug") or item.get("match_slug") or item.get("matchSlug")
+    if direct:
+        return str(direct).strip("/")
+    # Current fixture response can expose the match-page URL instead of slug.
+    page_url = str(item.get("url") or "").strip()
+    if page_url:
+        path = urlsplit(page_url).path.strip("/")
+        if path:
+            return path.split("/")[-1]
+    return ""
 
 
 def _norm_keys(value: dict) -> set[str]:
@@ -78,65 +87,43 @@ def find_event_arrays(value: Any, path: str = "$", depth: int = 0) -> list[dict]
 
 
 def main() -> int:
-    today = datetime.now(timezone.utc).date()
-    fixtures: list[dict] = []
-    for offset in range(DAYS_AHEAD + 1):
-        date_utc = (today + timedelta(days=offset)).isoformat()
-        try:
-            response = requests.get(
-                f"{BASE}/fixtures/",
-                params={"sport": "cricket", "date": date_utc, "limit": 200,
-                        "src": "cricket-ai-predictor"},
-                timeout=TIMEOUT,
-            )
-        except requests.RequestException as exc:
-            print(f"SPORTSCORE_FIXTURES_{date_utc}_ERROR={type(exc).__name__}")
-            continue
-        print(f"SPORTSCORE_FIXTURES_{date_utc}_HTTP={response.status_code}")
-        if response.status_code != 200:
-            continue
-        try:
-            payload = response.json()
-        except ValueError:
-            print(f"SPORTSCORE_FIXTURES_{date_utc}_STATUS=NON_JSON")
-            continue
-        day_matches = unwrap_matches(payload)
-        print(f"SPORTSCORE_FIXTURES_{date_utc}_COUNT={len(day_matches)}")
-        fixtures.extend(day_matches)
+    date_utc = datetime.now(timezone.utc).date().isoformat()
+    try:
+        response = requests.get(
+            f"{BASE}/fixtures/",
+            params={"sport": "cricket", "date": date_utc, "limit": 200,
+                    "src": "cricket-ai-predictor"},
+            timeout=TIMEOUT,
+        )
+    except requests.RequestException as exc:
+        print(f"SPORTSCORE_FIXTURES_REQUEST_ERROR={type(exc).__name__}")
+        return 0
 
-    # Keep only fixtures with the slug required by the documented detail endpoint.
-    unique = {}
-    for item in fixtures:
-        key = fixture_slug(item) or str(item.get("id") or item.get("match_id") or repr(item))
-        unique[key] = item
-    fixtures = list(unique.values())
+    print(f"SPORTSCORE_FIXTURES_HTTP={response.status_code}")
+    if response.status_code != 200:
+        print("SPORTSCORE_FIXTURES_STATUS=UNAVAILABLE")
+        return 0
+    try:
+        payload = response.json()
+    except ValueError:
+        print("SPORTSCORE_FIXTURES_STATUS=NON_JSON")
+        return 0
+
+    fixtures = unwrap_matches(payload)
+    print(f"SPORTSCORE_FIXTURE_COUNT={len(fixtures)}")
     t10 = [m for m in fixtures if is_t10(m)]
     t10_with_slug = [m for m in t10 if fixture_slug(m)]
-    live_with_slug = [
-        m for m in fixtures
-        if fixture_slug(m) and any(
-            token in str(m.get(k) or "").casefold()
-            for k in ("status_text", "statusText", "status", "state")
-            for token in ("live", "in progress", "innings break")
-        )
-    ]
-    print(f"SPORTSCORE_FIXTURES_TOTAL_8_DAYS={len(fixtures)}")
     print(f"SPORTSCORE_T10_FIXTURE_COUNT={len(t10)}")
     print(f"SPORTSCORE_T10_WITH_DETAIL_SLUG={len(t10_with_slug)}")
-    print(f"SPORTSCORE_LIVE_WITH_DETAIL_SLUG={len(live_with_slug)}")
 
     selected = (t10_with_slug[0] if t10_with_slug else
-                live_with_slug[0] if live_with_slug else
+                t10[0] if t10 else
                 next((m for m in fixtures if fixture_slug(m)), None))
     if selected is None:
         print("SPORTSCORE_DETAIL_STATUS=NO_FIXTURE_WITH_DOCUMENTED_SLUG")
         if fixtures:
             sample = fixtures[0]
             print("SPORTSCORE_SAMPLE_FIXTURE_KEYS=" + ",".join(sorted(sample.keys())[:50]))
-            for key in ("home", "away", "status", "status_text", "format", "type",
-                        "name", "competition", "slug", "match_slug", "id", "match_id"):
-                if sample.get(key) is not None:
-                    print(f"SPORTSCORE_SAMPLE_{key.upper()}={sample[key]}")
         return 0
 
     print("SPORTSCORE_SELECTED_MATCH=" + " vs ".join(
@@ -144,8 +131,13 @@ def main() -> int:
     print("SPORTSCORE_SELECTED_FORMAT=" + (fixture_format(selected) or "unknown"))
     print("SPORTSCORE_SELECTED_STATUS=" +
           str(selected.get("status_text") or selected.get("status") or "unknown"))
-    print("SPORTSCORE_SELECTED_FIXTURE_KEYS=" + ",".join(sorted(selected.keys())[:60]))
+    print("SPORTSCORE_SELECTED_MATCH_URL=" + str(selected.get("url") or "missing"))
     slug = fixture_slug(selected)
+    print("SPORTSCORE_DETAIL_SLUG=" + (slug or "missing"))
+    if not slug:
+        print("SPORTSCORE_DETAIL_STATUS=NO_SLUG_OR_MATCH_URL")
+        return 0
+
     try:
         detail_response = requests.get(
             f"{BASE}/match/",
