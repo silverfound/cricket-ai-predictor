@@ -164,6 +164,18 @@ def main() -> int:
     print("SPORTSCORE_DETAIL_ROOT_KEYS=" + ",".join(sorted(detail_payload.keys())[:50])
           if isinstance(detail_payload, dict) else
           "SPORTSCORE_DETAIL_ROOT_TYPE=" + type(detail_payload).__name__)
+    match_detail = detail_payload.get("match") if isinstance(detail_payload, dict) else None
+    if isinstance(match_detail, dict):
+        print("SPORTSCORE_MATCH_DETAIL_KEYS=" + ",".join(sorted(match_detail.keys())[:60]))
+        for key in (
+            "status", "status_text", "score", "scorecard", "innings", "current_innings",
+            "home_score", "away_score", "runs", "wickets", "overs", "current_score",
+            "team1_score", "team2_score", "live_score", "target",
+        ):
+            if match_detail.get(key) is not None:
+                value = match_detail[key]
+                if isinstance(value, (str, int, float, bool, list, dict)):
+                    print(f"SPORTSCORE_MATCH_DETAIL_{key.upper()}={str(value)[:500]}")
     candidates = find_event_arrays(detail_payload)
     for item in candidates[:25]:
         print("SPORTSCORE_EVENT_ARRAY=" + str(item))
