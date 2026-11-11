@@ -9,6 +9,14 @@ on:
       - "tests/test_live_model_runtime.js"
       - ".github/workflows/live-winprob-research.yml"
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/train_live_winprob_candidate.py"
+      - "scripts/export_live_winprob_browser.py"
+      - "live_model_runtime.js"
+  schedule:
+    - cron: "0 4 1 * *"
 permissions:
   contents: read
 concurrency:
