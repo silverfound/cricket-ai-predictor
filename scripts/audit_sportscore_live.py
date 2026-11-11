@@ -142,6 +142,11 @@ def audit_highlightly() -> None:
     active_states = {"in play", "innings break", "drinks", "lunch", "tea", "timeout", "stumps"}
     active = [row for row in rows if isinstance(row, dict) and
               str((row.get("state") or {}).get("description", "")).casefold() in active_states]
+    state_priority = {"in play": 0, "innings break": 1, "drinks": 2,
+                      "timeout": 3, "lunch": 4, "tea": 5, "stumps": 6}
+    active.sort(key=lambda row: state_priority.get(
+        str((row.get("state") or {}).get("description", "")).casefold(), 99
+    ))
     print("HIGHLIGHTLY_ACTIVE_STATE_FIXTURES=" + str(len(active)))
     for fixture in active[:8]:
         match_id = fixture.get("id")
@@ -203,7 +208,6 @@ def audit_highlightly() -> None:
             state_detail.get("description", "").casefold() in {"in play", "innings break"} and
             numeric_score and has_overs
         ))
-        break
 
 def main() -> int:
     audit_highlightly()
