@@ -15,11 +15,11 @@ except ModuleNotFoundError as exc:
     from prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 API_KEY=os.environ.get("RAPIDAPI_KEY")
 try:
-    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info
+    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
-    from provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info
+    from provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment
 MODELS=joblib.load("cricket_ensemble_modern.joblib")
 ELO=joblib.load("latest_elo_ratings.joblib")
 MAPPINGS=joblib.load("category_mappings.joblib")
@@ -301,10 +301,15 @@ def main():
                     f"Highlightly={type(highlightly_exc).__name__}; prior snapshot left untouched."
                 ) from highlightly_exc
 
-    # Reuse one CricketData list request as both backup and optional enrichment.
-    # At 30-minute cadence this is 48 list calls/day; at most one match-info
-    # request per run keeps the documented 100-hit/day allowance protected.
-    if provider_name == "Cricket Live Line Advance" and os.getenv("CRICKETDATA_API_KEY", "").strip():
+    # Keep the primary fixture feed on its existing 30-minute cadence, but
+    # refresh CricketData enrichment only on scheduled hourly slots. This
+    # caps normal secondary usage at 24 list + 24 match-info calls per day.
+    # Manual runs do not consume enrichment quota; CricketData remains a
+    # necessary backup when the primary feed is unavailable.
+    secondary_enrichment_due = should_refresh_cricketdata_enrichment()
+    if (provider_name == "Cricket Live Line Advance"
+            and os.getenv("CRICKETDATA_API_KEY", "").strip()
+            and secondary_enrichment_due):
         try:
             cricketdata_items = fetch_cricketdata()
             merged_count = _merge_provider_enrichment(items, cricketdata_items)
@@ -312,7 +317,7 @@ def main():
         except Exception as exc:
             print(f"CricketData enrichment unavailable: {type(exc).__name__}; primary feed retained.")
 
-    if cricketdata_items:
+    if cricketdata_items and secondary_enrichment_due:
         active = [x for x in cricketdata_items
                   if (x.get("provider_metadata") or {}).get("matchStarted")
                   and not _canonical_toss(x)]
