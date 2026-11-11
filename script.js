@@ -1791,20 +1791,28 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     document.getElementById('post-toss-area').style.display = 'none';
     document.getElementById('ilmi-area').style.display = 'none'; 
     window.ilmiTossBaseState = null;
-    document.getElementById('toss-winner').innerHTML = `<option value="${t1}">${t1}</option><option value="${t2}">${t2}</option>`;
+    document.getElementById('toss-winner').innerHTML = `<option value="">Select actual toss winner</option><option value="${t1}">${t1}</option><option value="${t2}">${t2}</option>`;
     const actualToss = predictionData.actual_toss || null;
     if (actualToss?.winner && [t1, t2].includes(actualToss.winner)) {
         document.getElementById('toss-winner').value = actualToss.winner;
     }
+    const decisionSelect = document.getElementById('toss-decision');
+    decisionSelect.innerHTML = '<option value="">Select actual decision</option><option value="bat">Bat First</option><option value="field">Field First</option>';
     if (actualToss?.decision && ['bat', 'field'].includes(actualToss.decision)) {
-        document.getElementById('toss-decision').value = actualToss.decision;
+        decisionSelect.value = actualToss.decision;
     }
 
     const tossControls = document.getElementById('post-toss-controls');
     document.getElementById('live-warning').style.display = isLiveMatch ? 'block' : 'none';
-    // Pre-toss and post-toss are separate predictions. Keep toss controls
-    // available even after the match starts; the user supplies actual toss details.
+    // A live match has already passed the toss. Never present its neutral
+    // pre-toss estimate as the current prediction or silently invent toss inputs.
     tossControls.style.display = 'block';
+    const preTitle = document.querySelector('#pre-toss-result')?.parentElement?.querySelector('p');
+    if (preTitle && isLiveMatch) preTitle.textContent = '📊 Pre-Toss Baseline (historical only — NOT a live prediction)';
+    const tossHint = document.getElementById('sportscore-details');
+    if (isLiveMatch && !actualToss?.winner) {
+        tossHint.textContent = 'Live match: provider ne actual toss winner/decision nahi diya. Post-Toss prediction ke liye neeche actual toss details khud select/confirm karein. Koi toss automatically assume nahi kiya jayega.';
+    }
     document.getElementById('pre-toss-result').removeAttribute('aria-label');
 
     // --- NAME MAPPING FOR AI ---
@@ -2024,7 +2032,11 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         const tw = document.getElementById('toss-winner').value;
         const td = document.getElementById('toss-decision').value;
         let postDiv = document.getElementById('prediction-result');
-        
+        if (![t1, t2].includes(tw) || !['bat', 'field'].includes(td)) {
+            document.getElementById('post-toss-area').style.display = 'block';
+            postDiv.innerHTML = '<p style="color:#fbbf24;">Actual toss winner aur Bat/Field decision select karein. Provider ne toss verify nahi kiya, is liye default toss assume nahi hoga.</p>';
+            return;
+        }
         document.getElementById('post-toss-area').style.display = 'block';
         postDiv.innerHTML = "Calculating Post-Toss Impact...";
 
@@ -2055,8 +2067,10 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
                              </div>`;
                 }
                 postDiv.innerHTML = html;
+            } else {
+                postDiv.innerHTML = '<p style="color:#fbbf24;">Is toss combination ke liye Post-Toss model output feed mein maujood nahi. Isay estimate bana kar nahi dikhaya gaya.</p>';
             }
-        } catch (e) { postDiv.innerText = "Error calculating impact."; }
+        } catch (e) { postDiv.innerText = "Post-Toss calculation failed: " + String(e?.message || "unknown error"); }
     };
 }
 
