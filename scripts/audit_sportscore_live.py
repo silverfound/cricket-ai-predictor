@@ -226,6 +226,45 @@ def main() -> int:
     print("SPORTSCORE_BALL_BY_BALL_STATUS=" +
           ("PRESENT_CANDIDATE_REQUIRES_SEMANTIC_VALIDATION" if actual else
            "NOT_FOUND_IN_SELECTED_DETAIL"))
+    # Probe one current non-T10 live fixture separately; the first
+    # selected fixture above intentionally prefers T10 for the user's question.
+    live_non_t10 = [
+        row for row in fixtures
+        if not is_t10(row) and
+        "live" in str(row.get("status") or row.get("status_text") or "").casefold()
+        and fixture_slug(row)
+    ]
+    print("SPORTSCORE_LIVE_NON_T10_FIXTURES=" + str(len(live_non_t10)))
+    if live_non_t10:
+        live_fixture = live_non_t10[0]
+        live_slug = fixture_slug(live_fixture)
+        print("SPORTSCORE_LIVE_NON_T10_MATCH=" +
+              " vs ".join(str(live_fixture.get(k) or "?") for k in ("home", "away")))
+        try:
+            live_detail_response = requests.get(
+                f"{BASE}/match/",
+                params={"sport": "cricket", "slug": live_slug,
+                        "src": "cricket-ai-predictor"},
+                timeout=TIMEOUT,
+            )
+            print(f"SPORTSCORE_LIVE_NON_T10_DETAIL_HTTP={live_detail_response.status_code}")
+            if live_detail_response.status_code == 200:
+                live_detail_payload = live_detail_response.json()
+                live_detail = live_detail_payload.get("match", {}) if isinstance(live_detail_payload, dict) else {}
+                if isinstance(live_detail, dict):
+                    print("SPORTSCORE_LIVE_NON_T10_DETAIL_KEYS=" +
+                          ",".join(sorted(live_detail.keys())[:80]))
+                    for key in ("status", "status_text", "home_score", "away_score",
+                                "score", "stats", "incidents", "tracker"):
+                        if live_detail.get(key) is not None:
+                            print(f"SPORTSCORE_LIVE_NON_T10_{key.upper()}=" +
+                                  str(live_detail[key])[:1200])
+                    arrays = find_event_arrays(live_detail_payload)
+                    print("SPORTSCORE_LIVE_NON_T10_DELIVERY_ARRAYS=" +
+                          str(sum(1 for item in arrays if item["delivery_like"])))
+        except (requests.RequestException, ValueError) as exc:
+            print("SPORTSCORE_LIVE_NON_T10_DETAIL_ERROR=" + type(exc).__name__)
+
     # Probe the configured primary RapidAPI feed once, using the same
     # endpoint and parameters as the production daily fixture snapshot.
     primary_key = __import__("os").environ.get("RAPIDAPI_KEY", "").strip()
@@ -292,10 +331,14 @@ def main() -> int:
                         "live" in str(row.get("status") or "").casefold()
                     )
                 ] if isinstance(records, list) else []
+                bbb_records = [
+                    row for row in live_records if row.get("bbbEnabled") is True
+                ]
                 print(f"CRICKETDATA_FIXTURE_COUNT={len(records) if isinstance(records, list) else 0}")
                 print(f"CRICKETDATA_LIVE_FIXTURE_COUNT={len(live_records)}")
+                print(f"CRICKETDATA_LIVE_BBB_ENABLED_COUNT={len(bbb_records)}")
                 if live_records:
-                    sample = live_records[0]
+                    sample = bbb_records[0] if bbb_records else live_records[0]
                     print("CRICKETDATA_LIVE_ITEM_KEYS=" + ",".join(sorted(sample.keys())[:80]))
                     for key in ("matchType", "status", "score", "scorecard",
                                 "matchStarted", "matchEnded", "teams", "tossWinner",
