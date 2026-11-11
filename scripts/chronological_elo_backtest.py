@@ -97,7 +97,7 @@ def chronological_backtest(history, k_factor=K_FACTOR):
 
     for match_date in sorted(by_date):
         daily = by_date[match_date]
-        pending_updates = []
+        daily_deltas = defaultdict(float)
         for match in daily:
             t1, t2 = match["teams"]
             scope = (match["gender"], match["format"])
@@ -109,15 +109,12 @@ def chronological_backtest(history, k_factor=K_FACTOR):
             format_predictions[match["format"]].append(record)
             expected2 = 1.0 - p1
             actual2 = 1.0 - actual
-            pending_updates.append((
-                key1, key2,
-                ratings[key1] + k_factor * (actual - p1),
-                ratings[key2] + k_factor * (actual2 - expected2),
-            ))
+            daily_deltas[key1] += k_factor * (actual - p1)
+            daily_deltas[key2] += k_factor * (actual2 - expected2)
         # No match on the same date can leak its result into another prediction.
-        for key1, key2, new1, new2 in pending_updates:
-            ratings[key1] = new1
-            ratings[key2] = new2
+        # Aggregate all same-day updates before changing any team rating.
+        for key, delta in daily_deltas.items():
+            ratings[key] += delta
 
     return {
         "method": "date-batched expanding Elo; 1500 initial rating; K=24; separate gender/format pools",
