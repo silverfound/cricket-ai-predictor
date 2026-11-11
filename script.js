@@ -1333,7 +1333,7 @@ const popupHTML = `
         <p id="modal-match-name" style="color:white; font-weight:bold; font-size: 16px;"></p>
         <p id="modal-venue" style="color:#94a3b8; font-size:12px; margin-top:-10px; margin-bottom:15px;"></p>
         <div id="live-warning" style="display:none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 8px; border-radius: 6px; margin-bottom: 15px;">
-            <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match is Live. This is a pre-match model estimate only; ball-by-ball live prediction is not connected, and this result will NOT be saved for accuracy.</p>
+            <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match already started. Live prediction is disabled. This pre-toss estimate is historical only; toss controls are locked and no live result is being calculated.</p>
         </div>
         
         <div style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
@@ -1341,6 +1341,7 @@ const popupHTML = `
             <div id="pre-toss-result" style="color: white; font-size: 14px;">Calculating...</div>
         </div>
         
+        <div id="post-toss-controls">
         <label style="color:#94a3b8; font-size:14px;">Toss Winner:</label>
         <select id="toss-winner" style="width:100%; padding:8px; margin-bottom:10px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;"></select>
         <label style="color:#94a3b8; font-size:14px;">Toss Decision:</label>
@@ -1349,6 +1350,7 @@ const popupHTML = `
         </select>
         
         <button id="get-prediction-btn" style="width:100%; padding:10px; background:#00ffcc; color:black; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">Calculate Post-Toss Impact</button>
+        </div>
         
         <div id="sportscore-details" style="margin-top:12px; padding:10px; border-radius:8px; border:1px solid #334155; background:#0b1120; color:#cbd5e1; font-size:12px;">SportScore: selected match details will load when available.</div>
 
@@ -1798,8 +1800,16 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         document.getElementById('toss-decision').value = actualToss.decision;
     }
 
-    if (isLiveMatch) { document.getElementById('live-warning').style.display = 'block'; } 
-    else { document.getElementById('live-warning').style.display = 'none'; }
+    const tossControls = document.getElementById('post-toss-controls');
+    if (isLiveMatch) {
+        document.getElementById('live-warning').style.display = 'block';
+        tossControls.style.display = 'none';
+        document.getElementById('pre-toss-result').setAttribute('aria-label', 'Historical pre-toss estimate; match already started');
+    } else {
+        document.getElementById('live-warning').style.display = 'none';
+        tossControls.style.display = 'block';
+        document.getElementById('pre-toss-result').removeAttribute('aria-label');
+    }
 
     // --- NAME MAPPING FOR AI ---
     let modelT1 = teamMapping[t1] || t1;
@@ -2015,6 +2025,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
     // 3. POST-TOSS AI CALCULATION
     document.getElementById('get-prediction-btn').onclick = async () => {
+        if (isLiveMatch) return;
         const tw = document.getElementById('toss-winner').value;
         const td = document.getElementById('toss-decision').value;
         let postDiv = document.getElementById('prediction-result');
