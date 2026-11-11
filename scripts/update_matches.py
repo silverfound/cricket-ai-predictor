@@ -225,36 +225,10 @@ def main():
             return True
         if 'test' in fmt or 'first class' in fmt or 'first-class' in fmt:
             return True
-        team1=str((item.get('teama') or {}).get('name') or '').strip()
-        team2=str((item.get('teamb') or {}).get('name') or '').strip()
-        # T10 fixtures are allowed through, but receive only the explicit
-        # Elo baseline until a separately trained and validated T10 model exists.
-        # Exclude U19/youth and A-side fixtures regardless of competition title.
-        def is_a_or_youth(name):
-            n=str(name or '').strip().lower()
-            words=n.replace('-', ' ').split()
-            compact=n.replace('-', ' ').replace('_', ' ')
-            if any(token in compact for token in ('under 19','u 19','u19','youth')):
-                return True
-            # A-side naming: "Team A", "A XI", "England A", "Australia A",
-            # and common "England Lions" / "India A" variants.
-            # Do not treat every franchise ending in "Lions" as an A-side.
-            # For example, Yas Lions is a genuine T10 franchise, not a national A team.
-            if len(words)>=2 and words[-1]=='a':
-                return True
-            if len(words)>=2 and words[-2:]==['a','xi']:
-                return True
-            national_sides={
-                'afghanistan','australia','bangladesh','england','india',
-                'new zealand','pakistan','south africa','sri lanka',
-                'west indies','zimbabwe'
-            }
-            if len(words)>=2 and words[-1]=='lions':
-                if ' '.join(words[:-1]) in national_sides:
-                    return True
-            return n.endswith(' a team')
-        if is_a_or_youth(team1) or is_a_or_youth(team2):
-            return True
+        # Do not infer team level from franchise/team names (e.g. "Lions",
+        # "A", or "Youth"). Names are not reliable metadata and can exclude
+        # legitimate franchise fixtures. Eligibility is determined by the
+        # provider's explicit match-format fields above, not team-name text.
         return False
 
     raw_count=len(items)
