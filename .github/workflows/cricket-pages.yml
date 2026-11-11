@@ -31,6 +31,7 @@ jobs:
           python scripts/audit_t10_data.py
           python scripts/audit_prediction_models.py
           python scripts/chronological_elo_backtest.py
+          python scripts/audit_sportscore_live.py
           node --check script.js
           test "$(git hash-object cricket_ensemble_modern.joblib)" = "e6d7ba073174ddbafaa504c090702483063649a2"
           test "$(git hash-object latest_elo_ratings.joblib)" = "ba9b707b9bb4915e812fd3b310616059154b0bf5"
