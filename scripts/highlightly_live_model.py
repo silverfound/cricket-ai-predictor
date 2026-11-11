@@ -21,7 +21,7 @@ BASE_URL = f"https://{HOST}"
 TIMEOUT = 20
 MAX_DETAILS_PER_RUN = 5
 MODEL_PATH = Path("data/live_winprob_browser.json")
-LIVE_STATES = {"in play", "drinks", "timeout", "innings break", "lunch", "tea"}
+LIVE_STATES = {"in play", "drinks", "timeout"}
 
 
 def _name_key(value: object) -> str:
@@ -224,7 +224,7 @@ def build_live_prediction(detail: dict, bundle: dict, fetched_at: str | None = N
 
 def _is_live_fixture(item: dict) -> bool:
     status = str(item.get("status_str") or item.get("status_note") or item.get("status") or "").casefold()
-    return any(token in status for token in ("live", "in play", "in progress", "drinks", "innings break", "timeout"))
+    return any(token in status for token in ("live", "in play", "in progress", "drinks", "timeout"))
 
 
 def _team_match(a: str, b: str, fixture: dict) -> bool:
@@ -272,7 +272,7 @@ def enrich_live_predictions(fixtures: list[dict], provider_name: str) -> dict:
         records = payload.get("data") if isinstance(payload, dict) else None
         if not isinstance(records, list):
             raise ValueError("Highlightly live fixture list has an unknown response shape")
-        active_states = {"in play", "drinks", "timeout", "innings break", "lunch", "tea"}
+        active_states = {"in play", "drinks", "timeout"}
         active_records = [
             row for row in records if isinstance(row, dict) and
             str((row.get("state") or {}).get("description") or "").casefold() in active_states
