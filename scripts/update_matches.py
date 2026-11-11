@@ -14,7 +14,12 @@ except ModuleNotFoundError as exc:
         raise
     from prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 API_KEY=os.environ.get("RAPIDAPI_KEY")
-if not API_KEY: raise SystemExit("RAPIDAPI_KEY GitHub Actions secret is missing.")
+try:
+    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from provider_fallbacks import fetch_cricketdata, fetch_highlightly
 MODELS=joblib.load("cricket_ensemble_modern.joblib")
 ELO=joblib.load("latest_elo_ratings.joblib")
 MAPPINGS=joblib.load("category_mappings.joblib")
@@ -173,52 +178,93 @@ def main():
     start_date=today.isoformat()
     end_date=today.isoformat()
     date_range=start_date
-    # Fetch every provider page for the UTC today-only window.
-    # The schedule runs every 30 minutes: 48 runs/day x at most 2 calls = 96/day.
-    # The provider's daily quota is 100 calls, so refuse ranges needing >2 pages.
+    # Primary feed remains first choice. Secondary providers are called only
+    # when the primary request is unavailable, malformed, or returns no fixtures.
+    today=datetime.now(timezone.utc).date()
+    start_date=today.isoformat()
+    end_date=today.isoformat()
+    date_range=start_date
     per_page=100
-    base_url='https://cricket-live-line-advance.p.rapidapi.com/matches'
-    headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'}
-    params={'date':date_range,'per_paged':per_page,'paged':1}
-    r=requests.get(base_url,params=params,headers=headers,timeout=25)
-    if r.status_code!=200:
-        raise SystemExit(f'Provider page 1 failed HTTP {r.status_code}; prior snapshot left untouched.')
-    payload=r.json(); response=payload.get('response') or {}; first_items=response.get('items')
-    if not isinstance(first_items,list):
-        raise SystemExit('Provider page 1 missing response.items list; prior snapshot left untouched.')
-    total_pages=int(response.get('total_pages') or 1)
-    expected_total=int(response.get('total_items') or len(first_items))
-    if total_pages<1 or total_pages>2:
-        raise SystemExit(f'Provider returned {total_pages} pages for {date_range}; 30-minute schedule supports at most 2 pages within the daily quota. Prior snapshot left untouched.')
-    items=list(first_items)
-    if total_pages==2:
-        page2_params={'date':date_range,'per_paged':per_page,'paged':2}
-        r2=requests.get(base_url,params=page2_params,headers=headers,timeout=25)
-        if r2.status_code!=200:
-            raise SystemExit(f'Provider page 2 failed HTTP {r2.status_code}; prior snapshot left untouched.')
-        payload2=r2.json(); response2=payload2.get('response') or {}; second_items=response2.get('items')
-        if not isinstance(second_items,list):
-            raise SystemExit('Provider page 2 missing response.items list; prior snapshot left untouched.')
-        if int(response2.get('total_pages') or 1)!=total_pages or int(response2.get('total_items') or expected_total)!=expected_total:
-            raise SystemExit('Provider pagination metadata changed between page requests; prior snapshot left untouched.')
-        items.extend(second_items)
-    if len(items)!=expected_total:
-        raise SystemExit(f'Incomplete provider feed: fetched {len(items)} of {expected_total} fixtures across {total_pages} page(s); prior snapshot left untouched.')
-    if not items:
-        raise SystemExit('Provider returned zero fixtures; prior snapshot left untouched.')
-    # Where the API supplies match IDs, reject duplicates instead of silently
-    # publishing a repeated fixture in place of a missing one.
-    match_ids=[str(item.get('match_id') or item.get('id') or item.get('matchId')) for item in items
-               if item.get('match_id') is not None or item.get('id') is not None or item.get('matchId') is not None]
-    if match_ids and (len(match_ids)!=len(items) or len(set(match_ids))!=len(match_ids)):
-        raise SystemExit('Provider pages contain missing or duplicate match IDs; prior snapshot left untouched.')
+    items=[]
+    total_pages=0
+    expected_total=0
+    provider_name="Cricket Live Line Advance"
+    primary_error=None
 
-    # Verify the complete provider response BEFORE filtering, so pagination and
-    # quota diagnostics continue to reflect the raw API feed accurately.
-    response=dict(response)
-    provider_total_items=response.get('total_items',len(items))
-    response['fetched_pages']=total_pages
-    response['items']=items
+    if API_KEY:
+        try:
+            base_url='https://cricket-live-line-advance.p.rapidapi.com/matches'
+            headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'}
+            params={'date':date_range,'per_paged':per_page,'paged':1}
+            r=requests.get(base_url,params=params,headers=headers,timeout=25)
+            r.raise_for_status()
+            payload=r.json()
+            response=payload.get('response') if isinstance(payload,dict) else None
+            first_items=response.get('items') if isinstance(response,dict) else None
+            if not isinstance(first_items,list) or not first_items:
+                raise ValueError('primary response missing non-empty response.items')
+            total_pages=int(response.get('total_pages') or 1)
+            expected_total=int(response.get('total_items') or len(first_items))
+            if total_pages<1 or total_pages>2:
+                raise ValueError(f'primary returned unsupported page count: {total_pages}')
+            items=list(first_items)
+            if total_pages==2:
+                page2_params={'date':date_range,'per_paged':per_page,'paged':2}
+                r2=requests.get(base_url,params=page2_params,headers=headers,timeout=25)
+                r2.raise_for_status()
+                payload2=r2.json()
+                response2=payload2.get('response') if isinstance(payload2,dict) else None
+                second_items=response2.get('items') if isinstance(response2,dict) else None
+                if not isinstance(second_items,list):
+                    raise ValueError('primary page 2 missing response.items list')
+                if int(response2.get('total_pages') or 1)!=total_pages or int(response2.get('total_items') or expected_total)!=expected_total:
+                    raise ValueError('primary pagination metadata changed between pages')
+                items.extend(second_items)
+            if len(items)!=expected_total:
+                raise ValueError(f'primary incomplete feed: fetched {len(items)} of {expected_total}')
+            match_ids=[str(item.get('match_id') or item.get('id') or item.get('matchId')) for item in items
+                       if isinstance(item,dict) and (item.get('match_id') is not None or item.get('id') is not None or item.get('matchId') is not None)]
+            if match_ids and (len(match_ids)!=len(items) or len(set(match_ids))!=len(match_ids)):
+                raise ValueError('primary pages contain missing or duplicate match IDs')
+            response=dict(response)
+            provider_total_items=response.get('total_items',len(items))
+            response['fetched_pages']=total_pages
+            response['items']=items
+        except (requests.RequestException, ValueError, TypeError, KeyError) as exc:
+            primary_error=type(exc).__name__
+            items=[]
+
+    if not items:
+        print(f"Primary feed unusable ({primary_error or 'RAPIDAPI_KEY missing'}); trying CricketData backup.")
+        try:
+            items=fetch_cricketdata()
+            provider_name="CricketData"
+        except Exception as exc:
+            print(f"CricketData backup unavailable: {type(exc).__name__}; trying Highlightly.")
+            try:
+                items=fetch_highlightly()
+                provider_name="Highlightly"
+            except Exception as highlightly_exc:
+                raise SystemExit(
+                    "All configured fixture providers are unusable. "
+                    f"Primary={primary_error or 'not configured'}, "
+                    f"CricketData={type(exc).__name__}, "
+                    f"Highlightly={type(highlightly_exc).__name__}; prior snapshot left untouched."
+                ) from highlightly_exc
+
+    if not items:
+        raise SystemExit('All providers returned zero usable fixtures; prior snapshot left untouched.')
+    if provider_name != "Cricket Live Line Advance":
+        total_pages=1
+        provider_total_items=len(items)
+        response={
+            'items':items,
+            'total_items':len(items),
+            'total_pages':1,
+            'fetched_pages':1,
+            'provider':provider_name,
+        }
+    print(f"Fixture source selected: {provider_name} ({len(items)} normalized fixtures).")
 
     # Keep only formats/team levels represented by the trained prediction model.
     def is_untrained_fixture(item):
@@ -246,8 +292,7 @@ def main():
     response['filtered_out_items']=raw_count-len(items)
     output={'updated_at':datetime.now(timezone.utc).isoformat(),
             'provider_date_start':start_date,'provider_date_end':end_date,
-            'provider_total_items':provider_total_items,
-            'filtered_out_items':raw_count-len(items),
+            "'provider_total_items':provider_total_items,\n            'provider':provider_name,\n            'filtered_out_items":raw_count-len(items),
             'provider_total_pages':total_pages,'response':response}
     Path('data').mkdir(exist_ok=True)
     Path('data/matches.json').write_text(json.dumps(output,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
