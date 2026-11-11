@@ -25,6 +25,7 @@ jobs:
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           CRICKETDATA_API_KEY: ${{ secrets.CRICKETDATA_API_KEY }}
+          HIGHLIGHTLY_API_KEY: ${{ secrets.SECONDARY_API_KEY }}
         run: python scripts/audit_sportscore_live.py
       - name: Audit free Cricsheet ball-by-ball history
         run: python scripts/audit_free_ball_data.py
