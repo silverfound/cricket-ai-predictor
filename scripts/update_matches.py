@@ -174,10 +174,6 @@ def make_prediction(m):
     return {'pre':{t1:f'{np.mean(p1s)*100:.2f}%',t2:f'{np.mean(p2s)*100:.2f}%'},
             'post_toss':post,'is_default':fallback}
 def main():
-    today=datetime.now(timezone.utc).date()
-    start_date=today.isoformat()
-    end_date=today.isoformat()
-    date_range=start_date
     # Primary feed remains first choice. Secondary providers are called only
     # when the primary request is unavailable, malformed, or returns no fixtures.
     today=datetime.now(timezone.utc).date()
