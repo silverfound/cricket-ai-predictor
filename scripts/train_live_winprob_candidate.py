@@ -269,6 +269,7 @@ def main() -> int:
     all_test_base_probabilities = []
     all_test_calibrated_probabilities = []
     all_test_baseline_probabilities = []
+    parity_vectors = []
     release_gate_by_format = {}
     baseline_gate_by_format = {}
 
@@ -340,6 +341,21 @@ def main() -> int:
         baseline_calibrated_probabilities = baseline_calibrator.predict(
             baseline_test_probabilities
         )
+        sample_indices = np.linspace(
+            0, len(test_fmt) - 1, num=min(12, len(test_fmt)), dtype=int
+        )
+        for sample_index in sample_indices:
+            sample_row = test_fmt.iloc[int(sample_index)]
+            parity_vectors.append({
+                "format": match_type,
+                "features": {
+                    feature: float(sample_row[feature])
+                    for feature in STATE_ONLY_FEATURES
+                },
+                "expected_batting_team_win_probability": float(
+                    baseline_calibrated_probabilities[int(sample_index)]
+                ),
+            })
 
         candidate_test_metrics = metric_block(y_test.to_numpy(), calibrated_probabilities)
         baseline_test_metrics = metric_block(y_test.to_numpy(), baseline_calibrated_probabilities)
@@ -522,6 +538,9 @@ def main() -> int:
     joblib.dump(bundle, OUTPUT_DIR / "live_winprob_candidate.joblib")
     (OUTPUT_DIR / "metrics.json").write_text(
         json.dumps(metrics, indent=2, sort_keys=True), encoding="utf-8"
+    )
+    (OUTPUT_DIR / "parity_vectors.json").write_text(
+        json.dumps(parity_vectors, indent=2, sort_keys=True), encoding="utf-8"
     )
     print("TEST_2026_METRICS=" + json.dumps(metrics["test_2026"], sort_keys=True))
     print("TEST_2026_BY_FORMAT=" + json.dumps(metrics["test_2026_by_format"], sort_keys=True))
