@@ -19,7 +19,7 @@ import requests
 HOST = "cricket-highlights-api.p.rapidapi.com"
 BASE_URL = f"https://{HOST}"
 TIMEOUT = 20
-MAX_DETAILS_PER_RUN = 5
+MAX_DETAILS_PER_RUN = 1
 MODEL_PATH = Path("data/live_winprob_browser.json")
 LIVE_STATES = {"in play", "drinks", "timeout"}
 
@@ -240,7 +240,8 @@ def enrich_live_predictions(fixtures: list[dict], provider_name: str) -> dict:
     if not key:
         print("LIVE_WINPROB_STATUS=SKIPPED_NO_HIGHLIGHTLY_SECRET")
         return {"attempted": 0, "predicted": 0}
-    live = [item for item in fixtures if isinstance(item, dict) and _is_live_fixture(item)]
+    live = [item for item in fixtures if isinstance(item, dict) and _is_live_fixture(item)
+            and str(item.get("format_str") or "").upper() in {"T20", "IT20", "ODI", "ODM"}]
     if not live:
         print("LIVE_WINPROB_STATUS=NO_LIVE_FIXTURES_NO_HIGHLIGHTLY_CALLS")
         return {"attempted": 0, "predicted": 0}
