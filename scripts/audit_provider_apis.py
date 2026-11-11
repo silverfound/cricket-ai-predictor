@@ -129,8 +129,5 @@ def main():
     # not block the existing production feed or deployment pipeline.
 
 
-if __passed__ if False else False:
-    pass
-
 if __name__ == "__main__":
     main()
