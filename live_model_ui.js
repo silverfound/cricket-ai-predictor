@@ -4,9 +4,8 @@
     function ensurePanel() {
         let panel = document.getElementById("live-winprob-panel");
         if (panel) return panel;
-        const modal = document.getElementById("prediction-modal");
         const anchor = document.getElementById("sportscore-details");
-        if (!modal || !anchor) return null;
+        if (!document.getElementById("prediction-modal") || !anchor) return null;
         panel = document.createElement("section");
         panel.id = "live-winprob-panel";
         panel.style.cssText = "display:none;margin-top:12px;padding:12px;border:1px solid #00b894;border-radius:8px;background:#071b1a;color:#e2e8f0;font-size:13px;";
@@ -41,7 +40,6 @@
             return;
         }
 
-        const probability = prediction.probabilities || {};
         const score = document.createElement("div");
         score.textContent = "Score: " + prediction.batting_team + " " + prediction.score +
             " (" + prediction.overs + " ov)";
@@ -54,6 +52,19 @@
         innings.style.cssText = "color:#94a3b8;font-size:11px;margin-bottom:8px;";
         panel.appendChild(innings);
 
+        const timestamp = new Date(prediction.snapshot_at);
+        const ageMinutes = Number.isFinite(timestamp.getTime())
+            ? Math.max(0, Math.floor((Date.now() - timestamp.getTime()) / 60000))
+            : null;
+        if (ageMinutes !== null && ageMinutes > 30) {
+            const stale = document.createElement("div");
+            stale.textContent = "STALE SNAPSHOT — live probability hide kar di gayi hai. Agli scheduled refresh ka intizar karein.";
+            stale.style.cssText = "color:#fbbf24;font-size:12px;font-weight:700;margin-top:8px;";
+            panel.appendChild(stale);
+            return;
+        }
+
+        const probability = prediction.probabilities || {};
         const grid = document.createElement("div");
         grid.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:8px;";
         for (const team of [prediction.batting_team, prediction.bowling_team]) {
@@ -70,19 +81,11 @@
         }
         panel.appendChild(grid);
 
-        const timestamp = new Date(prediction.snapshot_at);
-        const ageMinutes = Number.isFinite(timestamp.getTime())
-            ? Math.max(0, Math.floor((Date.now() - timestamp.getTime()) / 60000))
-            : null;
         const note = document.createElement("div");
         note.style.cssText = "font-size:10px;color:#94a3b8;margin-top:8px;";
         note.textContent = "Model: 2024–2026 calibrated state-only T20/ODI · Highlightly snapshot" +
             (ageMinutes === null ? "" : " · " + ageMinutes + " min old") +
             " · Feed refresh: 30 min · Not ball-by-ball";
-        if (ageMinutes !== null && ageMinutes > 30) {
-            note.style.color = "#fbbf24";
-            note.textContent += " · STALE — treat probability as unavailable";
-        }
         panel.appendChild(note);
 
         const warning = document.getElementById("live-warning");
@@ -98,10 +101,8 @@
         if (typeof original !== "function" || original.__liveWinprobWrapped) return false;
         const wrapped = function () {
             const args = Array.from(arguments);
-            const isLive = Boolean(args[6]);
-            const predictionData = args[13] || {};
             const pending = original.apply(this, args);
-            renderLivePanel(isLive, predictionData);
+            renderLivePanel(Boolean(args[6]), args[13] || {});
             return pending;
         };
         wrapped.__liveWinprobWrapped = true;
