@@ -1333,7 +1333,7 @@ const popupHTML = `
         <p id="modal-match-name" style="color:white; font-weight:bold; font-size: 16px;"></p>
         <p id="modal-venue" style="color:#94a3b8; font-size:12px; margin-top:-10px; margin-bottom:15px;"></p>
         <div id="live-warning" style="display:none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 8px; border-radius: 6px; margin-bottom: 15px;">
-            <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match already started. Live prediction is disabled. This pre-toss estimate is historical only; toss controls are locked and no live result is being calculated.</p>
+            <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match is live. Pre-toss estimate and post-toss prediction are separate. Enter the actual toss winner and decision below to calculate the post-toss model. Ball-by-ball live prediction is not connected.</p>
         </div>
         
         <div style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
@@ -1801,15 +1801,11 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
 
     const tossControls = document.getElementById('post-toss-controls');
-    if (isLiveMatch) {
-        document.getElementById('live-warning').style.display = 'block';
-        tossControls.style.display = 'none';
-        document.getElementById('pre-toss-result').setAttribute('aria-label', 'Historical pre-toss estimate; match already started');
-    } else {
-        document.getElementById('live-warning').style.display = 'none';
-        tossControls.style.display = 'block';
-        document.getElementById('pre-toss-result').removeAttribute('aria-label');
-    }
+    document.getElementById('live-warning').style.display = isLiveMatch ? 'block' : 'none';
+    // Pre-toss and post-toss are separate predictions. Keep toss controls
+    // available even after the match starts; the user supplies actual toss details.
+    tossControls.style.display = 'block';
+    document.getElementById('pre-toss-result').removeAttribute('aria-label');
 
     // --- NAME MAPPING FOR AI ---
     let modelT1 = teamMapping[t1] || t1;
@@ -2025,7 +2021,6 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
 
     // 3. POST-TOSS AI CALCULATION
     document.getElementById('get-prediction-btn').onclick = async () => {
-        if (isLiveMatch) return;
         const tw = document.getElementById('toss-winner').value;
         const td = document.getElementById('toss-decision').value;
         let postDiv = document.getElementById('prediction-result');
