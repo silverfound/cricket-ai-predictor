@@ -192,6 +192,18 @@ def metric_block(y_true: np.ndarray, probabilities: np.ndarray) -> dict:
     return result
 
 
+def phase_labels(frame: pd.DataFrame) -> pd.Series:
+    progress = (
+        frame["legal_balls"] / frame["scheduled_balls"]
+    ).clip(lower=0.0, upper=1.0)
+    return pd.cut(
+        progress,
+        bins=[0.0, 0.25, 0.75, 1.000001],
+        labels=["early", "middle", "late"],
+        include_lowest=True,
+    ).astype("string")
+
+
 def encode_categories(train: pd.DataFrame, *others: pd.DataFrame):
     category_map = {}
     for column in CATEGORICAL:
@@ -315,13 +327,15 @@ def main() -> int:
         model.fit(x_train, y_train, categorical_feature=CATEGORICAL)
 
         calibration_probabilities = model.predict_proba(x_cal)[:, 1]
-        calibrator = IsotonicRegression(out_of_bounds="clip", y_min=0.001, y_max=0.999)
-        calibrator.fit(calibration_probabilities, y_cal)
-
         test_probabilities = model.predict_proba(x_test)[:, 1]
-        calibrated_probabilities = calibrator.predict(test_probabilities)
 
-        # Same chronological split and same 2025 calibration window for a
+        # Fit separate 2025 isotonic curves for early/middle/late match states.
+        calibration_phases = phase_labels(calibration_fmt).to_numpy()
+        test_phases = phase_labels(test_fmt).to_numpy()
+        candidate_calibrators = {}
+        calibrated_probabilities = np.zeros(len(test_fmt), dtype=float)
+
+        # Same chronological split and phase-specific 2025 calibration for a
         # state-only logistic baseline without team identity features.
         baseline = make_pipeline(
             StandardScaler(),
@@ -331,16 +345,45 @@ def main() -> int:
         baseline_calibration_probabilities = baseline.predict_proba(
             calibration_fmt[STATE_ONLY_FEATURES]
         )[:, 1]
-        baseline_calibrator = IsotonicRegression(
-            out_of_bounds="clip", y_min=0.001, y_max=0.999
-        )
-        baseline_calibrator.fit(baseline_calibration_probabilities, y_cal)
         baseline_test_probabilities = baseline.predict_proba(
             test_fmt[STATE_ONLY_FEATURES]
         )[:, 1]
-        baseline_calibrated_probabilities = baseline_calibrator.predict(
-            baseline_test_probabilities
-        )
+        baseline_calibrators_for_format = {}
+        baseline_calibrated_probabilities = np.zeros(len(test_fmt), dtype=float)
+
+        for phase in ("early", "middle", "late"):
+            calibration_mask = calibration_phases == phase
+            test_mask = test_phases == phase
+            if int(calibration_mask.sum()) < 1000:
+                raise RuntimeError(f"Insufficient 2025 {phase} calibration rows for {match_type}")
+            if np.unique(y_cal.to_numpy()[calibration_mask]).size != 2:
+                raise RuntimeError(f"2025 {match_type}/{phase} calibration has one class")
+
+            candidate_calibrator = IsotonicRegression(
+                out_of_bounds="clip", y_min=0.001, y_max=0.999
+            )
+            candidate_calibrator.fit(
+                calibration_probabilities[calibration_mask],
+                y_cal.to_numpy()[calibration_mask],
+            )
+            candidate_calibrators[phase] = candidate_calibrator
+
+            baseline_calibrator = IsotonicRegression(
+                out_of_bounds="clip", y_min=0.001, y_max=0.999
+            )
+            baseline_calibrator.fit(
+                baseline_calibration_probabilities[calibration_mask],
+                y_cal.to_numpy()[calibration_mask],
+            )
+            baseline_calibrators_for_format[phase] = baseline_calibrator
+
+            if test_mask.any():
+                calibrated_probabilities[test_mask] = candidate_calibrator.predict(
+                    test_probabilities[test_mask]
+                )
+                baseline_calibrated_probabilities[test_mask] = baseline_calibrator.predict(
+                    baseline_test_probabilities[test_mask]
+                )
         sample_indices = np.linspace(
             0, len(test_fmt) - 1, num=min(12, len(test_fmt)), dtype=int
         )
@@ -400,12 +443,7 @@ def main() -> int:
         phase_eval["progress_ratio"] = (
             phase_eval["legal_balls"] / phase_eval["scheduled_balls"]
         ).clip(lower=0.0, upper=1.0)
-        phase_eval["phase"] = pd.cut(
-            phase_eval["progress_ratio"],
-            bins=[0.0, 0.25, 0.75, 1.000001],
-            labels=["early", "middle", "late"],
-            include_lowest=True,
-        )
+        phase_eval["phase"] = phase_labels(phase_eval)
         phase_snapshots = (
             phase_eval.dropna(subset=["phase"])
             .sort_values(["match_id", "innings", "legal_balls"])
@@ -464,10 +502,10 @@ def main() -> int:
         }
         phase_metrics_by_format[match_type] = phase_metrics
         models[match_type] = model
-        calibrators[match_type] = calibrator
+        calibrators[match_type] = candidate_calibrators
         categories_by_format[match_type] = category_map
         baseline_models[match_type] = baseline
-        baseline_calibrators[match_type] = baseline_calibrator
+        baseline_calibrators[match_type] = baseline_calibrators_for_format
 
     combined_labels = np.concatenate(all_test_labels)
     combined_base_probabilities = np.concatenate(all_test_base_probabilities)
