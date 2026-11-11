@@ -5,15 +5,17 @@ This checks the real serialized estimators, their feature schemas, class labels,
 and one deterministic inference row. It does not retrain or rewrite artifacts.
 """
 import json
+import sys
 from pathlib import Path
 
 import joblib
 import numpy as np
 import pandas as pd
 
-from scripts.prediction_formats import binary_class_probabilities
-
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from scripts.prediction_formats import binary_class_probabilities
 MODELS = joblib.load(ROOT / "cricket_ensemble_modern.joblib")
 ELO = joblib.load(ROOT / "latest_elo_ratings.joblib")
 MAPPINGS = joblib.load(ROOT / "category_mappings.joblib")
