@@ -303,9 +303,39 @@ def main():
                     f"Highlightly={type(highlightly_exc).__name__}; prior snapshot left untouched."
                 ) from highlightly_exc
 
-    # CricketData is now backup-only during normal operation. Selected-match
-    # enrichment is requested from SportScore by the user when opening a
-    # prediction; this avoids polling secondary providers for every fixture.
+    # Keep the primary fixture feed on its existing 30-minute cadence, but
+    # refresh CricketData enrichment only on scheduled hourly slots. This
+    # caps normal secondary usage at 24 list + 24 match-info calls per day.
+    # Manual runs do not consume enrichment quota; CricketData remains a
+    # necessary backup when the primary feed is unavailable.
+    secondary_enrichment_due = should_refresh_cricketdata_enrichment()
+    if (provider_name == "Cricket Live Line Advance"
+            and os.getenv("CRICKETDATA_API_KEY", "").strip()
+            and secondary_enrichment_due):
+        try:
+            cricketdata_items = fetch_cricketdata()
+            merged_count = _merge_provider_enrichment(items, cricketdata_items)
+            print(f"CricketData enrichment: {merged_count} unambiguous fixture(s) matched.")
+        except Exception as exc:
+            print(f"CricketData enrichment unavailable: {type(exc).__name__}; primary feed retained.")
+
+    if cricketdata_items and secondary_enrichment_due:
+        active = [x for x in cricketdata_items
+                  if (x.get("provider_metadata") or {}).get("matchStarted")
+                  and not _canonical_toss(x)]
+        if active:
+            candidate = active[0]
+            try:
+                detail = fetch_cricketdata_match_info(candidate.get("match_id"))
+                detail_fixture = dict(candidate)
+                detail_fixture["toss_winner"] = detail.get("tossWinner") or detail.get("toss_winner")
+                detail_fixture["toss_decision"] = detail.get("tossChoice") or detail.get("tossDecision")
+                detail_fixture["score"] = detail.get("score", detail_fixture.get("score"))
+                detail_fixture["scorecard"] = detail.get("scorecard", detail_fixture.get("scorecard"))
+                _merge_provider_enrichment(items, [detail_fixture])
+                print("CricketData match-info enrichment: one active fixture checked.")
+            except Exception as exc:
+                print(f"CricketData match-info unavailable: {type(exc).__name__}; toss data not fabricated.")
 
     if not items:
         raise SystemExit('All providers returned zero usable fixtures; prior snapshot left untouched.')
