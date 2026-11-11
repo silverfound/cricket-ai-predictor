@@ -84,6 +84,26 @@ def main() -> int:
     print(f"TIGZIG_DELIVERIES_2024_2026={total_deliveries}")
     print(f"TIGZIG_MATCH_GROUP_COUNTS_SUM={total_matches_by_group}")
     print("TIGZIG_T10_COVERAGE=" + ("PRESENT" if "T10" in formats else "NOT_IN_THIS_DATASET"))
+    # Discover the companion match table schema before building delivery labels.
+    try:
+        schema_response = requests.post(
+            URL, json={"sql": "DESCRIBE match_info", "format": "json"}, timeout=TIMEOUT
+        )
+        print(f"TIGZIG_MATCH_INFO_SCHEMA_HTTP={schema_response.status_code}")
+        if schema_response.status_code == 200:
+            schema_payload = schema_response.json()
+            schema_columns = schema_payload.get("columns", [])
+            schema_rows = schema_payload.get("rows", [])
+            if isinstance(schema_columns, list) and isinstance(schema_rows, list):
+                print("TIGZIG_MATCH_INFO_SCHEMA_COLUMNS=" + ",".join(str(c) for c in schema_columns))
+                for schema_row in schema_rows:
+                    if len(schema_row) >= 2:
+                        print(f"TIGZIG_MATCH_INFO_FIELD={schema_row[0]}:{schema_row[1]}")
+        else:
+            print("TIGZIG_MATCH_INFO_SCHEMA=UNAVAILABLE")
+    except (requests.RequestException, ValueError) as exc:
+        print(f"TIGZIG_MATCH_INFO_SCHEMA_ERROR={type(exc).__name__}")
+
     print("TIGZIG_AUDIT=READ_ONLY_COMPLETE")
     return 0
 
