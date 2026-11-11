@@ -1596,7 +1596,7 @@ const SPORT_SCORE_CACHE_TTL_MS = 10 * 60 * 1000;
 
 function sportScoreTeamKey(value) {
     return String(value || "").toLowerCase()
-        .replace(/\\b(women|woman|w)\\b/g, " ")
+        .replace(/\b(women|woman|w)\b/g, " ")
         .replace(/[^a-z0-9]/g, "");
 }
 
@@ -1612,6 +1612,10 @@ function sportScoreUnwrapList(payload) {
 function sportScoreTeamName(value) {
     if (typeof value === "string") return value;
     return String(value?.name || value?.title || value?.shortName || value?.teamName || "");
+}
+
+function sportScoreIsWomen(value) {
+    return /\\b(women|woman|w)\\b/i.test(String(value || ""));
 }
 
 async function getSportScoreFixtureList(dateIso) {
@@ -1634,9 +1638,17 @@ async function getSportScoreFixtureList(dateIso) {
 function findSportScoreFixture(items, team1, team2) {
     const a = sportScoreTeamKey(team1), b = sportScoreTeamKey(team2);
     const matches = items.filter(item => {
-        const home = sportScoreTeamKey(sportScoreTeamName(item.home || item.homeTeam || item.team1));
-        const away = sportScoreTeamKey(sportScoreTeamName(item.away || item.awayTeam || item.team2));
-        return (home === a && away === b) || (home === b && away === a);
+        const homeName = sportScoreTeamName(item.home || item.homeTeam || item.team1);
+        const awayName = sportScoreTeamName(item.away || item.awayTeam || item.team2);
+        const home = sportScoreTeamKey(homeName);
+        const away = sportScoreTeamKey(awayName);
+        const sameOrder = home === a && away === b &&
+            sportScoreIsWomen(homeName) === sportScoreIsWomen(team1) &&
+            sportScoreIsWomen(awayName) === sportScoreIsWomen(team2);
+        const reverseOrder = home === b && away === a &&
+            sportScoreIsWomen(homeName) === sportScoreIsWomen(team2) &&
+            sportScoreIsWomen(awayName) === sportScoreIsWomen(team1);
+        return sameOrder || reverseOrder;
     });
     return matches.length === 1 ? matches[0] : null;
 }
