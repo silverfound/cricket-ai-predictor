@@ -104,23 +104,39 @@ def main():
         print("CricketData: SECRET_MISSING (CRICKETDATA_API_KEY)")
         results.append(False)
 
-    # Matchstat is a separate RapidAPI host/product; probe only its known
-    # live endpoint and report its response shape without publishing anything.
+    # Existing production fixture provider: one page only, same host/key
+    # as the scheduled feed. This is diagnostic only and writes no snapshot.
     key = os.getenv("RAPIDAPI_KEY")
     if key:
-        host = "cricket-api-data-live-scores-stats-odds-predictions.p.rapidapi.com"
+        today = datetime.now(ZoneInfo("UTC")).date().isoformat()
+        host = "cricket-live-line-advance.p.rapidapi.com"
         try:
             response = requests.get(
-                f"https://{host}/v1/live",
-                headers={"x-rapidapi-key": key, "x-rapidapi-host": host},
+                f"https://{host}/matches",
+                headers={"X-RapidAPI-Key": key, "X-RapidAPI-Host": host},
+                params={"date": today, "per_paged": 100, "paged": 1},
                 timeout=TIMEOUT,
             )
-            results.append(inspect_payload("Matchstat", response, list_keys=("results", "data", "events")))
-        except requests.RequestException as exc:
-            print(f"Matchstat: request_error={type(exc).__name__}")
+            print(f"Cricket Live Line Advance: HTTP {response.status_code}")
+            if response.status_code == 200:
+                payload = response.json()
+                envelope = payload.get("response") if isinstance(payload, dict) else None
+                items = envelope.get("items") if isinstance(envelope, dict) else None
+                if isinstance(items, list):
+                    print(f"Cricket Live Line Advance: fixture_count={len(items)}")
+                    if items and isinstance(items[0], dict):
+                        print(f"Cricket Live Line Advance: first_fixture_keys={sorted(items[0].keys())[:40]}")
+                    results.append(True)
+                else:
+                    print("Cricket Live Line Advance: expected response.items list missing")
+                    results.append(False)
+            else:
+                results.append(False)
+        except (requests.RequestException, ValueError) as exc:
+            print(f"Cricket Live Line Advance: request_error={type(exc).__name__}")
             results.append(False)
     else:
-        print("Matchstat: SECRET_MISSING (RAPIDAPI_KEY)")
+        print("Cricket Live Line Advance: SECRET_MISSING (RAPIDAPI_KEY)")
         results.append(False)
 
     passed = sum(bool(value) for value in results)
