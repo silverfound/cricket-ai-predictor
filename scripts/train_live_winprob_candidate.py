@@ -274,6 +274,52 @@ def main() -> int:
 
     test_probabilities = model.predict_proba(x_test)[:, 1]
     calibrated_probabilities = calibrator.predict(test_probabilities)
+
+    # One end-of-phase snapshot per match/innings avoids letting long innings
+    # dominate the evaluation merely because they contain more deliveries.
+    phase_eval = test.copy()
+    phase_eval["uncalibrated_probability"] = test_probabilities
+    phase_eval["calibrated_probability"] = calibrated_probabilities
+    phase_eval["progress_ratio"] = (
+        phase_eval["legal_balls"] / phase_eval["scheduled_balls"]
+    ).clip(lower=0.0, upper=1.0)
+    phase_eval["phase"] = pd.cut(
+        phase_eval["progress_ratio"],
+        bins=[0.0, 0.25, 0.75, 1.000001],
+        labels=["early", "middle", "late"],
+        include_lowest=True,
+    )
+    phase_snapshots = (
+        phase_eval.dropna(subset=["phase"])
+        .sort_values(["match_id", "innings", "legal_balls"])
+        .groupby(["match_id", "innings", "phase"], observed=True)
+        .tail(1)
+    )
+    phase_metrics = {}
+    for phase in ("early", "middle", "late"):
+        group = phase_snapshots[phase_snapshots["phase"] == phase]
+        if group.empty:
+            continue
+        y_phase = group["label"].to_numpy()
+        phase_metrics[phase] = {
+            "snapshot_rows": int(len(group)),
+            "matches": int(group["match_id"].nunique()),
+            "uncalibrated": metric_block(y_phase, group["uncalibrated_probability"].to_numpy()),
+            "isotonic_calibrated": metric_block(y_phase, group["calibrated_probability"].to_numpy()),
+        }
+    phase_by_format = {}
+    for (match_type, phase), group in phase_snapshots.groupby(
+        ["match_type", "phase"], observed=True
+    ):
+        key = f"{match_type}_{phase}"
+        y_group = group["label"].to_numpy()
+        phase_by_format[key] = {
+            "snapshot_rows": int(len(group)),
+            "matches": int(group["match_id"].nunique()),
+            "uncalibrated": metric_block(y_group, group["uncalibrated_probability"].to_numpy()),
+            "isotonic_calibrated": metric_block(y_group, group["calibrated_probability"].to_numpy()),
+        }
+
     metrics = {
         "source": "TigZig open cricket database, derived from Cricsheet",
         "source_license": "ODC-BY-1.0",
@@ -290,6 +336,9 @@ def main() -> int:
             "isotonic_calibrated": metric_block(y_test.to_numpy(), calibrated_probabilities),
         },
         "test_2026_by_format": {},
+        "test_2026_phase_snapshots": phase_metrics,
+        "test_2026_phase_snapshots_by_format": phase_by_format,
+        "phase_snapshot_method": "last available delivery in each early (0-25%), middle (25-75%), and late (75-100%) phase, once per match and innings",
         "production_status": "RESEARCH_ONLY_NOT_APPROVED",
     }
     for match_type in sorted(test["match_type"].astype(str).unique()):
@@ -318,6 +367,8 @@ def main() -> int:
     )
     print("TEST_2026_METRICS=" + json.dumps(metrics["test_2026"], sort_keys=True))
     print("TEST_2026_BY_FORMAT=" + json.dumps(metrics["test_2026_by_format"], sort_keys=True))
+    print("TEST_2026_PHASE_SNAPSHOTS=" + json.dumps(metrics["test_2026_phase_snapshots"], sort_keys=True))
+    print("TEST_2026_PHASE_BY_FORMAT=" + json.dumps(metrics["test_2026_phase_snapshots_by_format"], sort_keys=True))
     print("RESEARCH_ARTIFACTS=live_model_research")
     print("PRODUCTION_STATUS=UNCHANGED")
     return 0
