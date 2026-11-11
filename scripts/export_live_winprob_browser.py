@@ -17,15 +17,20 @@ def main() -> int:
         pipeline = bundle["models"][match_type]
         scaler = pipeline.named_steps["standardscaler"]
         classifier = pipeline.named_steps["logisticregression"]
-        calibrator = bundle["calibrators"][match_type]
+        calibrators = bundle["calibrators"][match_type]
+        calibration_curves = {}
+        for phase, calibrator in calibrators.items():
+            calibration_curves[phase] = {
+                "x": [float(value) for value in calibrator.X_thresholds_],
+                "y": [float(value) for value in calibrator.y_thresholds_],
+            }
         exported[match_type] = {
             "features": bundle["features"],
             "mean": [float(value) for value in scaler.mean_],
             "scale": [float(value) for value in scaler.scale_],
             "coefficients": [float(value) for value in classifier.coef_[0]],
             "intercept": float(classifier.intercept_[0]),
-            "calibration_x": [float(value) for value in calibrator.X_thresholds_],
-            "calibration_y": [float(value) for value in calibrator.y_thresholds_],
+            "calibration": calibration_curves,
         }
 
     if not exported:
