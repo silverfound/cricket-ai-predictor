@@ -26,6 +26,16 @@ def inspect_payload(label, response, expected_key=None, list_keys=()):
 
     if isinstance(payload, dict):
         print(f"{label}: top-level keys={sorted(payload.keys())[:30]}")
+        # Show short provider error envelopes without exposing URLs or credentials.
+        for field in ("status", "reason", "message", "info"):
+            value = payload.get(field)
+            if value is not None and not isinstance(value, (dict, list)):
+                safe_value = " ".join(str(value).split())[:240]
+                for secret_name in ("CRICKETDATA_API_KEY", "SECONDARY_API_KEY", "RAPIDAPI_KEY"):
+                    secret = os.getenv(secret_name)
+                    if secret:
+                        safe_value = safe_value.replace(secret, "[REDACTED]")
+                print(f"{label}: {field}={safe_value}")
         records = None
         for key in list_keys:
             value = payload.get(key)
