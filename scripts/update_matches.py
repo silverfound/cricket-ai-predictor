@@ -238,9 +238,21 @@ def main():
                 return True
             # A-side naming: "Team A", "A XI", "England A", "Australia A",
             # and common "England Lions" / "India A" variants.
-            if len(words)>=2 and (words[-1] in {'lions','xi'} or words[-1]=='a'):
+            # Do not treat every franchise ending in "Lions" as an A-side.
+            # For example, Yas Lions is a genuine T10 franchise, not a national A team.
+            if len(words)>=2 and words[-1]=='a':
                 return True
-            return n.endswith(' a team') or n.endswith(' a xi')
+            if len(words)>=2 and words[-2:]==['a','xi']:
+                return True
+            national_sides={
+                'afghanistan','australia','bangladesh','england','india',
+                'new zealand','pakistan','south africa','sri lanka',
+                'west indies','zimbabwe'
+            }
+            if len(words)>=2 and words[-1]=='lions':
+                if ' '.join(words[:-1]) in national_sides:
+                    return True
+            return n.endswith(' a team')
         if is_a_or_youth(team1) or is_a_or_youth(team2):
             return True
         return False
