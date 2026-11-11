@@ -305,6 +305,39 @@ def main() -> int:
                     arrays = find_event_arrays(sample)
                     print("CRICKETDATA_LIVE_DELIVERY_ARRAYS=" +
                           str(sum(1 for item in arrays if item["delivery_like"])))
+                    print("CRICKETDATA_LIVE_BBB_ENABLED=" + str(sample.get("bbbEnabled")))
+                    sample_id = sample.get("id")
+                    if sample_id:
+                        for endpoint in ("match_info", "match_bbb"):
+                            try:
+                                detail_response = requests.get(
+                                    f"https://api.cricapi.com/v1/{endpoint}",
+                                    params={"apikey": cricketdata_key, "offset": 0,
+                                            "id": str(sample_id)},
+                                    timeout=TIMEOUT,
+                                )
+                                print(f"CRICKETDATA_{endpoint.upper()}_HTTP={detail_response.status_code}")
+                                if detail_response.status_code == 200:
+                                    detail_payload = detail_response.json()
+                                    detail_data = detail_payload.get("data") if isinstance(detail_payload, dict) else None
+                                    if isinstance(detail_data, dict):
+                                        print(f"CRICKETDATA_{endpoint.upper()}_KEYS=" +
+                                              ",".join(sorted(detail_data.keys())[:80]))
+                                        for key in ("score", "scorecard", "innings", "status",
+                                                    "matchStarted", "matchEnded", "bbbEnabled"):
+                                            if detail_data.get(key) is not None:
+                                                print(f"CRICKETDATA_{endpoint.upper()}_{key.upper()}=" +
+                                                      str(detail_data[key])[:1400])
+                                    elif isinstance(detail_data, list):
+                                        print(f"CRICKETDATA_{endpoint.upper()}_ROWS={len(detail_data)}")
+                                        if detail_data and isinstance(detail_data[0], dict):
+                                            print(f"CRICKETDATA_{endpoint.upper()}_ROW_KEYS=" +
+                                                  ",".join(sorted(detail_data[0].keys())[:60]))
+                                    print(f"CRICKETDATA_{endpoint.upper()}_DELIVERY_ARRAYS=" +
+                                          str(sum(1 for item in find_event_arrays(detail_payload)
+                                                  if item["delivery_like"])))
+                            except (requests.RequestException, ValueError) as exc:
+                                print(f"CRICKETDATA_{endpoint.upper()}_ERROR=" + type(exc).__name__)
             else:
                 print("CRICKETDATA_CURRENT_ACCESS=UNAVAILABLE")
         except (requests.RequestException, ValueError) as exc:
