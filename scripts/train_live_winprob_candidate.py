@@ -267,6 +267,7 @@ def main() -> int:
     all_test_calibrated_probabilities = []
     all_test_baseline_probabilities = []
     release_gate_by_format = {}
+    baseline_gate_by_format = {}
 
     for match_type in ("T20", "ODI"):
         train_fmt = train[train["match_type"] == match_type].copy()
@@ -339,6 +340,17 @@ def main() -> int:
 
         candidate_test_metrics = metric_block(y_test.to_numpy(), calibrated_probabilities)
         baseline_test_metrics = metric_block(y_test.to_numpy(), baseline_calibrated_probabilities)
+        baseline_gate = {
+            "accuracy_above_random": baseline_test_metrics["accuracy"] > 0.5,
+            "brier_better_than_0_25": baseline_test_metrics["brier_score"] < 0.25,
+            "log_loss_better_than_random": baseline_test_metrics["log_loss"] < float(np.log(2.0)),
+            "roc_auc_above_random": (
+                baseline_test_metrics["roc_auc"] is not None
+                and baseline_test_metrics["roc_auc"] > 0.5
+            ),
+        }
+        baseline_gate["passed"] = all(baseline_gate.values())
+        baseline_gate_by_format[match_type] = baseline_gate
         gate = {
             "brier_improved": candidate_test_metrics["brier_score"] < baseline_test_metrics["brier_score"],
             "log_loss_improved": candidate_test_metrics["log_loss"] < baseline_test_metrics["log_loss"],
@@ -364,6 +376,8 @@ def main() -> int:
         phase_eval = test_fmt.copy()
         phase_eval["uncalibrated_probability"] = test_probabilities
         phase_eval["calibrated_probability"] = calibrated_probabilities
+        phase_eval["baseline_uncalibrated_probability"] = baseline_test_probabilities
+        phase_eval["baseline_calibrated_probability"] = baseline_calibrated_probabilities
         phase_eval["progress_ratio"] = (
             phase_eval["legal_balls"] / phase_eval["scheduled_balls"]
         ).clip(lower=0.0, upper=1.0)
@@ -394,6 +408,14 @@ def main() -> int:
                 "isotonic_calibrated": metric_block(
                     y_phase, group["calibrated_probability"].to_numpy()
                 ),
+                "state_only_baseline": {
+                    "uncalibrated": metric_block(
+                        y_phase, group["baseline_uncalibrated_probability"].to_numpy()
+                    ),
+                    "isotonic_calibrated": metric_block(
+                        y_phase, group["baseline_calibrated_probability"].to_numpy()
+                    ),
+                },
             }
 
         format_metrics[match_type] = {
@@ -407,6 +429,7 @@ def main() -> int:
                 },
             },
             "release_gate": gate,
+            "baseline_gate": baseline_gate,
         }
         phase_metrics_by_format[match_type] = phase_metrics
         models[match_type] = model
@@ -442,30 +465,40 @@ def main() -> int:
         },
         "test_2026_by_format": format_metrics,
         "release_gate_by_format": release_gate_by_format,
+        "baseline_gate_by_format": baseline_gate_by_format,
         "candidate_supported_formats": [
             fmt for fmt, gate in release_gate_by_format.items() if gate["passed"]
+        ],
+        "baseline_supported_formats": [
+            fmt for fmt, gate in baseline_gate_by_format.items() if gate["passed"]
         ],
         "test_2026_phase_snapshots_by_format": phase_metrics_by_format,
         "phase_snapshot_method": "last available delivery in each early (0-25%), middle (25-75%), and late (75-100%) phase, once per match and innings",
         "production_status": "RESEARCH_ONLY_NOT_APPROVED",
     }
 
+    baseline_supported_formats = [
+        fmt for fmt, gate in baseline_gate_by_format.items() if gate["passed"]
+    ]
     bundle = {
-        "models": models,
-        "calibrators": calibrators,
-        "state_only_baseline_models": baseline_models,
-        "state_only_baseline_calibrators": baseline_calibrators,
-        "features": FEATURES,
-        "categorical_features": CATEGORICAL,
-        "categories": categories_by_format,
+        "primary_model_family": "state_only_logistic_baseline",
+        "models": baseline_models,
+        "calibrators": baseline_calibrators,
+        "features": STATE_ONLY_FEATURES,
+        "categorical_features": [],
+        "categories": {},
+        "experimental_model_family": "team_aware_lightgbm",
+        "experimental_models": models,
+        "experimental_calibrators": calibrators,
+        "experimental_features": FEATURES,
+        "experimental_categorical_features": CATEGORICAL,
+        "experimental_categories": categories_by_format,
         "train_year": 2024,
         "calibration_year": 2025,
         "test_year": 2026,
         "source": "TigZig/Cricsheet",
         "source_license": "ODC-BY-1.0",
-        "supported_formats": [
-            fmt for fmt, gate in release_gate_by_format.items() if gate["passed"]
-        ],
+        "supported_formats": baseline_supported_formats,
         "experimental_formats": [
             fmt for fmt, gate in release_gate_by_format.items() if not gate["passed"]
         ],
@@ -479,6 +512,8 @@ def main() -> int:
     print("TEST_2026_BY_FORMAT=" + json.dumps(metrics["test_2026_by_format"], sort_keys=True))
     print("TEST_2026_PHASE_BY_FORMAT=" + json.dumps(metrics["test_2026_phase_snapshots_by_format"], sort_keys=True))
     print("RELEASE_GATE_BY_FORMAT=" + json.dumps(metrics["release_gate_by_format"], sort_keys=True))
+    print("BASELINE_GATE_BY_FORMAT=" + json.dumps(metrics["baseline_gate_by_format"], sort_keys=True))
+    print("BASELINE_SUPPORTED_FORMATS=" + json.dumps(metrics["baseline_supported_formats"]))
     print("RESEARCH_ARTIFACTS=live_model_research")
     print("PRODUCTION_STATUS=UNCHANGED")
     return 0
