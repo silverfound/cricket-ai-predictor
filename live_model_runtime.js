@@ -50,14 +50,21 @@
         const baseProbability = rawScore >= 0
             ? 1 / (1 + Math.exp(-rawScore))
             : Math.exp(rawScore) / (1 + Math.exp(rawScore));
-        const calibrated = interpolate(
-            baseProbability,
-            spec.calibration_x,
-            spec.calibration_y
-        );
+        const legalBalls = Number(features.legal_balls);
+        const scheduledBalls = Number(features.scheduled_balls);
+        if (!Number.isFinite(legalBalls) || !Number.isFinite(scheduledBalls) ||
+            scheduledBalls <= 0) {
+            throw new Error("Invalid live-model innings progress");
+        }
+        const progress = Math.max(0, Math.min(1, legalBalls / scheduledBalls));
+        const phase = progress <= 0.25 ? "early" : progress <= 0.75 ? "middle" : "late";
+        const curve = spec.calibration && spec.calibration[phase];
+        if (!curve) throw new Error("Missing live-model calibration phase: " + phase);
+        const calibrated = interpolate(baseProbability, curve.x, curve.y);
         const probability = Math.max(0, Math.min(1, calibrated));
         return {
             format: formatKey,
+            phase,
             battingTeamWinProbability: probability,
             bowlingTeamWinProbability: 1 - probability,
         };
