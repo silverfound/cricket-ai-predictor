@@ -89,7 +89,113 @@ def find_event_arrays(value: Any, path: str = "$", depth: int = 0) -> list[dict]
     return found
 
 
+
+def audit_highlightly() -> None:
+    """Probe Highlightly's documented list and match-detail live-state fields."""
+    import os
+    key = os.environ.get("HIGHLIGHTLY_API_KEY", "").strip()
+    print("HIGHLIGHTLY_API_KEY_CONFIGURED=" + str(bool(key)))
+    if not key:
+        print("HIGHLIGHTLY_STATUS=SKIPPED_NO_SECRET")
+        return
+    today = datetime.now(timezone.utc).date().isoformat()
+    headers = {"x-rapidapi-key": key}
+    try:
+        response = requests.get(
+            "https://cricket.highlightly.net/matches",
+            params={"date": today, "limit": 100, "offset": 0},
+            headers=headers, timeout=TIMEOUT,
+        )
+    except requests.RequestException as exc:
+        print("HIGHLIGHTLY_MATCHES_ERROR=" + type(exc).__name__)
+        return
+    print(f"HIGHLIGHTLY_MATCHES_HTTP={response.status_code}")
+    if response.status_code != 200:
+        print("HIGHLIGHTLY_STATUS=LIST_UNAVAILABLE")
+        return
+    try:
+        payload = response.json()
+    except ValueError:
+        print("HIGHLIGHTLY_STATUS=NON_JSON")
+        return
+    rows = payload.get("data", []) if isinstance(payload, dict) else []
+    pagination = payload.get("pagination", {}) if isinstance(payload, dict) else {}
+    plan = payload.get("plan", {}) if isinstance(payload, dict) else {}
+    print("HIGHLIGHTLY_TIER=" + str(plan.get("tier", "unknown")))
+    print("HIGHLIGHTLY_PLAN_MESSAGE=" + str(plan.get("message", ""))[:300])
+    print("HIGHLIGHTLY_FIXTURE_COUNT=" + str(len(rows) if isinstance(rows, list) else 0))
+    print("HIGHLIGHTLY_TOTAL_COUNT=" + str(pagination.get("totalCount", "unknown")))
+    if not isinstance(rows, list):
+        print("HIGHLIGHTLY_STATUS=UNKNOWN_LIST_SCHEMA")
+        return
+    active_states = {"in play", "innings break", "drinks", "lunch", "tea", "timeout", "stumps"}
+    active = [row for row in rows if isinstance(row, dict) and
+              str((row.get("state") or {}).get("description", "")).casefold() in active_states]
+    print("HIGHLIGHTLY_ACTIVE_STATE_FIXTURES=" + str(len(active)))
+    for fixture in active[:8]:
+        match_id = fixture.get("id")
+        if not match_id:
+            continue
+        home = (fixture.get("homeTeam") or {}).get("name", "?")
+        away = (fixture.get("awayTeam") or {}).get("name", "?")
+        state = fixture.get("state") or {}
+        print(f"HIGHLIGHTLY_ACTIVE_MATCH={home} vs {away}; format={fixture.get('format')}; state={state.get('description')}; id={match_id}")
+        try:
+            detail_response = requests.get(
+                f"https://cricket.highlightly.net/matches/{match_id}",
+                headers=headers, timeout=TIMEOUT,
+            )
+        except requests.RequestException as exc:
+            print("HIGHLIGHTLY_DETAIL_ERROR=" + type(exc).__name__)
+            continue
+        print(f"HIGHLIGHTLY_DETAIL_HTTP={detail_response.status_code}")
+        if detail_response.status_code != 200:
+            continue
+        try:
+            detail = detail_response.json()
+        except ValueError:
+            print("HIGHLIGHTLY_DETAIL_SCHEMA=NON_JSON")
+            continue
+        if isinstance(detail, list):
+            detail = detail[0] if detail and isinstance(detail[0], dict) else {}
+        if not isinstance(detail, dict):
+            print("HIGHLIGHTLY_DETAIL_SCHEMA=" + type(detail).__name__)
+            continue
+        state_detail = detail.get("state") or {}
+        teams = state_detail.get("teams") or {}
+        home_state, away_state = teams.get("home") or {}, teams.get("away") or {}
+        print("HIGHLIGHTLY_DETAIL_STATE=" + str(state_detail.get("description", "missing")))
+        print("HIGHLIGHTLY_HOME_SCORE=" + str(home_state.get("score", "missing")))
+        print("HIGHLIGHTLY_HOME_INFO=" + str(home_state.get("info", "missing")))
+        print("HIGHLIGHTLY_AWAY_SCORE=" + str(away_state.get("score", "missing")))
+        print("HIGHLIGHTLY_AWAY_INFO=" + str(away_state.get("info", "missing")))
+        inplay = detail.get("inplayData") or {}
+        batsmen = inplay.get("batsmen", []) if isinstance(inplay, dict) else []
+        bowlers = inplay.get("bowlers", []) if isinstance(inplay, dict) else []
+        print("HIGHLIGHTLY_INPLAYDATA_PRESENT=" + str(bool(inplay)))
+        print("HIGHLIGHTLY_BATSMEN_COUNT=" + str(len(batsmen) if isinstance(batsmen, list) else 0))
+        print("HIGHLIGHTLY_BOWLERS_COUNT=" + str(len(bowlers) if isinstance(bowlers, list) else 0))
+        for label, collection in (("BATSMAN", batsmen), ("BOWLER", bowlers)):
+            if isinstance(collection, list) and collection:
+                sample = collection[0] if isinstance(collection[0], dict) else {}
+                print(f"HIGHLIGHTLY_SAMPLE_{label}_KEYS=" + ",".join(sorted(sample.keys())[:35]))
+                print(f"HIGHLIGHTLY_SAMPLE_{label}=" + str(sample)[:700])
+        score_values = [str(home_state.get("score") or ""), str(away_state.get("score") or "")]
+        numeric_score = any(__import__("re").search(r"\\b\\d+\\s*/\\s*\\d+\\b", x) for x in score_values)
+        info_values = [str(home_state.get("info") or ""), str(away_state.get("info") or "")]
+        has_overs = any("ov" in x.casefold() for x in info_values)
+        has_target = any("t:" in x.casefold() for x in info_values)
+        print("HIGHLIGHTLY_NUMERIC_SCORE_PRESENT=" + str(numeric_score))
+        print("HIGHLIGHTLY_OVERS_PRESENT=" + str(has_overs))
+        print("HIGHLIGHTLY_TARGET_PRESENT=" + str(has_target))
+        print("HIGHLIGHTLY_LIVE_STATE_USABLE=" + str(
+            state_detail.get("description", "").casefold() in {"in play", "innings break"} and
+            numeric_score and has_overs
+        ))
+        break
+
 def main() -> int:
+    audit_highlightly()
     date_utc = datetime.now(timezone.utc).date().isoformat()
     try:
         response = requests.get(
