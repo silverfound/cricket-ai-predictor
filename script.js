@@ -1350,6 +1350,8 @@ const popupHTML = `
         
         <button id="get-prediction-btn" style="width:100%; padding:10px; background:#00ffcc; color:black; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">Calculate Post-Toss Impact</button>
         
+        <div id="sportscore-details" style="margin-top:12px; padding:10px; border-radius:8px; border:1px solid #334155; background:#0b1120; color:#cbd5e1; font-size:12px;">SportScore: selected match details will load when available.</div>
+
         <div id="post-toss-area" style="display:none; margin-top:15px; padding: 10px; border-radius: 8px; border: 1px solid #00ffcc; background: #0b1120;">
             <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">🎯 Post-Toss Prediction & Impact</p>
             <div id="prediction-result" style="color:white; text-align:center; font-weight:bold;"></div>
@@ -1587,7 +1589,162 @@ function renderMatches(matches) {
 // ==========================================
 // MAIN PREDICTION MODAL LOGIC
 // ==========================================
+
+let sportScoreFixtureCache = new Map();
+let sportScoreDetailCache = new Map();
+const SPORT_SCORE_CACHE_TTL_MS = 10 * 60 * 1000;
+
+function sportScoreTeamKey(value) {
+    return String(value || "").toLowerCase()
+        .replace(/\\b(women|woman|w)\\b/g, " ")
+        .replace(/[^a-z0-9]/g, "");
+}
+
+function sportScoreUnwrapList(payload) {
+    if (Array.isArray(payload)) return payload;
+    for (const key of ["fixtures", "matches", "data", "results", "items"]) {
+        if (Array.isArray(payload?.[key])) return payload[key];
+        if (Array.isArray(payload?.data?.[key])) return payload.data[key];
+    }
+    return [];
+}
+
+function sportScoreTeamName(value) {
+    if (typeof value === "string") return value;
+    return String(value?.name || value?.title || value?.shortName || value?.teamName || "");
+}
+
+async function getSportScoreFixtureList(dateIso) {
+    const cached = sportScoreFixtureCache.get(dateIso);
+    if (cached && Date.now() - cached.at < SPORT_SCORE_CACHE_TTL_MS) return cached.items;
+    const url = new URL("https://sportscore.com/api/v1/fixtures/");
+    url.searchParams.set("sport", "cricket");
+    url.searchParams.set("date", dateIso);
+    url.searchParams.set("limit", "200");
+    url.searchParams.set("src", "cricket-ai-predictor");
+    const response = await fetch(url.toString(), { method: "GET" });
+    if (!response.ok) throw new Error("SportScore fixtures HTTP " + response.status);
+    const payload = await response.json();
+    const items = sportScoreUnwrapList(payload);
+    if (!items.length) throw new Error("SportScore fixture list is empty or has an unknown response shape");
+    sportScoreFixtureCache.set(dateIso, { at: Date.now(), items });
+    return items;
+}
+
+function findSportScoreFixture(items, team1, team2) {
+    const a = sportScoreTeamKey(team1), b = sportScoreTeamKey(team2);
+    const matches = items.filter(item => {
+        const home = sportScoreTeamKey(sportScoreTeamName(item.home || item.homeTeam || item.team1));
+        const away = sportScoreTeamKey(sportScoreTeamName(item.away || item.awayTeam || item.team2));
+        return (home === a && away === b) || (home === b && away === a);
+    });
+    return matches.length === 1 ? matches[0] : null;
+}
+
+function sportScoreToss(detail, team1, team2) {
+    const candidates = [detail?.toss, detail?.tossInfo, detail?.toss_info];
+    let winner = detail?.tossWinner || detail?.toss_winner || detail?.tossWonBy;
+    let decision = detail?.tossChoice || detail?.tossDecision || detail?.toss_decision;
+    for (const item of candidates) {
+        if (item && typeof item === "object") {
+            winner = winner || item.winner || item.tossWinner || item.toss_winner;
+            decision = decision || item.decision || item.choice || item.tossDecision;
+        }
+    }
+    winner = sportScoreTeamName(winner).trim();
+    decision = String(decision || "").toLowerCase().trim();
+    if (["bat", "batting", "elected to bat"].includes(decision)) decision = "bat";
+    else if (["field", "bowling", "bowl", "fielding", "elected to field", "elected to bowl"].includes(decision)) decision = "field";
+    else return null;
+    if (![team1, team2].some(team => sportScoreTeamKey(team) === sportScoreTeamKey(winner))) return null;
+    const canonicalWinner = [team1, team2].find(team => sportScoreTeamKey(team) === sportScoreTeamKey(winner));
+    return canonicalWinner ? { winner: canonicalWinner, decision } : null;
+}
+
+function sportScoreSummary(detail, fixture) {
+    const status = detail?.status_text || detail?.statusText || detail?.status?.description ||
+        detail?.status?.name || detail?.status || fixture?.status_text || fixture?.statusText ||
+        fixture?.status?.description || fixture?.status || "";
+    const venueValue = detail?.venue || detail?.ground || fixture?.venue || fixture?.ground || "";
+    const venue = sportScoreTeamName(venueValue) || String(venueValue || "");
+    const scoreValue = detail?.score || detail?.scorecard || detail?.innings ||
+        fixture?.score || fixture?.home_score || "";
+    let score = "";
+    if (typeof scoreValue === "string" || typeof scoreValue === "number") score = String(scoreValue);
+    else if (Array.isArray(scoreValue)) {
+        score = scoreValue.slice(0, 2).map(x => {
+            const runs = x?.runs ?? x?.r;
+            const wickets = x?.wickets ?? x?.w;
+            const overs = x?.overs ?? x?.o;
+            return runs == null ? "" : `${runs}/${wickets ?? "-"}${overs == null ? "" : " (" + overs + " ov)"}`;
+        }).filter(Boolean).join(" · ");
+    } else if (scoreValue && typeof scoreValue === "object") {
+        score = String(scoreValue.display || scoreValue.summary || scoreValue.text || "");
+    }
+    const lineups = detail?.lineups || detail?.lineup || detail?.playingXI || detail?.playing_xi;
+    const lineupCount = Array.isArray(lineups) ? lineups.length :
+        (lineups && typeof lineups === "object" ? Object.keys(lineups).length : 0);
+    return [status && "Status: " + status, score && "Score: " + score,
+        venue && "Ground: " + venue, lineupCount && "Line-up groups: " + lineupCount]
+        .filter(Boolean).join(" | ");
+}
+
+async function loadSportScoreSelectedMatch(team1, team2, startTime) {
+    const panel = document.getElementById("sportscore-details");
+    if (!panel) return;
+    panel.textContent = "SportScore: selected match ki extra details check ho rahi hain...";
+    try {
+        const instant = Number(startTime) > 0 ? new Date(Number(startTime) * 1000) : new Date();
+        const dateIso = instant.toISOString().slice(0, 10);
+        const fixtures = await getSportScoreFixtureList(dateIso);
+        const fixture = findSportScoreFixture(fixtures, team1, team2);
+        if (!fixture) {
+            panel.textContent = "SportScore: is selected match ka exact fixture match nahi mila; existing prediction unchanged hai.";
+            return;
+        }
+        const slug = fixture.slug || fixture.match_slug || fixture.matchSlug;
+        if (!slug) {
+            panel.textContent = "SportScore: fixture mil gaya, lekin detail slug available nahi; existing prediction unchanged hai.";
+            return;
+        }
+        let detail = sportScoreDetailCache.get(slug);
+        if (!detail) {
+            const url = new URL("https://sportscore.com/api/v1/match/");
+            url.searchParams.set("sport", "cricket");
+            url.searchParams.set("slug", slug);
+            url.searchParams.set("src", "cricket-ai-predictor");
+            const response = await fetch(url.toString(), { method: "GET" });
+            if (!response.ok) throw new Error("SportScore match detail HTTP " + response.status);
+            const payload = await response.json();
+            detail = payload?.match || payload?.data?.match || payload?.data || payload?.detail || payload;
+            sportScoreDetailCache.set(slug, detail);
+        }
+        const summary = sportScoreSummary(detail, fixture);
+        const toss = sportScoreToss(detail, team1, team2);
+        if (toss) {
+            const winnerSelect = document.getElementById("toss-winner");
+            const decisionSelect = document.getElementById("toss-decision");
+            if (winnerSelect) winnerSelect.value = toss.winner;
+            if (decisionSelect) decisionSelect.value = toss.decision;
+            const preDiv = document.getElementById("pre-toss-result");
+            if (preDiv) {
+                const note = document.createElement("p");
+                note.style.cssText = "color:#22c55e;font-size:11px;margin-top:5px;";
+                note.textContent = "SportScore verified toss: " + toss.winner + " won and elected to " + (toss.decision === "bat" ? "bat" : "field") + ".";
+                preDiv.appendChild(note);
+            }
+        }
+        panel.textContent = "SportScore details (selected match): " +
+            (summary || "detail received; no supported score/status/venue fields were present.") +
+            (toss ? " | Toss verified." : " | Toss not supplied by this response; no toss was inferred.");
+    } catch (error) {
+        panel.textContent = "SportScore details unavailable (" + String(error?.message || "request failed") +
+            "). Existing prediction remains available.";
+    }
+}
+
 async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '', venueMeta = {}, matchContext = {}, predictionData = {}) {
+    loadSportScoreSelectedMatch(t1, t2, startTime);
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
