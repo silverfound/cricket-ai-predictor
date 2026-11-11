@@ -128,11 +128,12 @@ def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision,gender='male'
         # the LightGBM artifact was trained with 11 and rejected inference.
         def model_input(model, frame, label):
             names=getattr(model,"feature_names_",None)
-            if not names and hasattr(model,"feature_name_"):
-                names=model.feature_name_
-            if not names and hasattr(model,"feature_name"):
-                names=model.feature_name()
-            if not names:
+            if names is None or len(names)==0:
+                names=getattr(model,"feature_name_",None)
+            if names is None or len(names)==0:
+                method=getattr(model,"feature_name",None)
+                names=method() if callable(method) else None
+            if names is None or len(names)==0:
                 raise ValueError(f"{label} artifact does not expose its training feature names")
             names=list(names)
             missing=[name for name in names if name not in frame.columns]
