@@ -100,12 +100,23 @@ def audit_highlightly() -> None:
         return
     today = datetime.now(timezone.utc).date().isoformat()
     headers = {"x-rapidapi-key": key}
+    api_base = "https://cricket.highlightly.net"
     try:
         response = requests.get(
-            "https://cricket.highlightly.net/matches",
+            api_base + "/matches",
             params={"date": today, "limit": 100, "offset": 0},
             headers=headers, timeout=TIMEOUT,
         )
+        print(f"HIGHLIGHTLY_DIRECT_HTTP={response.status_code}")
+        if response.status_code in (401, 403):
+            api_base = "https://cricket-highlights-api.p.rapidapi.com"
+            headers["x-rapidapi-host"] = "cricket-highlights-api.p.rapidapi.com"
+            response = requests.get(
+                api_base + "/matches",
+                params={"date": today, "limit": 100, "offset": 0},
+                headers=headers, timeout=TIMEOUT,
+            )
+            print(f"HIGHLIGHTLY_RAPIDAPI_HTTP={response.status_code}")
     except requests.RequestException as exc:
         print("HIGHLIGHTLY_MATCHES_ERROR=" + type(exc).__name__)
         return
@@ -142,7 +153,7 @@ def audit_highlightly() -> None:
         print(f"HIGHLIGHTLY_ACTIVE_MATCH={home} vs {away}; format={fixture.get('format')}; state={state.get('description')}; id={match_id}")
         try:
             detail_response = requests.get(
-                f"https://cricket.highlightly.net/matches/{match_id}",
+                f"{api_base}/matches/{match_id}",
                 headers=headers, timeout=TIMEOUT,
             )
         except requests.RequestException as exc:
