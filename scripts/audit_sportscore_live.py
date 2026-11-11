@@ -53,7 +53,10 @@ def fixture_slug(item: dict) -> str:
     # Current fixture response can expose the match-page URL instead of slug.
     page_url = str(item.get("url") or "").strip()
     if page_url:
-        path = urlsplit(page_url).path.strip("/")
+        parsed = urlsplit(page_url)
+        if parsed.netloc and parsed.hostname != "sportscore.com":
+            return ""
+        path = parsed.path.strip("/")
         if path:
             return path.split("/")[-1]
     return ""
