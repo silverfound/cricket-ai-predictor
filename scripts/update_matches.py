@@ -201,8 +201,8 @@ def main():
             payload=r.json()
             response=payload.get('response') if isinstance(payload,dict) else None
             first_items=response.get('items') if isinstance(response,dict) else None
-            if not isinstance(first_items,list) or not first_items:
-                raise ValueError('primary response missing non-empty response.items')
+            if not isinstance(first_items,list) or not first_items or not all(isinstance(item,dict) for item in first_items):
+                raise ValueError('primary response missing a valid non-empty response.items list')
             total_pages=int(response.get('total_pages') or 1)
             expected_total=int(response.get('total_items') or len(first_items))
             if total_pages<1 or total_pages>2:
@@ -215,8 +215,8 @@ def main():
                 payload2=r2.json()
                 response2=payload2.get('response') if isinstance(payload2,dict) else None
                 second_items=response2.get('items') if isinstance(response2,dict) else None
-                if not isinstance(second_items,list):
-                    raise ValueError('primary page 2 missing response.items list')
+                if not isinstance(second_items,list) or not all(isinstance(item,dict) for item in second_items):
+                    raise ValueError('primary page 2 missing a valid response.items list')
                 if int(response2.get('total_pages') or 1)!=total_pages or int(response2.get('total_items') or expected_total)!=expected_total:
                     raise ValueError('primary pagination metadata changed between pages')
                 items.extend(second_items)
