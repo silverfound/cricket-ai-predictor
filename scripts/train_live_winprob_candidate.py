@@ -18,7 +18,10 @@ import pandas as pd
 import requests
 from lightgbm import LGBMClassifier
 from sklearn.isotonic import IsotonicRegression
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, roc_auc_score
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
 DOWNLOAD_URL = "https://api.tigzig.com/cricket/v1/download/cricket_all_tables.duckdb.zip"
 START_DATE = "2024-01-01"
@@ -31,6 +34,11 @@ FEATURES = [
     "current_run_rate", "required_run_rate", "runs_needed", "target_runs",
 ]
 CATEGORICAL = ["gender", "team_type", "batting_team", "bowling_team"]
+STATE_ONLY_FEATURES = [
+    "innings", "runs_scored", "wickets_lost", "legal_balls",
+    "scheduled_balls", "balls_remaining", "wickets_left",
+    "current_run_rate", "required_run_rate", "runs_needed", "target_runs",
+]
 
 
 SQL = f"""
@@ -255,6 +263,8 @@ def main() -> int:
     all_test_labels = []
     all_test_base_probabilities = []
     all_test_calibrated_probabilities = []
+    all_test_baseline_probabilities = []
+    release_gate_by_format = {}
 
     for match_type in ("T20", "ODI"):
         train_fmt = train[train["match_type"] == match_type].copy()
@@ -303,9 +313,49 @@ def main() -> int:
 
         test_probabilities = model.predict_proba(x_test)[:, 1]
         calibrated_probabilities = calibrator.predict(test_probabilities)
+
+        # Same chronological split and same 2025 calibration window for a
+        # state-only logistic baseline without team identity features.
+        baseline = make_pipeline(
+            StandardScaler(),
+            LogisticRegression(max_iter=1000, C=1.0, solver="lbfgs"),
+        )
+        baseline.fit(train_fmt[STATE_ONLY_FEATURES], y_train)
+        baseline_calibration_probabilities = baseline.predict_proba(
+            calibration_fmt[STATE_ONLY_FEATURES]
+        )[:, 1]
+        baseline_calibrator = IsotonicRegression(
+            out_of_bounds="clip", y_min=0.001, y_max=0.999
+        )
+        baseline_calibrator.fit(baseline_calibration_probabilities, y_cal)
+        baseline_test_probabilities = baseline.predict_proba(
+            test_fmt[STATE_ONLY_FEATURES]
+        )[:, 1]
+        baseline_calibrated_probabilities = baseline_calibrator.predict(
+            baseline_test_probabilities
+        )
+
+        candidate_test_metrics = metric_block(y_test.to_numpy(), calibrated_probabilities)
+        baseline_test_metrics = metric_block(y_test.to_numpy(), baseline_calibrated_probabilities)
+        gate = {
+            "brier_improved": candidate_test_metrics["brier_score"] < baseline_test_metrics["brier_score"],
+            "log_loss_improved": candidate_test_metrics["log_loss"] < baseline_test_metrics["log_loss"],
+            "roc_auc_not_materially_worse": (
+                candidate_test_metrics["roc_auc"] is not None
+                and baseline_test_metrics["roc_auc"] is not None
+                and candidate_test_metrics["roc_auc"] >= baseline_test_metrics["roc_auc"] - 0.005
+            ),
+            "accuracy_not_materially_worse": (
+                candidate_test_metrics["accuracy"] >= baseline_test_metrics["accuracy"] - 0.01
+            ),
+        }
+        gate["passed"] = all(gate.values())
+        release_gate_by_format[match_type] = gate
+
         all_test_labels.append(y_test.to_numpy())
         all_test_base_probabilities.append(test_probabilities)
         all_test_calibrated_probabilities.append(calibrated_probabilities)
+        all_test_baseline_probabilities.append(baseline_calibrated_probabilities)
 
         # One end-of-phase snapshot per match/innings avoids letting long
         # innings dominate evaluation simply because they contain more balls.
@@ -348,17 +398,25 @@ def main() -> int:
             "counts": format_counts,
             "test_2026": {
                 "uncalibrated": metric_block(y_test.to_numpy(), test_probabilities),
-                "isotonic_calibrated": metric_block(y_test.to_numpy(), calibrated_probabilities),
+                "isotonic_calibrated": candidate_test_metrics,
+                "state_only_baseline": {
+                    "uncalibrated": metric_block(y_test.to_numpy(), baseline_test_probabilities),
+                    "isotonic_calibrated": baseline_test_metrics,
+                },
             },
+            "release_gate": gate,
         }
         phase_metrics_by_format[match_type] = phase_metrics
         models[match_type] = model
         calibrators[match_type] = calibrator
         categories_by_format[match_type] = category_map
+        models.setdefault("_state_only_baselines", {})[match_type] = baseline
+        models.setdefault("_state_only_calibrators", {})[match_type] = baseline_calibrator
 
     combined_labels = np.concatenate(all_test_labels)
     combined_base_probabilities = np.concatenate(all_test_base_probabilities)
     combined_calibrated_probabilities = np.concatenate(all_test_calibrated_probabilities)
+    combined_baseline_probabilities = np.concatenate(all_test_baseline_probabilities)
     metrics = {
         "source": "TigZig open cricket database, derived from Cricsheet",
         "source_license": "ODC-BY-1.0",
@@ -378,8 +436,13 @@ def main() -> int:
         "test_2026": {
             "uncalibrated": metric_block(combined_labels, combined_base_probabilities),
             "isotonic_calibrated": metric_block(combined_labels, combined_calibrated_probabilities),
+            "state_only_baseline": metric_block(combined_labels, combined_baseline_probabilities),
         },
         "test_2026_by_format": format_metrics,
+        "release_gate_by_format": release_gate_by_format,
+        "candidate_supported_formats": [
+            fmt for fmt, gate in release_gate_by_format.items() if gate["passed"]
+        ],
         "test_2026_phase_snapshots_by_format": phase_metrics_by_format,
         "phase_snapshot_method": "last available delivery in each early (0-25%), middle (25-75%), and late (75-100%) phase, once per match and innings",
         "production_status": "RESEARCH_ONLY_NOT_APPROVED",
@@ -396,7 +459,12 @@ def main() -> int:
         "test_year": 2026,
         "source": "TigZig/Cricsheet",
         "source_license": "ODC-BY-1.0",
-        "supported_formats": ["T20", "ODI"],
+        "supported_formats": [
+            fmt for fmt, gate in release_gate_by_format.items() if gate["passed"]
+        ],
+        "experimental_formats": [
+            fmt for fmt, gate in release_gate_by_format.items() if not gate["passed"]
+        ],
         "production_approved": False,
     }
     joblib.dump(bundle, OUTPUT_DIR / "live_winprob_candidate.joblib")
@@ -406,6 +474,7 @@ def main() -> int:
     print("TEST_2026_METRICS=" + json.dumps(metrics["test_2026"], sort_keys=True))
     print("TEST_2026_BY_FORMAT=" + json.dumps(metrics["test_2026_by_format"], sort_keys=True))
     print("TEST_2026_PHASE_BY_FORMAT=" + json.dumps(metrics["test_2026_phase_snapshots_by_format"], sort_keys=True))
+    print("RELEASE_GATE_BY_FORMAT=" + json.dumps(metrics["release_gate_by_format"], sort_keys=True))
     print("RESEARCH_ARTIFACTS=live_model_research")
     print("PRODUCTION_STATUS=UNCHANGED")
     return 0
