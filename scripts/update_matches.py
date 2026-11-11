@@ -8,11 +8,11 @@ import joblib, numpy as np, pandas as pd, requests
 # Support both direct script execution (python scripts/update_matches.py) and
 # package execution/imports (python -m scripts.update_matches).
 try:
-    from scripts.prediction_formats import match_type, elo_win_probability, is_t10_format
+    from scripts.prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
-    from prediction_formats import match_type, elo_win_probability, is_t10_format
+    from prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 API_KEY=os.environ.get("RAPIDAPI_KEY")
 if not API_KEY: raise SystemExit("RAPIDAPI_KEY GitHub Actions secret is missing.")
 MODELS=joblib.load("cricket_ensemble_modern.joblib")
@@ -104,7 +104,8 @@ def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision,gender='male'
     e1,e2=get_elo(t1),get_elo(t2); toss_t1=1 if toss_winner==t1 else 0
     # T10 has no dedicated training data/artifact in this repository. Keep it
     # out of the T20 ensemble and use a clearly disclosed Elo-only estimate.
-    if is_t10_format(fmt):
+    if is_t10_format(fmt) or str(fmt).strip().casefold() == "unknown":
+        # Never route unsupported formats through the T20-trained ensemble.
         elo_p1=elo_win_probability(e1,e2)
         return elo_p1,1.0-elo_p1,True
     venue_clean=str(venue).split(',')[0].strip()
@@ -142,10 +143,11 @@ def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision,gender='male'
         cat_model=MODELS['cat']; lgb_model=MODELS['lgb']
         cat_frame=model_input(cat_model,df,"CatBoost")
         lgb_frame=model_input(lgb_model,df,"LightGBM")
-        cp=cat_model.predict_proba(cat_frame)[0]
-        lp=lgb_model.predict_proba(lgb_frame)[0]
-        probs=(cp+lp)/2.0
-        return float(probs[1]),float(probs[0]),False
+        cat_p1,cat_p0=binary_class_probabilities(cat_model,cat_frame)
+        lgb_p1,lgb_p0=binary_class_probabilities(lgb_model,lgb_frame)
+        p1=(cat_p1+lgb_p1)/2.0
+        p0=(cat_p0+lgb_p0)/2.0
+        return float(p1),float(p0),False
     except Exception as exc:
         print(f"Fallback model inference: {type(exc).__name__}")
         exp=1/(1+10**((e2-e1)/400))
