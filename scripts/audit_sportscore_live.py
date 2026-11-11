@@ -176,6 +176,48 @@ def main() -> int:
                 value = match_detail[key]
                 if isinstance(value, (str, int, float, bool, list, dict)):
                     print(f"SPORTSCORE_MATCH_DETAIL_{key.upper()}={str(value)[:500]}")
+    # Probe the documented tracker endpoint only when the detail supplies a numeric ID.
+    tracker_id = None
+    if isinstance(match_detail, dict):
+        for key in ("id", "match_id", "matchId", "tracker_id"):
+            value = match_detail.get(key)
+            if value is not None and str(value).strip().isdigit():
+                tracker_id = str(value).strip()
+                break
+        tracker_value = match_detail.get("tracker")
+        if tracker_id is None and isinstance(tracker_value, dict):
+            for key in ("id", "match_id", "matchId"):
+                value = tracker_value.get(key)
+                if value is not None and str(value).strip().isdigit():
+                    tracker_id = str(value).strip()
+                    break
+        print("SPORTSCORE_TRACKER_FIELD=" + str(tracker_value)[:500])
+    print("SPORTSCORE_TRACKER_ID=" + (tracker_id or "NOT_PROVIDED"))
+    if tracker_id:
+        try:
+            tracker_response = requests.get(
+                f"{BASE}/tracker/",
+                params={"sport": "cricket", "id": tracker_id,
+                        "src": "cricket-ai-predictor"},
+                timeout=TIMEOUT,
+            )
+            print(f"SPORTSCORE_TRACKER_HTTP={tracker_response.status_code}")
+            if tracker_response.status_code == 200:
+                tracker_payload = tracker_response.json()
+                print("SPORTSCORE_TRACKER_ROOT_KEYS=" +
+                      ",".join(sorted(tracker_payload.keys())[:50])
+                      if isinstance(tracker_payload, dict) else
+                      "SPORTSCORE_TRACKER_ROOT_TYPE=" + type(tracker_payload).__name__)
+                tracker_arrays = find_event_arrays(tracker_payload)
+                for item in tracker_arrays[:20]:
+                    print("SPORTSCORE_TRACKER_EVENT_ARRAY=" + str(item))
+                print("SPORTSCORE_TRACKER_DELIVERY_ARRAYS=" +
+                      str(sum(1 for item in tracker_arrays if item["delivery_like"])))
+        except (requests.RequestException, ValueError) as exc:
+            print("SPORTSCORE_TRACKER_ERROR=" + type(exc).__name__)
+    else:
+        print("SPORTSCORE_TRACKER_STATUS=SKIPPED_NO_NUMERIC_MATCH_ID")
+
     candidates = find_event_arrays(detail_payload)
     for item in candidates[:25]:
         print("SPORTSCORE_EVENT_ARRAY=" + str(item))
@@ -184,6 +226,33 @@ def main() -> int:
     print("SPORTSCORE_BALL_BY_BALL_STATUS=" +
           ("PRESENT_CANDIDATE_REQUIRES_SEMANTIC_VALIDATION" if actual else
            "NOT_FOUND_IN_SELECTED_DETAIL"))
+    # Probe anonymous access; docs do not guarantee that this account has a free key.
+    try:
+        live_response = requests.get(
+            "https://api.cricketdatabase.com/v1/live",
+            timeout=TIMEOUT,
+            headers={"Accept": "application/json"},
+        )
+        print(f"CRICKETDATABASE_LIVE_HTTP={live_response.status_code}")
+        if live_response.status_code == 200:
+            live_payload = live_response.json()
+            live_data = live_payload.get("data", {}) if isinstance(live_payload, dict) else {}
+            live_rows = live_data.get("results", []) if isinstance(live_data, dict) else []
+            print(f"CRICKETDATABASE_LIVE_COUNT={len(live_rows) if isinstance(live_rows, list) else 0}")
+            if isinstance(live_rows, list) and live_rows:
+                sample_live = next((row for row in live_rows if isinstance(row, dict)), {})
+                print("CRICKETDATABASE_LIVE_MATCH_KEYS=" +
+                      ",".join(sorted(sample_live.keys())[:60]))
+                print("CRICKETDATABASE_LIVE_BALL_BY_BALL_TRUE=" +
+                      str(sum(1 for row in live_rows if isinstance(row, dict)
+                              and row.get("ball_by_ball") is True)))
+                print("CRICKETDATABASE_LIVE_SAMPLE_MATCH=" +
+                      str(sample_live.get("match") or "NOT_PROVIDED"))
+        else:
+            print("CRICKETDATABASE_LIVE_ACCESS=NOT_PUBLIC_WITHOUT_KEY")
+    except (requests.RequestException, ValueError) as exc:
+        print("CRICKETDATABASE_LIVE_ERROR=" + type(exc).__name__)
+
     print("SPORTSCORE_AUDIT=READ_ONLY_COMPLETE")
     return 0
 
