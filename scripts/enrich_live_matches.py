@@ -6,7 +6,12 @@ import json
 import os
 from pathlib import Path
 
-from scripts.highlightly_live_model import enrich_live_predictions
+try:
+    from scripts.highlightly_live_model import enrich_live_predictions
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from highlightly_live_model import enrich_live_predictions
 
 SNAPSHOT = Path("data/matches.json")
 
