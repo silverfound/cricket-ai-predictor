@@ -33,7 +33,6 @@ jobs:
           python scripts/audit_prediction_models.py
           python scripts/chronological_elo_backtest.py
           node --check script.js
-          node --check live_model_ui.js
           test "$(git hash-object cricket_ensemble_modern.joblib)" = "e6d7ba073174ddbafaa504c090702483063649a2"
           test "$(git hash-object latest_elo_ratings.joblib)" = "ba9b707b9bb4915e812fd3b310616059154b0bf5"
           test "$(git hash-object category_mappings.joblib)" = "682ae8a0568d4c2a88282ca78f5785ca0f761b7e"
@@ -53,28 +52,12 @@ jobs:
           cache: pip
       - name: Install model runtime
         run: python -m pip install -r requirements.txt
-      - name: Retrieve latest validated T20/ODI live-model bundle
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          set -euo pipefail
-          run_id="$(gh run list --workflow live-winprob-research.yml --status success --limit 20 --json databaseId --jq '.[0].databaseId // empty')"
-          test -n "$run_id"
-          mkdir -p /tmp/live-model data
-          gh run download "$run_id" --name live-winprob-research-2024-2026 --dir /tmp/live-model
-          test -s /tmp/live-model/live_winprob_browser.json
-          cp /tmp/live-model/live_winprob_browser.json data/live_winprob_browser.json
-          python -c "import json; p=json.load(open('data/live_winprob_browser.json')); assert {'T20','ODI'} <= set(p['supported_formats']); print('LIVE_MODEL_BUNDLE=READY formats='+','.join(p['supported_formats']))"
       - name: Fetch all allowed provider pages and compute prediction snapshots
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           CRICKETDATA_API_KEY: ${{ secrets.CRICKETDATA_API_KEY }}
           SECONDARY_API_KEY: ${{ secrets.SECONDARY_API_KEY }}
         run: python scripts/update_matches.py
-      - name: Generate Highlightly live win-probability snapshots
-        env:
-          SECONDARY_API_KEY: ${{ secrets.SECONDARY_API_KEY }}
-        run: python scripts/enrich_live_matches.py
       - name: Check generated snapshot, frontend, and immutable model files
         run: |
           test -s data/matches.json
@@ -89,7 +72,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site/data
-          cp index.html script.js live_model_ui.js manifest.json _site/
+          cp index.html script.js manifest.json _site/
           cp data/matches.json _site/data/matches.json
           cp data/grounds.json _site/data/grounds.json
           touch _site/.nojekyll
