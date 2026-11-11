@@ -29,4 +29,4 @@ jobs:
       - name: Audit free Cricsheet ball-by-ball history
         run: python scripts/audit_free_ball_data.py
       - name: Mark final provider probe revision
-        run: echo FINAL_PROVIDER_PROBE_V3=1
+        run: echo FINAL_PROVIDER_PROBE_V4=1
