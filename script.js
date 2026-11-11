@@ -1709,10 +1709,15 @@ function sportScoreSummary(detail, fixture) {
     } else if (scoreValue && typeof scoreValue === "object") {
         score = String(scoreValue.display || scoreValue.summary || scoreValue.text || "");
     }
-    if (!score && (fixture?.home_score != null || fixture?.away_score != null)) {
+    if (score.trim() === "-" || score.trim() === "—") score = "";
+    const homeScore = detail?.home_score ?? fixture?.home_score;
+    const awayScore = detail?.away_score ?? fixture?.away_score;
+    const hasHomeScore = homeScore != null && !["", "-", "—", "N/A"].includes(String(homeScore).trim().toUpperCase());
+    const hasAwayScore = awayScore != null && !["", "-", "—", "N/A"].includes(String(awayScore).trim().toUpperCase());
+    if (!score && (hasHomeScore || hasAwayScore)) {
         const home = sportScoreTeamName(fixture?.home) || "Home";
         const away = sportScoreTeamName(fixture?.away) || "Away";
-        score = `${home} ${fixture?.home_score ?? "-"} - ${away} ${fixture?.away_score ?? "-"}`;
+        score = `${home} ${hasHomeScore ? homeScore : "-"} - ${away} ${hasAwayScore ? awayScore : "-"}`;
     }
     const lineups = detail?.lineups || detail?.lineup || detail?.playingXI || detail?.playing_xi;
     const lineupCount = Array.isArray(lineups) ? lineups.length :
