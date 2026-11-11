@@ -25,12 +25,12 @@ START_DATE = "2024-01-01"
 END_DATE_EXCLUSIVE = "2027-01-01"
 OUTPUT_DIR = Path("live_model_research")
 FEATURES = [
-    "match_type", "gender", "team_type", "batting_team", "bowling_team",
+    "gender", "team_type", "batting_team", "bowling_team",
     "innings", "runs_scored", "wickets_lost", "legal_balls",
     "scheduled_balls", "balls_remaining", "wickets_left",
     "current_run_rate", "required_run_rate", "runs_needed", "target_runs",
 ]
-CATEGORICAL = ["match_type", "gender", "team_type", "batting_team", "bowling_team"]
+CATEGORICAL = ["gender", "team_type", "batting_team", "bowling_team"]
 
 
 SQL = f"""
@@ -247,84 +247,128 @@ def main() -> int:
     if any(frame["label"].nunique() != 2 for frame in (train, calibration, test)):
         raise RuntimeError("A chronological partition does not contain both outcome classes")
 
-    category_map = encode_categories(train, calibration, test)
-    x_train, y_train = train[FEATURES], train["label"]
-    x_cal, y_cal = calibration[FEATURES], calibration["label"]
-    x_test, y_test = test[FEATURES], test["label"]
+    models = {}
+    calibrators = {}
+    categories_by_format = {}
+    format_metrics = {}
+    phase_metrics_by_format = {}
+    all_test_labels = []
+    all_test_base_probabilities = []
+    all_test_calibrated_probabilities = []
 
-    model = LGBMClassifier(
-        objective="binary",
-        n_estimators=350,
-        learning_rate=0.04,
-        num_leaves=31,
-        min_child_samples=150,
-        subsample=0.85,
-        colsample_bytree=0.85,
-        reg_lambda=2.0,
-        random_state=42,
-        n_jobs=2,
-        verbosity=-1,
-    )
-    print("MODEL_TRAINING=START")
-    model.fit(x_train, y_train, categorical_feature=CATEGORICAL)
-
-    calibration_probabilities = model.predict_proba(x_cal)[:, 1]
-    calibrator = IsotonicRegression(out_of_bounds="clip", y_min=0.001, y_max=0.999)
-    calibrator.fit(calibration_probabilities, y_cal)
-
-    test_probabilities = model.predict_proba(x_test)[:, 1]
-    calibrated_probabilities = calibrator.predict(test_probabilities)
-
-    # One end-of-phase snapshot per match/innings avoids letting long innings
-    # dominate the evaluation merely because they contain more deliveries.
-    phase_eval = test.copy()
-    phase_eval["uncalibrated_probability"] = test_probabilities
-    phase_eval["calibrated_probability"] = calibrated_probabilities
-    phase_eval["progress_ratio"] = (
-        phase_eval["legal_balls"] / phase_eval["scheduled_balls"]
-    ).clip(lower=0.0, upper=1.0)
-    phase_eval["phase"] = pd.cut(
-        phase_eval["progress_ratio"],
-        bins=[0.0, 0.25, 0.75, 1.000001],
-        labels=["early", "middle", "late"],
-        include_lowest=True,
-    )
-    phase_snapshots = (
-        phase_eval.dropna(subset=["phase"])
-        .sort_values(["match_id", "innings", "legal_balls"])
-        .groupby(["match_id", "innings", "phase"], observed=True)
-        .tail(1)
-    )
-    phase_metrics = {}
-    for phase in ("early", "middle", "late"):
-        group = phase_snapshots[phase_snapshots["phase"] == phase]
-        if group.empty:
-            continue
-        y_phase = group["label"].to_numpy()
-        phase_metrics[phase] = {
-            "snapshot_rows": int(len(group)),
-            "matches": int(group["match_id"].nunique()),
-            "uncalibrated": metric_block(y_phase, group["uncalibrated_probability"].to_numpy()),
-            "isotonic_calibrated": metric_block(y_phase, group["calibrated_probability"].to_numpy()),
+    for match_type in ("T20", "ODI"):
+        train_fmt = train[train["match_type"] == match_type].copy()
+        calibration_fmt = calibration[calibration["match_type"] == match_type].copy()
+        test_fmt = test[test["match_type"] == match_type].copy()
+        format_counts = {
+            "train_2024_rows": int(len(train_fmt)),
+            "train_2024_matches": int(train_fmt["match_id"].nunique()),
+            "calibration_2025_rows": int(len(calibration_fmt)),
+            "calibration_2025_matches": int(calibration_fmt["match_id"].nunique()),
+            "test_2026_rows": int(len(test_fmt)),
+            "test_2026_matches": int(test_fmt["match_id"].nunique()),
         }
-    phase_by_format = {}
-    for (match_type, phase), group in phase_snapshots.groupby(
-        ["match_type", "phase"], observed=True
-    ):
-        key = f"{match_type}_{phase}"
-        y_group = group["label"].to_numpy()
-        phase_by_format[key] = {
-            "snapshot_rows": int(len(group)),
-            "matches": int(group["match_id"].nunique()),
-            "uncalibrated": metric_block(y_group, group["uncalibrated_probability"].to_numpy()),
-            "isotonic_calibrated": metric_block(y_group, group["calibrated_probability"].to_numpy()),
-        }
+        print(f"FORMAT_COUNTS_{match_type}=" + json.dumps(format_counts, sort_keys=True))
+        if min(len(train_fmt), len(calibration_fmt), len(test_fmt)) < 10000:
+            raise RuntimeError(f"Insufficient chronological data for {match_type}")
+        if any(frame["label"].nunique() != 2 for frame in
+               (train_fmt, calibration_fmt, test_fmt)):
+            raise RuntimeError(f"{match_type} partition does not contain both outcome classes")
 
+        category_map = encode_categories(train_fmt, calibration_fmt, test_fmt)
+        x_train, y_train = train_fmt[FEATURES], train_fmt["label"]
+        x_cal, y_cal = calibration_fmt[FEATURES], calibration_fmt["label"]
+        x_test, y_test = test_fmt[FEATURES], test_fmt["label"]
+
+        model = LGBMClassifier(
+            objective="binary",
+            n_estimators=350,
+            learning_rate=0.04,
+            num_leaves=31,
+            min_child_samples=150,
+            subsample=0.85,
+            subsample_freq=1,
+            colsample_bytree=0.85,
+            reg_lambda=2.0,
+            random_state=42,
+            n_jobs=2,
+            verbosity=-1,
+        )
+        print(f"MODEL_TRAINING_{match_type}=START")
+        model.fit(x_train, y_train, categorical_feature=CATEGORICAL)
+
+        calibration_probabilities = model.predict_proba(x_cal)[:, 1]
+        calibrator = IsotonicRegression(out_of_bounds="clip", y_min=0.001, y_max=0.999)
+        calibrator.fit(calibration_probabilities, y_cal)
+
+        test_probabilities = model.predict_proba(x_test)[:, 1]
+        calibrated_probabilities = calibrator.predict(test_probabilities)
+        all_test_labels.append(y_test.to_numpy())
+        all_test_base_probabilities.append(test_probabilities)
+        all_test_calibrated_probabilities.append(calibrated_probabilities)
+
+        # One end-of-phase snapshot per match/innings avoids letting long
+        # innings dominate evaluation simply because they contain more balls.
+        phase_eval = test_fmt.copy()
+        phase_eval["uncalibrated_probability"] = test_probabilities
+        phase_eval["calibrated_probability"] = calibrated_probabilities
+        phase_eval["progress_ratio"] = (
+            phase_eval["legal_balls"] / phase_eval["scheduled_balls"]
+        ).clip(lower=0.0, upper=1.0)
+        phase_eval["phase"] = pd.cut(
+            phase_eval["progress_ratio"],
+            bins=[0.0, 0.25, 0.75, 1.000001],
+            labels=["early", "middle", "late"],
+            include_lowest=True,
+        )
+        phase_snapshots = (
+            phase_eval.dropna(subset=["phase"])
+            .sort_values(["match_id", "innings", "legal_balls"])
+            .groupby(["match_id", "innings", "phase"], observed=True)
+            .tail(1)
+        )
+        phase_metrics = {}
+        for phase in ("early", "middle", "late"):
+            group = phase_snapshots[phase_snapshots["phase"] == phase]
+            if group.empty:
+                continue
+            y_phase = group["label"].to_numpy()
+            phase_metrics[phase] = {
+                "snapshot_rows": int(len(group)),
+                "matches": int(group["match_id"].nunique()),
+                "uncalibrated": metric_block(
+                    y_phase, group["uncalibrated_probability"].to_numpy()
+                ),
+                "isotonic_calibrated": metric_block(
+                    y_phase, group["calibrated_probability"].to_numpy()
+                ),
+            }
+
+        format_metrics[match_type] = {
+            "counts": format_counts,
+            "test_2026": {
+                "uncalibrated": metric_block(y_test.to_numpy(), test_probabilities),
+                "isotonic_calibrated": metric_block(y_test.to_numpy(), calibrated_probabilities),
+            },
+        }
+        phase_metrics_by_format[match_type] = phase_metrics
+        models[match_type] = model
+        calibrators[match_type] = calibrator
+        categories_by_format[match_type] = category_map
+
+    combined_labels = np.concatenate(all_test_labels)
+    combined_base_probabilities = np.concatenate(all_test_base_probabilities)
+    combined_calibrated_probabilities = np.concatenate(all_test_calibrated_probabilities)
     metrics = {
         "source": "TigZig open cricket database, derived from Cricsheet",
         "source_license": "ODC-BY-1.0",
         "date_window": {"start": START_DATE, "end_exclusive": END_DATE_EXCLUSIVE},
-        "format_scope": ["T20", "ODI", "IPL"],
+        "format_scope": ["T20", "ODI"],
+        "excluded_formats": {
+            "IPL": "only 219 total matches in the source window; separate model not approved",
+            "T10": "no genuine T10 delivery rows in this source",
+            "TEST": "deferred to a later phase",
+        },
         "chronological_split": {
             "train": "2024",
             "calibration": "2025",
@@ -332,33 +376,27 @@ def main() -> int:
         },
         "counts": counts,
         "test_2026": {
-            "uncalibrated": metric_block(y_test.to_numpy(), test_probabilities),
-            "isotonic_calibrated": metric_block(y_test.to_numpy(), calibrated_probabilities),
+            "uncalibrated": metric_block(combined_labels, combined_base_probabilities),
+            "isotonic_calibrated": metric_block(combined_labels, combined_calibrated_probabilities),
         },
-        "test_2026_by_format": {},
-        "test_2026_phase_snapshots": phase_metrics,
-        "test_2026_phase_snapshots_by_format": phase_by_format,
+        "test_2026_by_format": format_metrics,
+        "test_2026_phase_snapshots_by_format": phase_metrics_by_format,
         "phase_snapshot_method": "last available delivery in each early (0-25%), middle (25-75%), and late (75-100%) phase, once per match and innings",
         "production_status": "RESEARCH_ONLY_NOT_APPROVED",
     }
-    for match_type in sorted(test["match_type"].astype(str).unique()):
-        mask = test["match_type"].astype(str).to_numpy() == match_type
-        metrics["test_2026_by_format"][match_type] = {
-            "uncalibrated": metric_block(y_test.to_numpy()[mask], test_probabilities[mask]),
-            "isotonic_calibrated": metric_block(y_test.to_numpy()[mask], calibrated_probabilities[mask]),
-        }
 
     bundle = {
-        "model": model,
-        "calibrator": calibrator,
+        "models": models,
+        "calibrators": calibrators,
         "features": FEATURES,
         "categorical_features": CATEGORICAL,
-        "categories": category_map,
+        "categories": categories_by_format,
         "train_year": 2024,
         "calibration_year": 2025,
         "test_year": 2026,
         "source": "TigZig/Cricsheet",
         "source_license": "ODC-BY-1.0",
+        "supported_formats": ["T20", "ODI"],
         "production_approved": False,
     }
     joblib.dump(bundle, OUTPUT_DIR / "live_winprob_candidate.joblib")
@@ -367,7 +405,6 @@ def main() -> int:
     )
     print("TEST_2026_METRICS=" + json.dumps(metrics["test_2026"], sort_keys=True))
     print("TEST_2026_BY_FORMAT=" + json.dumps(metrics["test_2026_by_format"], sort_keys=True))
-    print("TEST_2026_PHASE_SNAPSHOTS=" + json.dumps(metrics["test_2026_phase_snapshots"], sort_keys=True))
     print("TEST_2026_PHASE_BY_FORMAT=" + json.dumps(metrics["test_2026_phase_snapshots_by_format"], sort_keys=True))
     print("RESEARCH_ARTIFACTS=live_model_research")
     print("PRODUCTION_STATUS=UNCHANGED")
