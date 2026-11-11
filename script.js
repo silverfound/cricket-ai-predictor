@@ -1333,7 +1333,7 @@ const popupHTML = `
         <p id="modal-match-name" style="color:white; font-weight:bold; font-size: 16px;"></p>
         <p id="modal-venue" style="color:#94a3b8; font-size:12px; margin-top:-10px; margin-bottom:15px;"></p>
         <div id="live-warning" style="display:none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; padding: 8px; border-radius: 6px; margin-bottom: 15px;">
-            <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match is Live! This prediction will NOT be saved for accuracy.</p>
+            <p style="color: #ef4444; margin: 0; font-size: 12px; font-weight: bold;">⚠️ Match is Live. This is a pre-match model estimate only; ball-by-ball live prediction is not connected, and this result will NOT be saved for accuracy.</p>
         </div>
         
         <div style="background: #0f172a; padding: 10px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #334155;">
@@ -1493,10 +1493,10 @@ function normalizeMatchFormat(value) {
     // Use real word boundaries: escaped "\\b" matched a literal backslash,
     // causing plain "T10" / "T20" labels to bypass their format routes.
     if (/\bt10\b|10[- ]overs?|ten[- ]overs?/.test(raw)) return "T10";
-    if (raw.includes("test") || raw.includes("first class")) return "Test";
-    if (raw.includes("odi") || raw.includes("list a")) return "ODI";
+    if (raw.includes("test") || raw.includes("first class") || raw.includes("first-class") || raw.includes("multi-day") || raw.includes("multi day")) return "Test";
+    if (raw.includes("odi") || raw.includes("list a") || raw.includes("one day") || raw.includes("50 over")) return "ODI";
     if (/\bt20\b|20[- ]overs?|twenty[- ]overs?|it20/.test(raw)) return "T20";
-    return raw ? String(value).trim() : "T20";
+    return raw ? String(value).trim() : "Unknown";
 }
 
 function renderMatches(matches) {
@@ -1509,7 +1509,7 @@ function renderMatches(matches) {
     let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
     
     matches.forEach((m, index) => {
-        let fmt = m.format_str || "T20";
+        let fmt = m.format_str || "Unknown";
         let matchType = normalizeMatchFormat(fmt);
 
         let time = new Date(m.timestamp_start * 1000).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -1557,7 +1557,7 @@ function renderMatches(matches) {
             let idx = parseInt(this.getAttribute('data-index'));
             let match = matches[idx];
             if (match) {
-                let fmt = match.format_str || "T20";
+                let fmt = match.format_str || "Unknown";
                 let matchType = normalizeMatchFormat(fmt);
                 
                 let t1 = match.teama ? match.teama.name : '';
