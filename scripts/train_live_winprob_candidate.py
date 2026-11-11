@@ -35,7 +35,7 @@ FEATURES = [
 ]
 CATEGORICAL = ["gender", "team_type", "batting_team", "bowling_team"]
 STATE_ONLY_FEATURES = [
-    "innings", "runs_scored", "wickets_lost", "legal_balls",
+    "is_women", "innings", "runs_scored", "wickets_lost", "legal_balls",
     "scheduled_balls", "balls_remaining", "wickets_left",
     "current_run_rate", "required_run_rate", "runs_needed", "target_runs",
 ]
@@ -233,6 +233,9 @@ def main() -> int:
         raise RuntimeError("No eligible T20/ODI/IPL delivery states found")
     data["match_date"] = pd.to_datetime(data["match_date"])
     data["label"] = data["label"].astype("int8")
+    data["is_women"] = (
+        data["gender"].astype(str).str.casefold().eq("female").astype("int8")
+    )
     data = data.replace([np.inf, -np.inf], np.nan)
     data = data.dropna(subset=FEATURES + ["label", "match_date"])
 
@@ -418,6 +421,17 @@ def main() -> int:
                 },
             }
 
+        gender_metrics = {}
+        for gender in sorted(test_fmt["gender"].astype(str).unique()):
+            gender_mask = test_fmt["gender"].astype(str).to_numpy() == gender
+            gender_metrics[gender] = {
+                "matches": int(test_fmt.loc[gender_mask, "match_id"].nunique()),
+                "state_only_baseline": metric_block(
+                    y_test.to_numpy()[gender_mask],
+                    baseline_calibrated_probabilities[gender_mask],
+                ),
+            }
+
         format_metrics[match_type] = {
             "counts": format_counts,
             "test_2026": {
@@ -428,6 +442,7 @@ def main() -> int:
                     "isotonic_calibrated": baseline_test_metrics,
                 },
             },
+            "test_2026_by_gender": gender_metrics,
             "release_gate": gate,
             "baseline_gate": baseline_gate,
         }
