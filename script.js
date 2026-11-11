@@ -1600,6 +1600,23 @@ function sportScoreTeamKey(value) {
         .replace(/[^a-z0-9]/g, "");
 }
 
+function sportScoreFixtureSlug(fixture) {
+    const direct = fixture?.slug || fixture?.match_slug || fixture?.matchSlug;
+    if (direct) return String(direct).trim().replace(/^\/+|\/+$/g, "");
+    const pageUrl = String(fixture?.url || "").trim();
+    if (!pageUrl) return "";
+    try {
+        const parsed = new URL(pageUrl, "https://sportscore.com");
+        if (parsed.hostname !== "sportscore.com") return "";
+        const parts = parsed.pathname.split("/").filter(Boolean);
+        const matchIndex = parts.indexOf("match");
+        if (parts[0] !== "cricket" || matchIndex < 0 || !parts[matchIndex + 1]) return "";
+        return decodeURIComponent(parts[matchIndex + 1]);
+    } catch {
+        return "";
+    }
+}
+
 function sportScoreUnwrapList(payload) {
     if (Array.isArray(payload)) return payload;
     for (const key of ["fixtures", "matches", "data", "results", "items"]) {
@@ -1679,8 +1696,7 @@ function sportScoreSummary(detail, fixture) {
         fixture?.status?.description || fixture?.status || "";
     const venueValue = detail?.venue || detail?.ground || fixture?.venue || fixture?.ground || "";
     const venue = sportScoreTeamName(venueValue) || String(venueValue || "");
-    const scoreValue = detail?.score || detail?.scorecard || detail?.innings ||
-        fixture?.score || fixture?.home_score || "";
+    const scoreValue = detail?.score ?? detail?.scorecard ?? detail?.innings ?? fixture?.score ?? null;
     let score = "";
     if (typeof scoreValue === "string" || typeof scoreValue === "number") score = String(scoreValue);
     else if (Array.isArray(scoreValue)) {
@@ -1692,6 +1708,16 @@ function sportScoreSummary(detail, fixture) {
         }).filter(Boolean).join(" · ");
     } else if (scoreValue && typeof scoreValue === "object") {
         score = String(scoreValue.display || scoreValue.summary || scoreValue.text || "");
+    }
+    if (score.trim() === "-" || score.trim() === "—") score = "";
+    const homeScore = detail?.home_score ?? fixture?.home_score;
+    const awayScore = detail?.away_score ?? fixture?.away_score;
+    const hasHomeScore = homeScore != null && !["", "-", "—", "N/A"].includes(String(homeScore).trim().toUpperCase());
+    const hasAwayScore = awayScore != null && !["", "-", "—", "N/A"].includes(String(awayScore).trim().toUpperCase());
+    if (!score && (hasHomeScore || hasAwayScore)) {
+        const home = sportScoreTeamName(fixture?.home) || "Home";
+        const away = sportScoreTeamName(fixture?.away) || "Away";
+        score = `${home} ${hasHomeScore ? homeScore : "-"} - ${away} ${hasAwayScore ? awayScore : "-"}`;
     }
     const lineups = detail?.lineups || detail?.lineup || detail?.playingXI || detail?.playing_xi;
     const lineupCount = Array.isArray(lineups) ? lineups.length :
@@ -1714,7 +1740,7 @@ async function loadSportScoreSelectedMatch(team1, team2, startTime) {
             panel.textContent = "SportScore: is selected match ka exact fixture match nahi mila; existing prediction unchanged hai.";
             return;
         }
-        const slug = fixture.slug || fixture.match_slug || fixture.matchSlug;
+        const slug = sportScoreFixtureSlug(fixture);
         if (!slug) {
             panel.textContent = "SportScore: fixture mil gaya, lekin detail slug available nahi; existing prediction unchanged hai.";
             return;
