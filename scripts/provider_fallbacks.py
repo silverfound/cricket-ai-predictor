@@ -77,6 +77,35 @@ def _normalized_fixture(match_id, team1, team2, fmt, venue, status, start, sourc
     return fixture
 
 
+
+def _toss_decision(value):
+    raw = str(value or "").strip().casefold()
+    if raw in {"bat", "batting", "elected to bat", "choose to bat"}:
+        return "bat"
+    if raw in {"bowl", "bowling", "field", "fielding", "elected to field", "elected to bowl", "choose to bowl"}:
+        return "field"
+    return ""
+
+
+def _attach_match_details(fixture, item):
+    """Copy only provider-supplied score, squad and toss fields; never infer them."""
+    if not isinstance(item, dict):
+        return fixture
+    for source, target in (("score", "score"), ("teamInfo", "team_info"),
+                           ("scorecard", "scorecard")):
+        value = item.get(source)
+        if isinstance(value, (list, dict)):
+            fixture[target] = value
+    toss_winner = item.get("tossWinner") or item.get("toss_winner")
+    toss_decision = _toss_decision(item.get("tossChoice") or item.get("tossDecision")
+                                   or item.get("toss_decision"))
+    if toss_winner:
+        fixture["toss_winner"] = _name(toss_winner)
+    if toss_decision:
+        fixture["toss_decision"] = toss_decision
+    return fixture
+
+
 def normalize_cricketdata(payload):
     if not isinstance(payload, dict) or payload.get("status") not in ("success", None):
         raise ValueError("CricketData response status is not success")
@@ -93,12 +122,13 @@ def normalize_cricketdata(payload):
         # dateTimeGMT is the provider's match start timestamp. date is only
         # a fallback; no local-time assumption is made.
         start = _timestamp(item.get("dateTimeGMT"), item.get("date"))
-        fixtures.append(_normalized_fixture(
+        fixture = _normalized_fixture(
             item.get("id"), teams[0], teams[1], item.get("matchType"),
             item.get("venue"), item.get("status"), start, "CricketData",
             {"name": item.get("name", ""), "series_id": item.get("series_id"),
              "matchStarted": item.get("matchStarted"), "matchEnded": item.get("matchEnded")}
-        ))
+        )
+        fixtures.append(_attach_match_details(fixture, item))
     fixtures = [item for item in fixtures if item]
     if not fixtures:
         raise ValueError("CricketData returned no fixtures with two valid team names")
@@ -160,3 +190,26 @@ def fetch_highlightly():
     )
     response.raise_for_status()
     return normalize_highlightly(response.json())
+
+
+
+def fetch_cricketdata_match_info(match_id):
+    """Fetch one CricketData match-info record for toss and detailed scorecard."""
+    key = os.getenv("CRICKETDATA_API_KEY", "").strip()
+    if not key:
+        raise RuntimeError("CRICKETDATA_API_KEY is not configured")
+    if not match_id:
+        raise ValueError("CricketData match ID is required")
+    response = requests.get(
+        "https://api.cricapi.com/v1/match_info",
+        params={"apikey": key, "offset": 0, "id": str(match_id)},
+        timeout=TIMEOUT,
+    )
+    response.raise_for_status()
+    payload = response.json()
+    if not isinstance(payload, dict) or payload.get("status") not in ("success", None):
+        raise ValueError("CricketData match-info response is not successful")
+    data = payload.get("data")
+    if not isinstance(data, dict):
+        raise ValueError("CricketData match-info response has no data object")
+    return data
