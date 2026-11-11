@@ -335,27 +335,22 @@ def main() -> int:
         candidate_calibrators = {}
         calibrated_probabilities = np.zeros(len(test_fmt), dtype=float)
 
-        # Same chronological split and phase-specific 2025 calibration for a
-        # state-only logistic baseline without team identity features.
-        baseline = make_pipeline(
-            StandardScaler(),
-            LogisticRegression(max_iter=1000, C=1.0, solver="lbfgs"),
-        )
-        baseline.fit(train_fmt[STATE_ONLY_FEATURES], y_train)
-        baseline_calibration_probabilities = baseline.predict_proba(
-            calibration_fmt[STATE_ONLY_FEATURES]
-        )[:, 1]
-        baseline_test_probabilities = baseline.predict_proba(
-            test_fmt[STATE_ONLY_FEATURES]
-        )[:, 1]
+        # A separate state-only logistic model for each innings phase keeps
+        # early/middle/death-over patterns from being averaged together.
+        train_phases = phase_labels(train_fmt).to_numpy()
+        baseline_models_for_format = {}
         baseline_calibrators_for_format = {}
+        baseline_test_probabilities = np.zeros(len(test_fmt), dtype=float)
         baseline_calibrated_probabilities = np.zeros(len(test_fmt), dtype=float)
 
         for phase in ("early", "middle", "late"):
+            train_mask = train_phases == phase
             calibration_mask = calibration_phases == phase
             test_mask = test_phases == phase
-            if int(calibration_mask.sum()) < 1000:
-                raise RuntimeError(f"Insufficient 2025 {phase} calibration rows for {match_type}")
+            if min(int(train_mask.sum()), int(calibration_mask.sum()), int(test_mask.sum())) < 1000:
+                raise RuntimeError(f"Insufficient {phase} rows for {match_type} chronological partitions")
+            if np.unique(y_train.to_numpy()[train_mask]).size != 2:
+                raise RuntimeError(f"2024 {match_type}/{phase} training has one class")
             if np.unique(y_cal.to_numpy()[calibration_mask]).size != 2:
                 raise RuntimeError(f"2025 {match_type}/{phase} calibration has one class")
 
@@ -368,21 +363,37 @@ def main() -> int:
             )
             candidate_calibrators[phase] = candidate_calibrator
 
+            baseline = make_pipeline(
+                StandardScaler(),
+                LogisticRegression(max_iter=1000, C=1.0, solver="lbfgs"),
+            )
+            baseline.fit(
+                train_fmt.loc[train_mask, STATE_ONLY_FEATURES],
+                y_train.to_numpy()[train_mask],
+            )
+            baseline_calibration_probabilities = baseline.predict_proba(
+                calibration_fmt.loc[calibration_mask, STATE_ONLY_FEATURES]
+            )[:, 1]
+            baseline_test_probabilities[test_mask] = baseline.predict_proba(
+                test_fmt.loc[test_mask, STATE_ONLY_FEATURES]
+            )[:, 1]
+
             baseline_calibrator = IsotonicRegression(
                 out_of_bounds="clip", y_min=0.001, y_max=0.999
             )
             baseline_calibrator.fit(
-                baseline_calibration_probabilities[calibration_mask],
+                baseline_calibration_probabilities,
                 y_cal.to_numpy()[calibration_mask],
             )
             baseline_calibrators_for_format[phase] = baseline_calibrator
+            baseline_calibrated_probabilities[test_mask] = baseline_calibrator.predict(
+                baseline_test_probabilities[test_mask]
+            )
+            baseline_models_for_format[phase] = baseline
 
             if test_mask.any():
                 calibrated_probabilities[test_mask] = candidate_calibrator.predict(
                     test_probabilities[test_mask]
-                )
-                baseline_calibrated_probabilities[test_mask] = baseline_calibrator.predict(
-                    baseline_test_probabilities[test_mask]
                 )
         sample_indices = np.linspace(
             0, len(test_fmt) - 1, num=min(12, len(test_fmt)), dtype=int
@@ -504,7 +515,7 @@ def main() -> int:
         models[match_type] = model
         calibrators[match_type] = candidate_calibrators
         categories_by_format[match_type] = category_map
-        baseline_models[match_type] = baseline
+        baseline_models[match_type] = baseline_models_for_format
         baseline_calibrators[match_type] = baseline_calibrators_for_format
 
     combined_labels = np.concatenate(all_test_labels)
