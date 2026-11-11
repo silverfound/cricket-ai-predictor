@@ -1595,6 +1595,13 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     document.getElementById('ilmi-area').style.display = 'none'; 
     window.ilmiTossBaseState = null;
     document.getElementById('toss-winner').innerHTML = `<option value="${t1}">${t1}</option><option value="${t2}">${t2}</option>`;
+    const actualToss = predictionData.actual_toss || null;
+    if (actualToss?.winner && [t1, t2].includes(actualToss.winner)) {
+        document.getElementById('toss-winner').value = actualToss.winner;
+    }
+    if (actualToss?.decision && ['bat', 'field'].includes(actualToss.decision)) {
+        document.getElementById('toss-decision').value = actualToss.decision;
+    }
 
     if (isLiveMatch) { document.getElementById('live-warning').style.display = 'block'; } 
     else { document.getElementById('live-warning').style.display = 'none'; }
@@ -1614,6 +1621,9 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         if (pred.success) {
             window.prePred = pred.predictions; 
             preDiv.innerHTML = `<div style="display:flex; justify-content:space-between;"><span style="color:#00ffcc;">${t1}: <b>${pred.predictions[modelT1]}</b></span><span style="color:#ff4d4d;">${t2}: <b>${pred.predictions[modelT2]}</b></span></div>`;
+            if (actualToss?.winner && actualToss?.decision) {
+                preDiv.innerHTML += `<p style="color:#22c55e;font-size:11px;margin-top:5px;">Verified provider toss: ${actualToss.winner} won and elected to ${actualToss.decision === 'bat' ? 'bat' : 'field'}. Post-toss controls pre-filled.</p>`;
+            }
             
             if (type === "T10" && pred.is_default) {
                 preDiv.innerHTML += `<p style="color:#fbbf24;font-size:10px;margin-top:5px;">⚠️ T10 ke liye dedicated trained AI model abhi available nahi. Yeh estimate Elo team ratings par based hai, is liye confidence limited hai.</p>`;

@@ -6,6 +6,7 @@ The production target preserves the current app UI and the four trained predicti
 - Frontend/data hosting: GitHub Pages.
 - GitHub Actions scheduled refresh: every 30 minutes (UTC; GitHub schedules can be delayed).
 - Each workflow run makes up to two RapidAPI calls to Cricket Live Line Advance, using the Actions secret `RAPIDAPI_KEY`.
+- When `CRICKETDATA_API_KEY` is configured, each scheduled refresh also makes one CricketData `currentMatches` request to enrich matching fixtures with provider-supplied live scores and team information; at most one active match-info request is attempted per run for toss/scorecard details. This is best-effort and never fabricates toss data. At the 30-minute schedule this is capped at 96 CricketData requests/day; avoid manual runs to preserve the free-tier 100-hit/day allowance.
 - Existing CatBoost/LightGBM ensemble and Elo fallback calculations are mirrored in the workflow generator. It precomputes neutral and four toss scenarios for each fixture, which the existing modal UI reads from a JSON snapshot.
 - Runs are serialized to avoid concurrent provider requests. A manual workflow dispatch consumes up to two API requests; avoid manual dispatches unless needed.
 - Scheduled maximum use: 48 runs/day × 2 pages = 96 calls/day against the 100-call/day quota; avoid manual re-runs to preserve the 4-call buffer.

@@ -70,6 +70,23 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertEqual(fixture["provider_source"], "Highlightly")
         self.assertNotIn("score", fixture)
 
+    def test_cricketdata_preserves_score_team_info_and_actual_toss(self):
+        payload = {
+            "status": "success",
+            "data": [{
+                "id": "cd-details", "matchType": "t20",
+                "teams": ["Team A", "Team B"],
+                "score": [{"r": 145, "w": 4, "o": 17.2, "inning": "Team A Inning 1"}],
+                "teamInfo": [{"name": "Team A"}, {"name": "Team B"}],
+                "tossWinner": "Team B", "tossChoice": "bowl",
+            }],
+        }
+        [fixture] = normalize_cricketdata(payload)
+        self.assertEqual(fixture["score"][0]["r"], 145)
+        self.assertEqual(fixture["team_info"][0]["name"], "Team A")
+        self.assertEqual(fixture["toss_winner"], "Team B")
+        self.assertEqual(fixture["toss_decision"], "field")
+
     def test_error_or_empty_provider_payload_is_rejected(self):
         with self.assertRaises(ValueError):
             normalize_cricketdata({"status": "failure", "data": []})
