@@ -102,7 +102,8 @@
         const wrapped = function () {
             const args = Array.from(arguments);
             const pending = original.apply(this, args);
-            renderLivePanel(Boolean(args[6]), args[13] || {});
+            const predictionData = Object.assign({}, args[13] || {}, { format: args[3] || "" });
+            renderLivePanel(Boolean(args[6]), predictionData);
             return pending;
         };
         wrapped.__liveWinprobWrapped = true;
