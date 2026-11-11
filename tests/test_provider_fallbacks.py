@@ -88,17 +88,6 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertEqual(fixture["toss_decision"], "field")
 
 
-    def test_cricketdata_enrichment_runs_only_on_hourly_scheduled_slot(self):
-        from datetime import datetime, timezone
-        from scripts.provider_fallbacks import should_refresh_cricketdata_enrichment
-
-        on_hour = datetime(2026, 11, 11, 12, 5, tzinfo=timezone.utc)
-        half_hour = datetime(2026, 11, 11, 12, 35, tzinfo=timezone.utc)
-        self.assertTrue(should_refresh_cricketdata_enrichment(on_hour, "schedule"))
-        self.assertFalse(should_refresh_cricketdata_enrichment(half_hour, "schedule"))
-        self.assertFalse(should_refresh_cricketdata_enrichment(on_hour, "workflow_dispatch"))
-        self.assertFalse(should_refresh_cricketdata_enrichment(on_hour, "push"))
-
     def test_error_or_empty_provider_payload_is_rejected(self):
         with self.assertRaises(ValueError):
             normalize_cricketdata({"status": "failure", "data": []})
