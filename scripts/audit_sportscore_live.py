@@ -181,7 +181,7 @@ def audit_highlightly() -> None:
                 print(f"HIGHLIGHTLY_SAMPLE_{label}_KEYS=" + ",".join(sorted(sample.keys())[:35]))
                 print(f"HIGHLIGHTLY_SAMPLE_{label}=" + str(sample)[:700])
         score_values = [str(home_state.get("score") or ""), str(away_state.get("score") or "")]
-        numeric_score = any(__import__("re").search(r"\\b\\d+\\s*/\\s*\\d+\\b", x) for x in score_values)
+        numeric_score = any(__import__("re").search(r"\b\d+\s*/\s*\d+\b", x) for x in score_values)
         info_values = [str(home_state.get("info") or ""), str(away_state.get("info") or "")]
         has_overs = any("ov" in x.casefold() for x in info_values)
         has_target = any("t:" in x.casefold() for x in info_values)
