@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "scripts/audit_sportscore_live.py"
+      - "scripts/audit_free_ball_data.py"
       - ".github/workflows/free-live-data-audit.yml"
   workflow_dispatch:
 permissions:
