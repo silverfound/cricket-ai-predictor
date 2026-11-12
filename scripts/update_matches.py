@@ -253,55 +253,49 @@ def main():
             first_items=response.get('items') if isinstance(response,dict) else None
             if not isinstance(first_items,list) or not first_items or not all(isinstance(item,dict) for item in first_items):
                 raise ValueError('primary response missing a valid non-empty response.items list')
-            total_pages=int(response.get('total_pages') or 1)
+            reported_total_pages=int(response.get('total_pages') or 1)
             expected_total=int(response.get('total_items') or len(first_items))
-            if total_pages<1 or total_pages>2:
-                raise ValueError(f'primary returned unsupported page count: {total_pages}')
+            if reported_total_pages<1:
+                raise ValueError(f'primary returned invalid page count: {reported_total_pages}')
+            # At a 15-minute cadence, one primary request per run keeps the
+            # 96 daily scheduled calls below the provider's 100-hit allowance.
+            # Use the first 100-fixture page; never spend a second call for page 2.
             items=list(first_items)
-            if total_pages==2:
-                page2_params={'date':date_range,'per_paged':per_page,'paged':2}
-                r2=requests.get(base_url,params=page2_params,headers=headers,timeout=25)
-                r2.raise_for_status()
-                payload2=r2.json()
-                response2=payload2.get('response') if isinstance(payload2,dict) else None
-                second_items=response2.get('items') if isinstance(response2,dict) else None
-                if not isinstance(second_items,list) or not all(isinstance(item,dict) for item in second_items):
-                    raise ValueError('primary page 2 missing a valid response.items list')
-                if int(response2.get('total_pages') or 1)!=total_pages or int(response2.get('total_items') or expected_total)!=expected_total:
-                    raise ValueError('primary pagination metadata changed between pages')
-                items.extend(second_items)
-            if len(items)!=expected_total:
-                raise ValueError(f'primary incomplete feed: fetched {len(items)} of {expected_total}')
+            if expected_total>len(items):
+                print(f"Primary feed has {expected_total} fixtures across {reported_total_pages} pages; using first page only to protect daily quota.")
             match_ids=[str(item.get('match_id') or item.get('id') or item.get('matchId')) for item in items
                        if isinstance(item,dict) and (item.get('match_id') is not None or item.get('id') is not None or item.get('matchId') is not None)]
             if match_ids and (len(match_ids)!=len(items) or len(set(match_ids))!=len(match_ids)):
                 raise ValueError('primary pages contain missing or duplicate match IDs')
             response=dict(response)
             provider_total_items=response.get('total_items',len(items))
-            response['fetched_pages']=total_pages
+            total_pages=1
+            response['reported_total_pages']=reported_total_pages
+            response['fetched_pages']=1
+            response['partial_feed']=expected_total>len(items)
             response['items']=items
         except (requests.RequestException, ValueError, TypeError, KeyError) as exc:
             primary_error=type(exc).__name__
             items=[]
 
     if not items:
-        print(f"Primary feed unusable ({primary_error or 'RAPIDAPI_KEY missing'}); trying CricketData backup.")
+        print(f"Primary feed unusable ({primary_error or 'RAPIDAPI_KEY missing'}); trying Highlightly backup.")
         try:
-            cricketdata_items=fetch_cricketdata()
-            items=cricketdata_items
-            provider_name="CricketData"
-        except Exception as exc:
-            print(f"CricketData backup unavailable: {type(exc).__name__}; trying Highlightly.")
+            items=fetch_highlightly()
+            provider_name="Highlightly"
+        except Exception as highlightly_exc:
+            print(f"Highlightly backup unavailable: {type(highlightly_exc).__name__}; trying CricketData tertiary backup.")
             try:
-                items=fetch_highlightly()
-                provider_name="Highlightly"
-            except Exception as highlightly_exc:
+                cricketdata_items=fetch_cricketdata()
+                items=cricketdata_items
+                provider_name="CricketData"
+            except Exception as cricketdata_exc:
                 raise SystemExit(
                     "All configured fixture providers are unusable. "
                     f"Primary={primary_error or 'not configured'}, "
-                    f"CricketData={type(exc).__name__}, "
-                    f"Highlightly={type(highlightly_exc).__name__}; prior snapshot left untouched."
-                ) from highlightly_exc
+                    f"Highlightly={type(highlightly_exc).__name__}, "
+                    f"CricketData={type(cricketdata_exc).__name__}; prior snapshot left untouched."
+                ) from cricketdata_exc
 
     # Keep the primary fixture feed on its existing 30-minute cadence, but
     # refresh CricketData enrichment only on scheduled hourly slots. This
