@@ -166,12 +166,25 @@ def normalize_highlightly(payload):
         combined_start = f"{date_value}T{time_value}" if date_value and time_value else date_value
         start = _timestamp(combined_start, time_value)
         venue = item.get("venue")
-        fixtures.append(_normalized_fixture(
+        state = item.get("state")
+        # Highlightly returns state as an object (description/report), not a
+        # plain status string. Publish both normalized fields consumed by UI.
+        if isinstance(state, dict):
+            status = state.get("description") or state.get("status") or state.get("name") or ""
+            status_note = state.get("report") or ""
+        else:
+            status = state or ""
+            status_note = ""
+        fixture = _normalized_fixture(
             item.get("id"), home, away, item.get("format"), venue,
-            item.get("state"), start, "Highlightly",
+            status, start, "Highlightly",
             {"league": item.get("league"), "country": item.get("country"),
              "dayType": item.get("dayType"), "endDate": item.get("endDate")}
-        ))
+        )
+        fixture["status_str"] = str(status)
+        if status_note:
+            fixture["status_note"] = str(status_note)
+        fixtures.append(fixture)
     fixtures = [item for item in fixtures if item]
     if not fixtures:
         raise ValueError("Highlightly returned no fixtures with two valid team names")
