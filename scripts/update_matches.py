@@ -236,12 +236,30 @@ def main():
     per_page=100
     items=[]
     cricketdata_items=None
-    total_pages=0
+    total_pages=1
     expected_total=0
-    provider_name="Cricket Live Line Advance"
+    provider_total_items=0
+    provider_name="Highlightly"
     primary_error=None
 
-    if API_KEY:
+    # Highlightly is the only change to provider priority. Keep existing
+    # providers as fallbacks and leave prediction/filtering logic untouched.
+    try:
+        items=fetch_highlightly()
+        if not isinstance(items,list) or not items or not all(isinstance(item,dict) for item in items):
+            raise ValueError("Highlightly returned no valid fixture list")
+        if len(items)>100:
+            raise ValueError(f"Highlightly returned {len(items)} fixtures, exceeding the requested 100-match cap")
+        provider_total_items=len(items)
+        response={'items':items,'total_items':len(items),'total_pages':1,
+                  'fetched_pages':1,'provider':provider_name}
+    except Exception as exc:
+        primary_error=type(exc).__name__
+        items=[]
+        print(f"Highlightly primary unavailable ({primary_error}); trying Cricket Live Line Advance backup.")
+
+    # Existing Cricket Live Line Advance pagination remains unchanged as backup.
+    if not items and API_KEY:
         try:
             base_url='https://cricket-live-line-advance.p.rapidapi.com/matches'
             headers={'X-RapidAPI-Key':API_KEY,'X-RapidAPI-Host':'cricket-live-line-advance.p.rapidapi.com'}
@@ -252,11 +270,11 @@ def main():
             response=payload.get('response') if isinstance(payload,dict) else None
             first_items=response.get('items') if isinstance(response,dict) else None
             if not isinstance(first_items,list) or not first_items or not all(isinstance(item,dict) for item in first_items):
-                raise ValueError('primary response missing a valid non-empty response.items list')
+                raise ValueError('backup response missing a valid non-empty response.items list')
             total_pages=int(response.get('total_pages') or 1)
             expected_total=int(response.get('total_items') or len(first_items))
             if total_pages<1 or total_pages>2:
-                raise ValueError(f'primary returned unsupported page count: {total_pages}')
+                raise ValueError(f'backup returned unsupported page count: {total_pages}')
             items=list(first_items)
             if total_pages==2:
                 page2_params={'date':date_range,'per_paged':per_page,'paged':2}
@@ -266,48 +284,39 @@ def main():
                 response2=payload2.get('response') if isinstance(payload2,dict) else None
                 second_items=response2.get('items') if isinstance(response2,dict) else None
                 if not isinstance(second_items,list) or not all(isinstance(item,dict) for item in second_items):
-                    raise ValueError('primary page 2 missing a valid response.items list')
+                    raise ValueError('backup page 2 missing a valid response.items list')
                 if int(response2.get('total_pages') or 1)!=total_pages or int(response2.get('total_items') or expected_total)!=expected_total:
-                    raise ValueError('primary pagination metadata changed between pages')
+                    raise ValueError('backup pagination metadata changed between pages')
                 items.extend(second_items)
             if len(items)!=expected_total:
-                raise ValueError(f'primary incomplete feed: fetched {len(items)} of {expected_total}')
+                raise ValueError(f'backup incomplete feed: fetched {len(items)} of {expected_total}')
             match_ids=[str(item.get('match_id') or item.get('id') or item.get('matchId')) for item in items
                        if isinstance(item,dict) and (item.get('match_id') is not None or item.get('id') is not None or item.get('matchId') is not None)]
             if match_ids and (len(match_ids)!=len(items) or len(set(match_ids))!=len(match_ids)):
-                raise ValueError('primary pages contain missing or duplicate match IDs')
+                raise ValueError('backup pages contain missing or duplicate match IDs')
             response=dict(response)
             provider_total_items=response.get('total_items',len(items))
             response['fetched_pages']=total_pages
             response['items']=items
+            provider_name="Cricket Live Line Advance"
         except (requests.RequestException, ValueError, TypeError, KeyError) as exc:
-            primary_error=type(exc).__name__
+            print(f"Cricket Live Line Advance backup unavailable: {type(exc).__name__}; trying CricketData.")
             items=[]
 
     if not items:
-        print(f"Primary feed unusable ({primary_error or 'RAPIDAPI_KEY missing'}); trying CricketData backup.")
         try:
             cricketdata_items=fetch_cricketdata()
             items=cricketdata_items
             provider_name="CricketData"
         except Exception as exc:
-            print(f"CricketData backup unavailable: {type(exc).__name__}; trying Highlightly.")
-            try:
-                items=fetch_highlightly()
-                provider_name="Highlightly"
-            except Exception as highlightly_exc:
-                raise SystemExit(
-                    "All configured fixture providers are unusable. "
-                    f"Primary={primary_error or 'not configured'}, "
-                    f"CricketData={type(exc).__name__}, "
-                    f"Highlightly={type(highlightly_exc).__name__}; prior snapshot left untouched."
-                ) from highlightly_exc
+            raise SystemExit(
+                "All fixture providers are unusable. "
+                f"Highlightly={primary_error or 'not selected'}, "
+                f"CricketData={type(exc).__name__}; prior snapshot left untouched."
+            ) from exc
 
-    # Keep the primary fixture feed on its existing 30-minute cadence, but
-    # refresh CricketData enrichment only on scheduled hourly slots. This
-    # caps normal secondary usage at 24 list + 24 match-info calls per day.
-    # Manual runs do not consume enrichment quota; CricketData remains a
-    # necessary backup when the primary feed is unavailable.
+    # Preserve existing scheduled CricketData enrichment for the legacy
+    # Cricket Live Line Advance backup; no new enrichment calls are added.
     secondary_enrichment_due = should_refresh_cricketdata_enrichment()
     if (provider_name == "Cricket Live Line Advance"
             and os.getenv("CRICKETDATA_API_KEY", "").strip()
@@ -342,13 +351,8 @@ def main():
     if provider_name != "Cricket Live Line Advance":
         total_pages=1
         provider_total_items=len(items)
-        response={
-            'items':items,
-            'total_items':len(items),
-            'total_pages':1,
-            'fetched_pages':1,
-            'provider':provider_name,
-        }
+        response={'items':items,'total_items':len(items),'total_pages':1,
+                  'fetched_pages':1,'provider':provider_name}
     print(f"Fixture source selected: {provider_name} ({len(items)} normalized fixtures).")
 
     # Keep only formats/team levels represented by the trained prediction model.
