@@ -1437,7 +1437,7 @@ async function fetchMatches() {
             if (seen.has(fixtureKey)) return;
             seen.add(fixtureKey);
 
-            const status = String(m.status_str || m.status_note || '').trim().toLowerCase();
+            const status = String(m.status_str || m.status_note || m.status || '').trim().toLowerCase();
             const startSeconds = Number(m.timestamp_start);
             const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
 
