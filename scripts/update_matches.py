@@ -238,24 +238,27 @@ def main():
     cricketdata_items=None
     total_pages=1
     expected_total=0
+    provider_total_items=0
     provider_name="Highlightly"
     primary_error=None
 
-    # Highlightly is the primary daily fixture feed. Its request asks for up
-    # to 100 matches for the full Saudi-local date; the daily feed is expected
-    # to remain below that cap. No page/offset is used for this provider.
+    # Highlightly is the only change to provider priority. Keep existing
+    # providers as fallbacks and leave prediction/filtering logic untouched.
     try:
         items=fetch_highlightly()
         if not isinstance(items,list) or not items or not all(isinstance(item,dict) for item in items):
             raise ValueError("Highlightly returned no valid fixture list")
         if len(items)>100:
             raise ValueError(f"Highlightly returned {len(items)} fixtures, exceeding the requested 100-match cap")
+        provider_total_items=len(items)
+        response={'items':items,'total_items':len(items),'total_pages':1,
+                  'fetched_pages':1,'provider':provider_name}
     except Exception as exc:
         primary_error=type(exc).__name__
         items=[]
         print(f"Highlightly primary unavailable ({primary_error}); trying Cricket Live Line Advance backup.")
 
-    # Keep the existing paginated provider as a backup only.
+    # Existing Cricket Live Line Advance pagination remains unchanged as backup.
     if not items and API_KEY:
         try:
             base_url='https://cricket-live-line-advance.p.rapidapi.com/matches'
@@ -274,7 +277,8 @@ def main():
                 raise ValueError(f'backup returned unsupported page count: {total_pages}')
             items=list(first_items)
             if total_pages==2:
-                r2=requests.get(base_url,params={'date':date_range,'per_paged':per_page,'paged':2},headers=headers,timeout=25)
+                page2_params={'date':date_range,'per_paged':per_page,'paged':2}
+                r2=requests.get(base_url,params=page2_params,headers=headers,timeout=25)
                 r2.raise_for_status()
                 payload2=r2.json()
                 response2=payload2.get('response') if isinstance(payload2,dict) else None
@@ -311,18 +315,44 @@ def main():
                 f"CricketData={type(exc).__name__}; prior snapshot left untouched."
             ) from exc
 
+    # Preserve existing scheduled CricketData enrichment for the legacy
+    # Cricket Live Line Advance backup; no new enrichment calls are added.
+    secondary_enrichment_due = should_refresh_cricketdata_enrichment()
+    if (provider_name == "Cricket Live Line Advance"
+            and os.getenv("CRICKETDATA_API_KEY", "").strip()
+            and secondary_enrichment_due):
+        try:
+            cricketdata_items = fetch_cricketdata()
+            merged_count = _merge_provider_enrichment(items, cricketdata_items)
+            print(f"CricketData enrichment: {merged_count} unambiguous fixture(s) matched.")
+        except Exception as exc:
+            print(f"CricketData enrichment unavailable: {type(exc).__name__}; primary feed retained.")
+
+    if cricketdata_items and secondary_enrichment_due:
+        active = [x for x in cricketdata_items
+                  if (x.get("provider_metadata") or {}).get("matchStarted")
+                  and not _canonical_toss(x)]
+        if active:
+            candidate = active[0]
+            try:
+                detail = fetch_cricketdata_match_info(candidate.get("match_id"))
+                detail_fixture = dict(candidate)
+                detail_fixture["toss_winner"] = detail.get("tossWinner") or detail.get("toss_winner")
+                detail_fixture["toss_decision"] = detail.get("tossChoice") or detail.get("tossDecision")
+                detail_fixture["score"] = detail.get("score", detail_fixture.get("score"))
+                detail_fixture["scorecard"] = detail.get("scorecard", detail_fixture.get("scorecard"))
+                _merge_provider_enrichment(items, [detail_fixture])
+                print("CricketData match-info enrichment: one active fixture checked.")
+            except Exception as exc:
+                print(f"CricketData match-info unavailable: {type(exc).__name__}; toss data not fabricated.")
+
     if not items:
         raise SystemExit('All providers returned zero usable fixtures; prior snapshot left untouched.')
     if provider_name != "Cricket Live Line Advance":
         total_pages=1
         provider_total_items=len(items)
-        response={
-            'items':items,
-            'total_items':len(items),
-            'total_pages':1,
-            'fetched_pages':1,
-            'provider':provider_name,
-        }
+        response={'items':items,'total_items':len(items),'total_pages':1,
+                  'fetched_pages':1,'provider':provider_name}
     print(f"Fixture source selected: {provider_name} ({len(items)} normalized fixtures).")
 
     # Keep only formats/team levels represented by the trained prediction model.
