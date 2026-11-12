@@ -20,10 +20,10 @@ def should_refresh_cricketdata_enrichment(now=None, event_name=None):
     if event_name != "schedule":
         return False
     now = now or datetime.now(timezone.utc)
-    # The workflow runs every 30 minutes. Only the :00 slot is eligible.
-    # If GitHub delays that run past :30, skip rather than risk two calls
+    # The workflow runs every 15 minutes. Only the :00 slot is eligible.
+    # If GitHub delays that run past :15, skip rather than risk two calls
     # close together or accidentally spending the quota twice.
-    return int(now.minute) < 30
+    return int(now.minute) < 15
 
 
 
