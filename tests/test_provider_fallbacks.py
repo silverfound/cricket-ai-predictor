@@ -56,7 +56,7 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
                 "homeTeam": {"name": "Melbourne Stars Women"},
                 "awayTeam": {"name": "Sydney Sixers Women"},
                 "format": "T20",
-                "state": "upcoming",
+                "state": {"description": "Scheduled", "report": "Match yet to begin"},
                 "venue": {"name": "MCG"},
                 "startDate": "2026-11-12",
                 "league": {"name": "WBBL"},
@@ -68,6 +68,8 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertEqual(fixture["teamb"]["name"], "Sydney Sixers Women")
         self.assertEqual(fixture["venue"]["name"], "MCG")
         self.assertEqual(fixture["provider_source"], "Highlightly")
+        self.assertEqual(fixture["status_str"], "Scheduled")
+        self.assertEqual(fixture["status_note"], "Match yet to begin")
         self.assertNotIn("score", fixture)
 
     def test_cricketdata_preserves_score_team_info_and_actual_toss(self):
