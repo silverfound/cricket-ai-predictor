@@ -297,7 +297,7 @@ def main():
                     f"CricketData={type(cricketdata_exc).__name__}; prior snapshot left untouched."
                 ) from cricketdata_exc
 
-    # Keep the primary fixture feed on its existing 30-minute cadence, but
+    # Keep the primary fixture feed on its 15-minute cadence, but
     # refresh CricketData enrichment only on scheduled hourly slots. This
     # caps normal secondary usage at 24 list + 24 match-info calls per day.
     # Manual runs do not consume enrichment quota; CricketData remains a
