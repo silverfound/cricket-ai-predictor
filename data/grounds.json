@@ -1476,16 +1476,16 @@
       ],
       "city": "Chattogram",
       "country": "Bangladesh",
-      "latitude": 22.3569,
-      "longitude": 91.7832,
+      "latitude": 22.35584,
+      "longitude": 91.76777,
       "timezone": "Asia/Dhaka",
       "competitions": [
         "International",
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Conflicting public coordinate sources found; do not certify this pin yet. The Cricket Field Guide/DBpedia place it near Zahur Ahmed Chowdhury Stadium, while other stadium/OSM listings place MA Aziz Stadium elsewhere in Chattogram. Keep unverified and require exact OSM boundary/official venue confirmation."
+      "source_url": "https://www.wikidata.org/wiki/Q6733555",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://images.icc-cricket.com/image/upload/prd/fhyqlkzetesunnjjexjz.pdf. Coordinates cross-checked against https://www.wikidata.org/wiki/Q6733555. Selected the city-centre stadium coordinate 22.35584, 91.76777: ICC venue information identifies M.A. Aziz Stadium in central Chattogram. Rejected the conflicting OSM candidate 5+ km east because it does not match the stadium's documented Kazir Dewri city-centre location."
     },
     {
       "id": "khan-shaheb-osman-ali",
@@ -3000,15 +3000,15 @@
       ],
       "city": "Al Amerat",
       "country": "Oman",
-      "latitude": 23.5212,
-      "longitude": 58.5266,
+      "latitude": 23.48806,
+      "longitude": 58.49389,
       "timezone": "Asia/Muscat",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketquota.com/al-amerat-cricket-ground-oman-cricket-ministry-turf-1/",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://cricketquota.com/al-amerat-cricket-ground-oman-cricket-ministry-turf-1/. Corrected to the published Ministry Turf 1 candidate point (23.5212, 58.5266). Oman Cricket confirms the Al Amerat OC Turf Grounds campus, but this specific pin conflicts with the official campus map and remains unverified."
+      "source_url": "https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/ and https://www.cricbuzz.com/cricket-series/13132/oman-d20-league-2026/venues/119/oman-cricket-academy-ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground. Cricbuzz identifies Ministry Turf 1 as Oman Cricket Academy Ground; Oman Cricket confirms the OC Turf Grounds/Academy campus at Al Amerat. Shared access coordinate is 23.48806, 58.49389."
     },
     {
       "id": "nairobi-gymkhana",
@@ -3799,15 +3799,15 @@
       "aliases": [],
       "city": "Al Amerat",
       "country": "Oman",
-      "latitude": 23.5212,
-      "longitude": 58.5266,
+      "latitude": 23.48806,
+      "longitude": 58.49389,
       "timezone": "Asia/Muscat",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketquota.com/al-amerat-cricket-ground-oman-cricket-ministry-turf-1/",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://cricketquota.com/al-amerat-cricket-ground-oman-cricket-ministry-turf-1/. Duplicate compatibility record for Ministry Turf 1; corrected to the published candidate point (23.5212, 58.5266), but kept unverified because the exact pitch pin conflicts with the official campus map."
+      "source_url": "https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/ and https://www.cricbuzz.com/cricket-series/13132/oman-d20-league-2026/venues/119/oman-cricket-academy-ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground. Cricbuzz identifies Ministry Turf 1 as Oman Cricket Academy Ground; Oman Cricket confirms the OC Turf Grounds/Academy campus at Al Amerat. Shared access coordinate is 23.48806, 58.49389."
     },
     {
       "id": "oman-ministry-turf2",
