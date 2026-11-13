@@ -82,9 +82,13 @@ function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
         && alias.slice(1).every((token, index) => token === full[index + 1])
         && !(other[0] && other[0].startsWith(alias[0])
             && alias.slice(1).every((token, index) => token === other[index + 1]));
+    // Some providers shorten "Chitwan Rhinos" to "Chitwan". Accept a
+    // one-token leading name only when it uniquely identifies one fixture side.
+    const isUniqueFirstToken = alias.length === 1 && alias[0] === full[0]
+        && alias[0] !== other[0];
     const isUniqueFinalToken = alias.length === 1 && alias[0] === full[full.length - 1]
         && !other.includes(alias[0]);
-    return isUniquePrefix || isUniqueInitialPrefix || isUniqueFinalToken;
+    return isUniquePrefix || isUniqueInitialPrefix || isUniqueFirstToken || isUniqueFinalToken;
 }
 
 function resolveResultWinnerTeam(resultText, team1, team2) {
