@@ -22,8 +22,12 @@ function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) 
 
     // "Innings completed" means an innings ended, not necessarily the match.
     const terminalText = status.replace(/\binnings?\s+(?:is\s+)?completed?\b/g, " ");
+    const hasResultEvidence = /\b(result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText);
     const isFinished = /\b(match\s+(?:is\s+)?(?:completed|finished|ended)|result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText)
         || /^(?:finished|complete|completed)$/.test(terminalText.trim());
+    // A generic Finished/Completed label must not override a future kickoff.
+    // Explicit provider matchEnded flags and actual result evidence remain authoritative.
+    if (isFinished && hasStartTime && startSeconds > nowSeconds && !hasResultEvidence) return "upcoming";
     if (isFinished) return "finished";
 
     const isLive = started || /\b(live|in progress|break|stumps|innings|in play|day [1-5]|lunch|tea|drinks|rain delay|bad light)\b/.test(status);
