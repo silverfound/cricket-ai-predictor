@@ -1440,16 +1440,16 @@
       ],
       "city": "Hyderabad",
       "country": "Pakistan",
-      "latitude": 25.396,
-      "longitude": 68.3578,
+      "latitude": 25.38241,
+      "longitude": 68.33813,
       "timezone": "Asia/Karachi",
       "competitions": [
         "Domestic",
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/26543152",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Coordinates cross-checked against map record (https://mapcarta.com/26543152). Corrected the starter pin by about 2.5 km to the OSM stadium point; awaiting a primary Sindh/Pakistan cricket authority source."
     },
     {
       "id": "asgirya-stadium",
@@ -1457,16 +1457,16 @@
       "aliases": [],
       "city": "Kandy",
       "country": "Sri Lanka",
-      "latitude": 7.2906,
-      "longitude": 80.635,
+      "latitude": 7.29996,
+      "longitude": 80.63412,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International",
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W172876716",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Coordinates cross-checked against map record (https://mapcarta.com/W172876716). Corrected the starter pin to the OSM-mapped Asgiriya cricket pitch; awaiting a primary Sri Lanka Cricket confirmation."
     },
     {
       "id": "ma-aziz-stadium",
@@ -1545,16 +1545,16 @@
       ],
       "city": "Kanpur",
       "country": "India",
-      "latitude": 26.482,
-      "longitude": 80.354,
+      "latitude": 26.4821,
+      "longitude": 80.34775,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International",
         "IPL-era"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W665592716",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Coordinates cross-checked against map record (https://mapcarta.com/W665592716). Corrected the starter pin to the OSM stadium footprint; awaiting UPCA confirmation of the official ground entrance/pin."
     },
     {
       "id": "barabati",
@@ -1562,16 +1562,16 @@
       "aliases": [],
       "city": "Cuttack",
       "country": "India",
-      "latitude": 20.48,
-      "longitude": 85.879,
+      "latitude": 20.48082,
+      "longitude": 85.8686,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International",
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W749341543",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://odishacricket.in/Home/DynamicContent?MenuID=10. Coordinates cross-checked against map record (https://mapcarta.com/W749341543). Corrected the starter pin by about 1.1 km to the OSM cricket-stadium point; Odisha Cricket Association confirms Barabati Stadium, Cuttack."
     },
     {
       "id": "vidarbha-association-ground",
@@ -1581,15 +1581,15 @@
       ],
       "city": "Nagpur",
       "country": "India",
-      "latitude": 21.1458,
-      "longitude": 79.0882,
+      "latitude": 21.15721,
+      "longitude": 79.07657,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W280422531",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://www.vca.co.in/contact. Coordinates cross-checked against map record (https://mapcarta.com/W280422531). OSM listing identifies the legacy Vidarbha Cricket Association Ground in Nagpur; VCA official contact confirms the Civil Lines Nagpur association and CM Pavilion. The exact historic ground polygon needs additional confirmation."
     },
     {
       "id": "campbell-park",
@@ -3225,16 +3225,16 @@
       "aliases": [],
       "city": "Mumbai",
       "country": "India",
-      "latitude": 18.9322,
-      "longitude": 72.8258,
+      "latitude": 18.93207,
+      "longitude": 72.82514,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "IPL",
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/25584380",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.thecricketclubofindia.com/index.html. Coordinates cross-checked against map record (https://mapcarta.com/25584380). OSM stadium point; Cricket Club of India confirms Brabourne Stadium is one of its facilities at Stadium House, Churchgate, Mumbai."
     },
     {
       "id": "india-dy-patil",
@@ -3242,16 +3242,16 @@
       "aliases": [],
       "city": "Navi Mumbai",
       "country": "India",
-      "latitude": 19.043,
-      "longitude": 73.026,
+      "latitude": 19.04205,
+      "longitude": 73.02673,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "IPL",
         "WPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/N6569571978",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.dypatilstadium.com/about-us. Coordinates cross-checked against map record (https://mapcarta.com/N6569571978). Corrected to the OSM stadium point; DY Patil Sports Academy confirms Sector 7, Nerul, Navi Mumbai."
     },
     {
       "id": "india-vizag",
@@ -3278,16 +3278,16 @@
       "aliases": [],
       "city": "Indore",
       "country": "India",
-      "latitude": 22.724,
-      "longitude": 75.879,
+      "latitude": 22.7242543,
+      "longitude": 75.8796568,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International",
         "IPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.mpcaonline.com/page/holkar-stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.mpcaonline.com/page/holkar-stadium. Coordinates cross-checked against map record (https://www.mpcaonline.com/page/holkar-stadium). MPCA's official stadium page provides a Google Maps point at 22.7242543, 75.8796568 and confirms Race Course Road, Indore."
     },
     {
       "id": "india-greenfield",
@@ -3295,15 +3295,15 @@
       "aliases": [],
       "city": "Thiruvananthapuram",
       "country": "India",
-      "latitude": 8.526,
-      "longitude": 76.883,
+      "latitude": 8.5715,
+      "longitude": 76.884306,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://en.wikipedia.org/wiki/Greenfield_International_Stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.keralacricketassociation.com/tender/eoi-for-pre-match-maintenance-repair-and-rectification-works-in-connection-with-india-vs-west-indies-international-match-at-the-sports-hub-greenfield-international-stadium/. Coordinates cross-checked against map record (https://en.wikipedia.org/wiki/Greenfield_International_Stadium). Corrected the starter pin by about 5 km to the published stadium coordinate; Kerala Cricket Association confirms The Sports Hub, Greenfield International Stadium, Kariavattom, Thiruvananthapuram."
     },
     {
       "id": "india-rajkot",
@@ -3313,16 +3313,16 @@
       ],
       "city": "Rajkot",
       "country": "India",
-      "latitude": 22.366,
-      "longitude": 70.016,
+      "latitude": 22.36268,
+      "longitude": 70.70941,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International",
         "IPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W548965207",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Coordinates cross-checked against map record (https://mapcarta.com/W548965207). Corrected a major longitude error (70.016 to 70.70941) to the OSM stadium point; official Saurashtra Cricket Association confirmation is still required."
     },
     {
       "id": "india-raipur",
@@ -3346,15 +3346,15 @@
       "aliases": [],
       "city": "Jodhpur",
       "country": "India",
-      "latitude": 26.238,
-      "longitude": 73.024,
+      "latitude": 26.27333,
+      "longitude": 73.00111,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://www.wikidata.org/wiki/Q4860916",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Coordinates cross-checked against map record (https://www.wikidata.org/wiki/Q4860916). Corrected the starter pin to the published Barkatullah Khan Stadium coordinate 26°16′24″N, 73°0′4″E; awaiting an official Rajasthan Cricket Association map confirmation."
     },
     {
       "id": "india-lucknow",
@@ -3410,15 +3410,15 @@
       "aliases": [],
       "city": "Nagpur",
       "country": "India",
-      "latitude": 21.038,
-      "longitude": 79.057,
+      "latitude": 21.01359,
+      "longitude": 79.03963,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W665840979",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.vca.co.in/contact. Coordinates cross-checked against map record (https://mapcarta.com/W665840979). Corrected the starter pin to the OSM Jamtha stadium point; Vidarbha Cricket Association lists VCA Stadium Jamtha and its stadium contact."
     },
     {
       "id": "india-dharamsala",
