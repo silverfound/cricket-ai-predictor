@@ -14,7 +14,8 @@ const cases = [
   ["provider ended flag overrides stale live text", { status: "Live", match_ended: true, timestamp_start: future }, "finished"],
   ["provider started flag identifies Live", { status: "Scheduled", match_started: true, timestamp_start: future }, "live"],
   ["innings completed is not match finished", { status: "Innings completed", timestamp_start: past }, "live"],
-  ["match result is Finished", { status: "Match completed", timestamp_start: past }, "finished"],
+  ["match result is Finished", { status: "Yas Lions won by 5 wickets", timestamp_start: past }, "finished"],
+  ["stale generic Finished label cannot override future kickoff", { status: "Finished", timestamp_start: future }, "upcoming"],
   ["old scheduled record is not Upcoming", { status: "Scheduled", timestamp_start: past }, "unknown"],
   ["nested CricketData ended flag is honored", { status: "In progress", provider_metadata: { matchEnded: "true" } }, "finished"]
 ];
