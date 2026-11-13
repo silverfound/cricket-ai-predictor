@@ -85,14 +85,14 @@
         note.style.cssText = "font-size:10px;color:#94a3b8;margin-top:8px;";
         note.textContent = "Model: 2024–2026 calibrated state-only T20/ODI · Highlightly snapshot" +
             (ageMinutes === null ? "" : " · " + ageMinutes + " min old") +
-            " · Feed refresh: 30 min · Not ball-by-ball";
+            " · Feed refresh: 15 min · Not ball-by-ball";
         panel.appendChild(note);
 
         const warning = document.getElementById("live-warning");
         if (warning) {
             warning.style.display = "block";
             const text = warning.querySelector("p");
-            if (text) text.textContent = "Live state model available from the latest verified scorecard snapshot. This is a 30-minute scheduled snapshot, not a ball-by-ball feed; stale data must not be treated as current.";
+            if (text) text.textContent = "Live state model available from the latest verified scorecard snapshot. This is a 15-minute scheduled snapshot, not a ball-by-ball feed; stale data must not be treated as current.";
         }
     }
 

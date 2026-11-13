@@ -15,15 +15,18 @@ HIGHLIGHTLY_HOST = "cricket-highlights-api.p.rapidapi.com"
 
 
 def should_refresh_cricketdata_enrichment(now=None, event_name=None):
-    """Return true once per hourly schedule slot; never spend enrichment quota on manual runs."""
+    """Allow optional CricketData enrichment only in the first 15 minutes of each hour.
+
+    The fixture feed itself refreshes every 15 minutes. Restricting enrichment
+    to minute 00-14 prevents the :15, :30, and :45 feed runs from repeating
+    the hourly CricketData calls. Delayed :00 runs outside this window are
+    skipped, and manual/push runs never spend optional enrichment quota.
+    """
     event_name = event_name or os.getenv("GITHUB_EVENT_NAME", "")
     if event_name != "schedule":
         return False
     now = now or datetime.now(timezone.utc)
-    # The workflow runs every 30 minutes. Only the :00 slot is eligible.
-    # If GitHub delays that run past :30, skip rather than risk two calls
-    # close together or accidentally spending the quota twice.
-    return int(now.minute) < 30
+    return int(now.minute) < 15
 
 
 

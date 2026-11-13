@@ -120,12 +120,16 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         from datetime import datetime, timezone
         from scripts.provider_fallbacks import should_refresh_cricketdata_enrichment
 
-        on_hour = datetime(2026, 11, 11, 12, 5, tzinfo=timezone.utc)
-        half_hour = datetime(2026, 11, 11, 12, 35, tzinfo=timezone.utc)
-        self.assertTrue(should_refresh_cricketdata_enrichment(on_hour, "schedule"))
-        self.assertFalse(should_refresh_cricketdata_enrichment(half_hour, "schedule"))
-        self.assertFalse(should_refresh_cricketdata_enrichment(on_hour, "workflow_dispatch"))
-        self.assertFalse(should_refresh_cricketdata_enrichment(on_hour, "push"))
+        hourly_slot = datetime(2026, 11, 11, 12, 5, tzinfo=timezone.utc)
+        last_minute_of_slot = datetime(2026, 11, 11, 12, 14, tzinfo=timezone.utc)
+        quarter_hour_run = datetime(2026, 11, 11, 12, 15, tzinfo=timezone.utc)
+        half_hour_run = datetime(2026, 11, 11, 12, 35, tzinfo=timezone.utc)
+        self.assertTrue(should_refresh_cricketdata_enrichment(hourly_slot, "schedule"))
+        self.assertTrue(should_refresh_cricketdata_enrichment(last_minute_of_slot, "schedule"))
+        self.assertFalse(should_refresh_cricketdata_enrichment(quarter_hour_run, "schedule"))
+        self.assertFalse(should_refresh_cricketdata_enrichment(half_hour_run, "schedule"))
+        self.assertFalse(should_refresh_cricketdata_enrichment(hourly_slot, "workflow_dispatch"))
+        self.assertFalse(should_refresh_cricketdata_enrichment(hourly_slot, "push"))
 
     def test_error_or_empty_provider_payload_is_rejected(self):
         with self.assertRaises(ValueError):
