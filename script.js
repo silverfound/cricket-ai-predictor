@@ -54,6 +54,34 @@ function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
         || (predictedIsTeam2 && cricketTeamNamesEquivalent(winner, team2)));
 }
 
+function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
+    const metadata = match?.provider_metadata || {};
+    const asFlag = value => {
+        if (value === true || value === 1) return true;
+        if (typeof value === "string") return ["true", "yes", "1"].includes(value.trim().toLowerCase());
+        return false;
+    };
+    const ended = asFlag(match?.match_ended) || asFlag(match?.matchEnded)
+        || asFlag(metadata.matchEnded) || asFlag(metadata.match_ended);
+    if (ended) return "finished";
+
+    const started = asFlag(match?.match_started) || asFlag(match?.matchStarted)
+        || asFlag(metadata.matchStarted) || asFlag(metadata.match_started);
+    const status = [getMatchResultText(match), match?.status].filter(value => typeof value === "string" && value.trim()).join(" ").toLowerCase();
+    const startSeconds = Number(match?.timestamp_start);
+    const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
+    const terminalText = status.replace(/\binnings?\s+(?:is\s+)?completed?\b/g, " ");
+    const hasResultEvidence = /\b(result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText);
+    const isFinished = /\b(match\s+(?:is\s+)?(?:completed|finished|ended)|result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText)
+        || /^(?:finished|complete|completed)$/.test(terminalText.trim());
+    if (isFinished && hasStartTime && startSeconds > nowSeconds && !hasResultEvidence) return "upcoming";
+    if (isFinished) return "finished";
+    const isLive = started || /\b(live|in progress|break|stumps|innings|in play|day [1-5]|lunch|tea|drinks|rain delay|bad light)\b/.test(status);
+    if (isLive) return "live";
+    if (hasStartTime && startSeconds > nowSeconds) return "upcoming";
+    return "unknown";
+}
+
 // ==========================================
 // NAME MAPPING (API Name -> Model Name)
 // ==========================================
