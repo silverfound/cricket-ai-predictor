@@ -7,6 +7,7 @@ from scripts.team_identity import (
     team_gender,
     team_names_equivalent,
     resolve_fixture_team,
+    fixture_teams_equivalent,
 )
 
 
@@ -67,6 +68,22 @@ class TeamIdentityTests(unittest.TestCase):
             resolve_fixture_team("Melbourne Stars", "Melbourne Stars", "Melbourne Stars Women"),
             "Melbourne Stars",
         )
+
+    def test_cross_provider_fixture_matching_is_order_independent_and_fail_closed(self):
+        self.assertTrue(fixture_teams_equivalent(
+            "Kathmandu Gurkhas (NPL)", "Sudur Paschim Royals (NPL)",
+            "S Paschim", "Kathmandu Gurkhas",
+        ))
+        self.assertTrue(fixture_teams_equivalent(
+            "United Tigers", "Emirates Eagles", "Eagles", "Tigers",
+        ))
+        self.assertFalse(fixture_teams_equivalent(
+            "United Tigers", "Desert Tigers", "Tigers", "United Tigers",
+        ))
+        self.assertFalse(fixture_teams_equivalent(
+            "Melbourne Stars", "Melbourne Stars Women",
+            "Melbourne Stars Women", "Melbourne Stars",
+        ))
 
     def test_history_key_only_drops_gender_after_gender_is_separately_known(self):
         self.assertEqual(history_team_key("Melbourne Stars Women"), history_team_key("Melbourne Stars"))
