@@ -136,7 +136,7 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertFalse(should_fetch_match_info_enrichment("CricketData", False))
         self.assertTrue(should_fetch_match_info_enrichment("Cricket Live Line Advance", True))
         self.assertFalse(should_fetch_match_info_enrichment("Cricket Live Line Advance", False))
-        self.assertFalse(should_fetch_match_info_enrichment("Highlightly", True))
+        self.assertTrue(should_fetch_match_info_enrichment("Highlightly", True))
 
     def test_error_or_empty_provider_payload_is_rejected(self):
         with self.assertRaises(ValueError):
