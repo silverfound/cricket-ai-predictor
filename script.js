@@ -1680,7 +1680,7 @@ function renderMatches(matches) {
                     startTime: match.timestamp_start || ""
                 };
 
-                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, competitionTitle, venueTimezoneHint, venueMeta, matchContext, match.ai_prediction || {});
+                openPredictModal(t1, t2, safeVenue, matchType, matchId, match.timestamp_start, currentTab === 'live', city, country, competitionTitle, venueTimezoneHint, venueMeta, matchContext, match.ai_prediction || {}, match);
             }
         });
     });
@@ -1689,7 +1689,7 @@ function renderMatches(matches) {
 // ==========================================
 // MAIN PREDICTION MODAL LOGIC
 // ==========================================
-async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '', venueMeta = {}, matchContext = {}, predictionData = {}) {
+async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '', venueMeta = {}, matchContext = {}, predictionData = {}, match = {}) {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
