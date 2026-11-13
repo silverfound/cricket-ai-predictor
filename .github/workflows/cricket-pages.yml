@@ -54,6 +54,13 @@ jobs:
           cache: pip
       - name: Install model runtime
         run: python -m pip install -r requirements.txt
+      - name: Restore persistent finished-match archive
+        uses: actions/cache@v4
+        with:
+          path: data/recent_results.json
+          key: recent-results-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            recent-results-
       - name: Fetch all allowed provider pages and compute prediction snapshots
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
