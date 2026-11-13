@@ -6,10 +6,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 try:
     from scripts.result_archive import merge_recent_results
+    from scripts.team_identity import canonical_team_name, history_team_key, team_gender, team_names_equivalent
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
     from result_archive import merge_recent_results
+    from team_identity import canonical_team_name, history_team_key, team_gender, team_names_equivalent
 import joblib, numpy as np, pandas as pd, requests
 # Support both direct script execution (python scripts/update_matches.py) and
 # package execution/imports (python -m scripts.update_matches).
@@ -35,11 +37,11 @@ if not HISTORY_PATH.exists(): raise SystemExit(f"Required historical data file m
 HISTORY=json.loads(HISTORY_PATH.read_text(encoding="utf-8"))
 if not HISTORY: raise SystemExit("Historical data file is empty; refusing default-form predictions.")
 DEFAULT_ELO=1500
-TEAM_MAPPING={'Saint Lucia Kings':'St Lucia Kings','Northern Brave':'Northern Districts','Northern Brave Women':'Northern Districts Women','Central Hinds':'Central Districts Women','Sudurpaschim Royals':'Sudur Paschim Royals','Antigua & Barbuda Falcons':'Antigua and Barbuda Falcons','St Kitts & Nevis Patriots':'St Kitts and Nevis Patriots','Canterbury Kings':'Canterbury','Auckland Hearts':'Auckland Women','Canterbury Magicians':'Canterbury Women','Otago Sparks':'Otago Women','Wellington Blaze':'Wellington Women'}
 def get_elo(name):
-    if name in ELO: return ELO[name]
+    canonical = canonical_team_name(name)
+    if canonical in ELO: return ELO[canonical]
     for key in ELO:
-        if key.lower()==name.lower(): return ELO[key]
+        if team_names_equivalent(key, canonical): return ELO[key]
     return DEFAULT_ELO
 def get_toss_rates(venue, decision):
     v=str(venue).split(',')[0].strip()
@@ -51,12 +53,9 @@ def get_toss_rates(venue, decision):
         dt=TOSS_STATS['v_fld_tot'].get(v,0); dw=TOSS_STATS['v_fld_wins'].get(v,0)
     return tw, (dw/dt if dt>0 else 0.5)
 def _team_key(name):
-    # Cricsheet often omits the Women suffix while the live feed includes it.
-    value=str(name or "").casefold().replace("&","and")
-    value=value.replace("women"," ").replace("(w)"," ")
-    parts=value.split()
-    if parts and parts[-1] == "w": parts=parts[:-1]
-    return " ".join(parts)
+    # Gender is filtered independently; this bridges Cricsheet's occasional
+    # omission of the Women suffix without allowing male/female fixture mixing.
+    return history_team_key(name)
 
 def _history_format(value):
     s=str(value or "").upper()
@@ -66,9 +65,7 @@ def _history_format(value):
     return s
 
 def _fixture_gender(t1,t2):
-    names=(str(t1)+" "+str(t2)).casefold()
-    tokens=names.replace("(w)"," women").split()
-    return "female" if ("women" in tokens or (tokens and tokens[-1] == "w")) else "male"
+    return "female" if "female" in {team_gender(t1), team_gender(t2)} else "male"
 
 def _prior_matches(t1,t2,fmt,venue,gender,cutoff):
     a,b=_team_key(t1),_team_key(t2)
@@ -112,7 +109,9 @@ def get_match_features(fmt,t1,t2,venue,cutoff=None,gender=None):
             _form_rate(venue_t1,a),_form_rate(venue_t2,b))
 
 def calculate_prediction(fmt,t1,t2,venue,toss_winner,toss_decision,gender='male',match_date=None):
-    e1,e2=get_elo(t1),get_elo(t2); toss_t1=1 if toss_winner==t1 else 0
+    t1,t2=canonical_team_name(t1),canonical_team_name(t2)
+    toss_winner=canonical_team_name(toss_winner)
+    e1,e2=get_elo(t1),get_elo(t2); toss_t1=1 if team_names_equivalent(toss_winner,t1) else 0
     # T10 has no dedicated training data/artifact in this repository. Keep it
     # out of the T20 ensemble and use a clearly disclosed Elo-only estimate.
     if is_t10_format(fmt) or str(fmt).strip().casefold() == "unknown":
@@ -187,8 +186,9 @@ def _canonical_toss(item):
     elif raw in {"bowl", "bowling", "field", "fielding", "elected to field", "elected to bowl", "choose to bowl"}: raw = "field"
     else: raw = ""
     teams = [str((item.get(k) or {}).get("name") or "").strip() for k in ("teama", "teamb")]
-    if winner and winner.casefold() not in {name.casefold() for name in teams if name}:
-        winner = ""
+    if winner:
+        matched = [name for name in teams if name and team_names_equivalent(winner, name)]
+        winner = matched[0] if len(matched) == 1 else ""
     return {"winner": winner, "decision": raw} if winner and raw else None
 
 
@@ -197,7 +197,7 @@ def _canonical_toss(item):
 def _merge_provider_enrichment(primary_items, cricketdata_items):
     """Merge unambiguous same-fixture score/team/toss details; preserve source names."""
     def key(item):
-        names = [str((item.get(k) or {}).get("name") or "").strip().casefold()
+        names = [canonical_team_name((item.get(k) or {}).get("name") or "").casefold()
                  for k in ("teama", "teamb")]
         if not all(names): return None
         return (tuple(sorted(names)), _history_format(item.get("format_str")))
@@ -220,7 +220,8 @@ def _merge_provider_enrichment(primary_items, cricketdata_items):
 def make_prediction(m):
     raw1=(m.get('teama') or {}).get('name') or ''; raw2=(m.get('teamb') or {}).get('name') or ''
     if not raw1 or not raw2: return None
-    t1=TEAM_MAPPING.get(raw1,raw1); t2=TEAM_MAPPING.get(raw2,raw2)
+    t1=canonical_team_name(raw1); t2=canonical_team_name(raw2)
+    if not t1 or not t2 or team_names_equivalent(t1, t2): return None
     venue=(m.get('venue') or {}).get('name') or ''; fmt=match_type(m.get('format_str'))
     gender=_fixture_gender(t1,t2)
     match_date=datetime.fromtimestamp(int(m.get('timestamp_start') or 0),timezone.utc).date().isoformat() if m.get('timestamp_start') else datetime.now(timezone.utc).date().isoformat()

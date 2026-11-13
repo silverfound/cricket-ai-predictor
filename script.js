@@ -18,26 +18,71 @@ function getMatchResultText(match) {
     return useful.join(" | ").trim();
 }
 
+function cleanCricketTeamLabel(value) {
+    let label = String(value || "").trim();
+    label = label.replace(/\s*\((?:NPL|IPL|PSL|BBL|WBBL|BPL|CPL|WCPL|LPL|ILT20|SA20|MLC|WPL|T10|The Hundred)\)\s*$/i, "");
+    label = label.replace(/\s*\((?:W|Women)\)\s*$/i, " Women");
+    return label.replace(/\s+/g, " ").trim();
+}
+
 function normalizeCricketTeamName(value) {
-    return String(value || "").toLowerCase()
-        .replace(/\([^)]*\)/g, " ")
-        .replace(/\b(npl|ipl|bbl|psl|sa20|ilt20)\b/g, " ")
-        .replace(/\bs\.?\s*paschim\b/g, "sudur paschim")
-        .replace(/\bsudurpaschim\b/g, "sudur paschim")
+    return cleanCricketTeamLabel(value).toLowerCase()
+        .replace(/&/g, " and ")
         .replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
 }
 
-function cricketTeamNamesEquivalent(left, right) {
-    const a = normalizeCricketTeamName(left).split(" ").filter(Boolean);
-    const b = normalizeCricketTeamName(right).split(" ").filter(Boolean);
-    if (!a.length || !b.length) return false;
-    const shorter = a.length <= b.length ? a : b;
-    const longer = a.length <= b.length ? b : a;
-    return shorter.every((token, index) => token === longer[index]
-        || (token.length === 1 && token === longer[index][0]));
+let cricketTeamAliasIndex = {};
+let cricketTeamAliasLoadPromise = null;
+
+function canonicalCricketTeamName(value) {
+    const cleaned = cleanCricketTeamLabel(value);
+    if (!cleaned) return "";
+    return cricketTeamAliasIndex[normalizeCricketTeamName(cleaned)] || cleaned;
 }
 
-function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
+async function ensureCricketTeamAliases() {
+    if (!cricketTeamAliasLoadPromise) {
+        cricketTeamAliasLoadPromise = (async () => {
+            try {
+                const response = await fetch("data/team_aliases.json?ts=" + Date.now(), { cache: "no-store" });
+                if (!response.ok) throw new Error("HTTP " + response.status);
+                const data = await response.json();
+                const aliases = data && data.aliases && typeof data.aliases === "object" ? data.aliases : {};
+                const index = {};
+                Object.entries(aliases).forEach(([alias, canonical]) => {
+                    const key = normalizeCricketTeamName(alias);
+                    if (key && typeof canonical === "string" && canonical.trim()) index[key] = cleanCricketTeamLabel(canonical);
+                });
+                cricketTeamAliasIndex = index;
+            } catch (error) {
+                console.error("Shared cricket team alias registry unavailable", error);
+                cricketTeamAliasIndex = {};
+            }
+        })();
+    }
+    return cricketTeamAliasLoadPromise;
+}
+
+function cricketTeamNamesEquivalent(left, right) {
+    const a = normalizeCricketTeamName(canonicalCricketTeamName(left));
+    const b = normalizeCricketTeamName(canonicalCricketTeamName(right));
+    return Boolean(a && b && a === b);
+}
+
+function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
+    if (cricketTeamNamesEquivalent(winner, team)) return true;
+    const alias = normalizeCricketTeamName(canonicalCricketTeamName(winner)).split(" ").filter(Boolean);
+    const full = normalizeCricketTeamName(canonicalCricketTeamName(team)).split(" ").filter(Boolean);
+    const other = normalizeCricketTeamName(canonicalCricketTeamName(opponent)).split(" ").filter(Boolean);
+    if (!alias.length || alias.length >= full.length) return false;
+    const isUniquePrefix = alias.length > 1 && alias.every((token, index) => token === full[index])
+        && !alias.every((token, index) => token === other[index]);
+    const isUniqueFinalToken = alias.length === 1 && alias[0] === full[full.length - 1]
+        && !other.includes(alias[0]);
+    return isUniquePrefix || isUniqueFinalToken;
+}
+
+function resolveResultWinnerTeam(resultText, team1, team2) {
     const text = String(resultText || "");
     const winnerCandidates = [];
     const pattern = /([^|;\n.!]+?)\s+(?:won|beat|defeated)\b/ig;
@@ -46,12 +91,19 @@ function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
         const candidate = match[1].trim().replace(/^(?:(?:match|result|finished|completed|complete|ended|full time)\s*[-:|]?\s*)+/i, "");
         if (candidate) winnerCandidates.push(candidate);
     }
-    const predictedIsTeam1 = cricketTeamNamesEquivalent(predictedTeam, team1);
-    const predictedIsTeam2 = cricketTeamNamesEquivalent(predictedTeam, team2);
-    if (predictedIsTeam1 === predictedIsTeam2) return false;
-    return winnerCandidates.some(winner =>
-        (predictedIsTeam1 && cricketTeamNamesEquivalent(winner, team1))
-        || (predictedIsTeam2 && cricketTeamNamesEquivalent(winner, team2)));
+    const resolvedWinners = new Set();
+    winnerCandidates.forEach(winner => {
+        const winnerIsTeam1 = cricketWinnerAliasMatchesTeam(winner, team1, team2);
+        const winnerIsTeam2 = cricketWinnerAliasMatchesTeam(winner, team2, team1);
+        if (winnerIsTeam1 === winnerIsTeam2) return;
+        resolvedWinners.add(canonicalCricketTeamName(winnerIsTeam1 ? team1 : team2));
+    });
+    return resolvedWinners.size === 1 ? [...resolvedWinners][0] : "";
+}
+
+function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
+    const winner = resolveResultWinnerTeam(resultText, team1, team2);
+    return Boolean(winner && cricketTeamNamesEquivalent(predictedTeam, winner));
 }
 
 function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
@@ -71,37 +123,23 @@ function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) 
     const startSeconds = Number(match?.timestamp_start);
     const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
     const terminalText = status.replace(/\binnings?\s+(?:is\s+)?completed?\b/g, " ");
-    const hasResultEvidence = /\b(result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText);
-    const isFinished = /\b(match\s+(?:is\s+)?(?:completed|finished|ended)|result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText)
-        || /^(?:finished|complete|completed)$/.test(terminalText.trim());
-    if (isFinished && hasStartTime && startSeconds > nowSeconds && !hasResultEvidence) return "upcoming";
-    if (isFinished) return "finished";
+    const hasResultEvidence = /\b(result|won|lost|beat|defeated|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText);
     const isLive = started || /\b(live|in progress|break|stumps|innings|in play|day [1-5]|lunch|tea|drinks|rain delay|bad light)\b/.test(status);
+    const isFinished = /\b(match\s+(?:is\s+)?(?:completed|finished|ended)|result|won|lost|beat|defeated|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText)
+        || /^(?:finished|complete|completed)$/.test(terminalText.trim());
+    // Explicit result/ended evidence wins. A generic provider "Finished" label
+    // must not override a confirmed in-progress fixture (seen in T10 feeds).
+    if (hasResultEvidence) return "finished";
     if (isLive) return "live";
+    if (isFinished && hasStartTime && startSeconds > nowSeconds) return "upcoming";
+    if (isFinished) return "finished";
     if (hasStartTime && startSeconds > nowSeconds) return "upcoming";
     return "unknown";
 }
 
 // ==========================================
-// NAME MAPPING (API Name -> Model Name)
+// NAME MAPPING (shared data/team_aliases.json registry)
 // ==========================================
-const teamMapping = {
-    // Pichli mappings
-    "Saint Lucia Kings": "St Lucia Kings",
-    "Northern Brave": "Northern Districts",
-    "Northern Brave Women": "Northern Districts Women",
-    "Central Hinds": "Central Districts Women",
-    "Sudurpaschim Royals": "Sudur Paschim Royals",
-    
-    // Nayi mappings (Jo test mein mili)
-    "Antigua & Barbuda Falcons": "Antigua and Barbuda Falcons",
-    "St Kitts & Nevis Patriots": "St Kitts and Nevis Patriots",
-    "Canterbury Kings": "Canterbury",
-    "Auckland Hearts": "Auckland Women",
-    "Canterbury Magicians": "Canterbury Women",
-    "Otago Sparks": "Otago Women",
-    "Wellington Blaze": "Wellington Women"
-};
 
 // ==========================================
 // ILMI DATA (DICTIONARY & CONSTANTS)
@@ -1470,13 +1508,14 @@ function savePrediction(matchId, team1, team2, predictedTeam, prob, fixture) {
 
 function getAccuracyStats() {
     let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
-    let evaluated = history.filter(h => h.isCorrect !== undefined);
-    let pending = history.filter(h => h.isCorrect === undefined);
+    let evaluated = history.filter(h => typeof h.isCorrect === 'boolean');
+    let pending = history.filter(h => typeof h.isCorrect !== 'boolean');
     let correct = evaluated.filter(h => h.isCorrect === true).length;
     return { total: evaluated.length, correct: correct, pending: pending.length };
 }
 
 async function fetchMatches() {
+    await ensureCricketTeamAliases();
     let container = document.getElementById("dynamic-prediction-area");
     let stats = getAccuracyStats();
     let accPercent = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
@@ -1652,10 +1691,13 @@ function renderMatches(matches) {
             let savedPred = history.find(h => String(h.matchId) === String(m.match_id));
             if (savedPred) {
                 let predictedTeam = savedPred.predictedTeam;
-                let isDrawOrNoResult = /\b(draw|tie|tied|abandon|cancel|no result)\b/i.test(note);
-                let isCorrect = !isDrawOrNoResult && resultWinnerMatchesTeam(note, predictedTeam, m.teama?.name, m.teamb?.name);
-                let badgeColor = isCorrect ? '#22c55e' : '#ef4444';
-                let badgeText = isCorrect ? '✅ Prediction Correct' : '❌ Prediction Wrong';
+                let isDrawOrNoResult = /\b(draw|drawn|tie|tied|abandon|cancel|no result)\b/i.test(note);
+                let actualWinner = isDrawOrNoResult ? "" : resolveResultWinnerTeam(note, m.teama?.name, m.teamb?.name);
+                let isCorrect = actualWinner ? cricketTeamNamesEquivalent(predictedTeam, actualWinner) : null;
+                let badgeColor = isCorrect === true ? '#22c55e' : (isCorrect === false ? '#ef4444' : '#fbbf24');
+                let badgeText = isCorrect === true ? '✅ Prediction Correct'
+                    : (isCorrect === false ? '❌ Prediction Wrong'
+                    : (isDrawOrNoResult ? '➖ No winner — not evaluated' : '⚠️ Winner name not recognized — not evaluated'));
                 statusText += `
                     <div style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px dashed ${badgeColor};">
                         <p style="color: #cbd5e1; margin: 0 0 4px 0; font-size: 0.75rem;">AI predicted: <b>${predictedTeam}</b></p>
@@ -1733,8 +1775,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
 
     // --- NAME MAPPING FOR AI ---
-    let modelT1 = teamMapping[t1] || t1;
-    let modelT2 = teamMapping[t2] || t2;
+    let modelT1 = canonicalCricketTeamName(t1);
+    let modelT2 = canonicalCricketTeamName(t2);
 
     // 1. AI PRE-TOSS CALCULATION
     let preDiv = document.getElementById('pre-toss-result');
@@ -1952,7 +1994,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         document.getElementById('post-toss-area').style.display = 'block';
         postDiv.innerHTML = "Calculating Post-Toss Impact...";
 
-        let modelTw = teamMapping[tw] || tw;
+        let modelTw = canonicalCricketTeamName(tw);
 
         try {
             const tossSide = modelTw === modelT1 ? 't1' : 't2';

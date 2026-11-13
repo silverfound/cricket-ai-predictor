@@ -14,6 +14,13 @@ from pathlib import Path
 
 from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, roc_auc_score
 
+try:
+    from scripts.team_identity import canonical_team_name, normalize_team_name, team_names_equivalent
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from team_identity import canonical_team_name, normalize_team_name, team_names_equivalent
+
 ROOT = Path(__file__).resolve().parents[1]
 HISTORY_PATH = ROOT / "data" / "cricsheet_match_history_2024_2026.json"
 SUPPORTED = {"T20", "ODI", "Test"}
@@ -30,12 +37,14 @@ def _valid_match(row):
     match_date = str(row.get("date") or "")
     if not isinstance(teams, list) or len(teams) != 2:
         return None
-    t1, t2 = (str(x or "").strip() for x in teams)
-    winner = str(winner or "").strip()
-    if not t1 or not t2 or t1.casefold() == t2.casefold():
+    t1, t2 = (canonical_team_name(x) for x in teams)
+    winner = canonical_team_name(winner)
+    if not t1 or not t2 or team_names_equivalent(t1, t2):
         return None
-    if winner.casefold() not in {t1.casefold(), t2.casefold()}:
+    winner_sides = [team for team in (t1, t2) if team_names_equivalent(winner, team)]
+    if len(winner_sides) != 1:
         return None
+    winner = winner_sides[0]
     try:
         date.fromisoformat(match_date)
     except ValueError:
@@ -101,7 +110,7 @@ def chronological_backtest(history, k_factor=K_FACTOR):
         for match in daily:
             t1, t2 = match["teams"]
             scope = (match["gender"], match["format"])
-            key1, key2 = (*scope, t1.casefold()), (*scope, t2.casefold())
+            key1, key2 = (*scope, normalize_team_name(t1)), (*scope, normalize_team_name(t2))
             p1 = _probability(ratings[key1], ratings[key2])
             actual = int(match["winner"].casefold() == t1.casefold())
             record = {"actual": actual, "p1": p1}
