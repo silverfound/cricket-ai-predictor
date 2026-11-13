@@ -1636,10 +1636,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     // 2. ILMI CALCULATION
     document.getElementById('ilmi-area').style.display = 'block';
     let ilmiDiv = document.getElementById('ilmi-content');
-    if (!isIlmiEligibleFixture(t1, t2, competitionTitle, type)) {
-        ilmiDiv.innerHTML = '<div style="color:#fbbf24;">Ilmi Prediction sirf international matches aur Cricsheet-trained major franchise leagues ke liye available hai. Domestic matches is se excluded hain.</div>';
-        return;
-    }
+    // Ilmi Insight remains available for domestic fixtures too. Team/venue/captain
+    // mapping checks below show a specific prompt if any input needs completion.
     ilmiDiv.innerHTML = "Calculating Ilmi Insight...";
 
     const matchInstant = new Date(Number(startTime) * 1000);
@@ -1829,6 +1827,10 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             const pred = { success: Boolean(predictionData.post_toss?.[predictionKey]), predictions: predictionData.post_toss?.[predictionKey] || {} };
             if (pred.success) {
                 const p1 = pred.predictions[modelT1], p2 = pred.predictions[modelT2];
+                if (p1 == null || p2 == null || !Number.isFinite(parseFloat(p1)) || !Number.isFinite(parseFloat(p2))) {
+                    postDiv.innerText = "Post-Toss prediction values unavailable for this toss selection. Please verify the selected toss winner and decision.";
+                    return;
+                }
                 let html = `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="color:#00ffcc;">${t1}: <b>${p1}</b></span><span style="color:#ff4d4d;">${t2}: <b>${p2}</b></span></div>`;
                 
                 if (!isLiveMatch) {
@@ -1848,6 +1850,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
                              </div>`;
                 }
                 postDiv.innerHTML = html;
+            } else {
+                postDiv.innerText = "Post-Toss prediction is unavailable for this toss winner/decision. Please try the other toss option.";
             }
         } catch (e) { postDiv.innerText = "Error calculating impact."; }
     };
