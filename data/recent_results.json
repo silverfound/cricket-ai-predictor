@@ -1,0 +1,28 @@
+{
+  "updated_at": "2026-11-13T13:00:00Z",
+  "matches": [
+    {
+      "match_id": "54551317",
+      "teama": {
+        "name": "Kathmandu Gurkhas (NPL)"
+      },
+      "teamb": {
+        "name": "Sudur Paschim Royals (NPL)"
+      },
+      "format_str": "T20",
+      "venue": {
+        "name": "Tribhuvan University International Cricket Ground, Kirtipur"
+      },
+      "competition": {
+        "title": "Nepal Premier League"
+      },
+      "status": "Finished",
+      "status_str": "S Paschim won by 7 runs",
+      "status_note": "S Paschim won by 7 runs",
+      "match_started": true,
+      "match_ended": true,
+      "timestamp_start": 1794542400,
+      "provider_source": "Verified result archive"
+    }
+  ]
+}
