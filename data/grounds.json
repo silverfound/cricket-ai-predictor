@@ -1076,16 +1076,16 @@
       "aliases": [],
       "city": "North Sydney",
       "country": "Australia",
-      "latitude": -33.83194,
-      "longitude": 151.20944,
+      "latitude": -33.8319,
+      "longitude": 151.20929,
       "timezone": "Australia/Sydney",
       "competitions": [
         "WBBL",
         "Domestic"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/28663588",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.northsydney.nsw.gov.au/homepage/179/getting-to-north-sydney-oval. Coordinates cross-checked against https://mapcarta.com/28663588. OSM/GeoNames venue point; North Sydney Council confirms 2 Fig Tree Lane, North Sydney NSW 2060."
     },
     {
       "id": "entebbe-cricket-oval",
@@ -1787,15 +1787,15 @@
       "aliases": [],
       "city": "Alice Springs",
       "country": "Australia",
-      "latitude": -23.698,
-      "longitude": 133.88,
+      "latitude": -23.70923,
+      "longitude": 133.87534,
       "timezone": "Australia/Darwin",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://www.ntlis.nt.gov.au/placenames/view.jsp?id=3221",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.alicesprings.nt.gov.au/sporting-facilities/tio-traeger-park-oval. Coordinates cross-checked against https://www.ntlis.nt.gov.au/placenames/view.jsp?id=3221. Corrected the starter pin to the Northern Territory Place Names Register coordinate; Alice Springs Town Council confirms the cricket/AFL oval at Traeger Park, The Gap NT 0870."
     },
     {
       "id": "marrara-cricket-ground",
@@ -1805,15 +1805,15 @@
       ],
       "city": "Darwin",
       "country": "Australia",
-      "latitude": -12.4,
-      "longitude": 130.883,
+      "latitude": -12.401,
+      "longitude": 130.888,
       "timezone": "Australia/Darwin",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/Marrara_Cricket_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.ntcricket.com.au/nt-cricket/about-us/contact-us. Coordinates cross-checked against https://en.wikipedia.org/wiki/Marrara_Cricket_Ground. Corrected the starter pin to the published DXC Arena/Marrara Cricket Ground coordinate; Northern Territory Cricket confirms 155 Abala Road, Marrara NT 0812."
     },
     {
       "id": "all-border-field",
@@ -1839,16 +1839,16 @@
       ],
       "city": "Melbourne",
       "country": "Australia",
-      "latitude": -37.849,
-      "longitude": 144.982,
+      "latitude": -37.85598,
+      "longitude": 144.9802,
       "timezone": "Australia/Melbourne",
       "competitions": [
         "Domestic",
         "WBBL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W733176932",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cricketvictoria.com.au/important-venue-information/. Coordinates cross-checked against https://mapcarta.com/W733176932. Corrected the starter pin to the OSM cricket-pitch centre; Cricket Victoria confirms Junction Oval, Lakeside Drive, St Kilda VIC 3182."
     },
     {
       "id": "karen-rolton-oval",
@@ -1856,16 +1856,16 @@
       "aliases": [],
       "city": "Adelaide",
       "country": "Australia",
-      "latitude": -34.923,
-      "longitude": 138.589,
+      "latitude": -34.92253,
+      "longitude": 138.58521,
       "timezone": "Australia/Adelaide",
       "competitions": [
         "Domestic",
         "WBBL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W176174473",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.saca.com.au/community/facilities. Coordinates cross-checked against https://mapcarta.com/W176174473. Corrected the starter pin to the OSM cricket pitch; SACA confirms Karen Rolton Oval at West Terrace opposite Royal Adelaide Hospital."
     },
     {
       "id": "lavington-sports-oval",
@@ -1925,15 +1925,15 @@
       "aliases": [],
       "city": "Townsville",
       "country": "Australia",
-      "latitude": -19.313,
-      "longitude": 146.727,
+      "latitude": -19.31764,
+      "longitude": 146.73186,
       "timezone": "Australia/Brisbane",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W175599089",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.townsville.qld.gov.au/facilities-and-recreation/sport-and-leisure/riverway-stadium. Coordinates cross-checked against https://mapcarta.com/W175599089. Corrected the starter pin to the OSM cricket/AFL oval; Townsville City Council confirms Sporting Drive, Condon QLD 4815."
     },
     {
       "id": "sydney-showground",
@@ -1941,15 +1941,15 @@
       "aliases": [],
       "city": "Sydney",
       "country": "Australia",
-      "latitude": -33.843,
-      "longitude": 151.068,
+      "latitude": -33.84312,
+      "longitude": 151.06763,
       "timezone": "Australia/Sydney",
       "competitions": [
         "BBL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W4385854",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.sydneyshowground.com.au/. Coordinates cross-checked against https://mapcarta.com/W4385854. OSM stadium point; the official Sydney Showground site confirms the venue within Sydney Olympic Park. Registry point is within a few tens of metres."
     },
     {
       "id": "bankstown-oval",
