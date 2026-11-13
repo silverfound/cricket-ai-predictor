@@ -25,9 +25,38 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertEqual(fixture["teamb"]["name"], "Rwanda Women")
         self.assertEqual(fixture["format_str"], "T20")
         self.assertEqual(fixture["provider_source"], "CricketData")
+        self.assertTrue(fixture["match_started"])
+        self.assertFalse(fixture["match_ended"])
         self.assertNotIn("score", fixture)
         self.assertNotIn("live", fixture)
         self.assertGreater(fixture["timestamp_start"], 0)
+
+    def test_cricketdata_match_ended_flag_is_normalized(self):
+        payload = {
+            "status": "success",
+            "data": [{
+                "id": "cd-ended", "matchType": "t10",
+                "teams": ["Royal Desert Champions", "Yas Lions"],
+                "status": "Live", "matchStarted": True, "matchEnded": True,
+                "dateTimeGMT": "2026-11-13T13:45:00Z",
+            }],
+        }
+        [fixture] = normalize_cricketdata(payload)
+        self.assertTrue(fixture["match_started"])
+        self.assertTrue(fixture["match_ended"])
+        self.assertEqual(fixture["format_str"], "T10")
+
+    def test_highlightly_start_time_is_parsed_in_requested_riyadh_timezone(self):
+        from datetime import datetime, timezone
+        payload = {"data": [{
+            "id": "hl-riyadh-time", "homeTeam": {"name": "Royal Desert Champions"},
+            "awayTeam": {"name": "Yas Lions"}, "format": "T10",
+            "startDate": "2026-11-13", "startTime": "16:45",
+            "state": {"description": "Scheduled"},
+        }]}
+        [fixture] = normalize_highlightly(payload)
+        expected = int(datetime(2026, 11, 13, 13, 45, tzinfo=timezone.utc).timestamp())
+        self.assertEqual(fixture["timestamp_start"], expected)
 
     def test_cricketdata_t10_is_not_misclassified_as_t20(self):
         payload = {
