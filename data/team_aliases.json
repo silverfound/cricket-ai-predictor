@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "description": "Shared provider-to-model cricket team aliases. Do not add ambiguous short names here; resolve those only with fixture context.",
+  "aliases": {
+    "Saint Lucia Kings": "St Lucia Kings",
+    "St Lucia Kings": "St Lucia Kings",
+    "Northern Brave": "Northern Districts",
+    "Northern Brave Women": "Northern Districts Women",
+    "Northern Districts Women": "Northern Districts Women",
+    "Central Hinds": "Central Districts Women",
+    "Central Districts Women": "Central Districts Women",
+    "Sudurpaschim Royals": "Sudur Paschim Royals",
+    "Sudur Paschim Royals": "Sudur Paschim Royals",
+    "S Paschim": "Sudur Paschim Royals",
+    "S. Paschim": "Sudur Paschim Royals",
+    "Antigua & Barbuda Falcons": "Antigua and Barbuda Falcons",
+    "Antigua and Barbuda Falcons": "Antigua and Barbuda Falcons",
+    "St Kitts & Nevis Patriots": "St Kitts and Nevis Patriots",
+    "St Kitts and Nevis Patriots": "St Kitts and Nevis Patriots",
+    "Canterbury Kings": "Canterbury",
+    "Auckland Hearts": "Auckland Women",
+    "Auckland Women": "Auckland Women",
+    "Canterbury Magicians": "Canterbury Women",
+    "Canterbury Women": "Canterbury Women",
+    "Otago Sparks": "Otago Women",
+    "Otago Women": "Otago Women",
+    "Wellington Blaze": "Wellington Women",
+    "Wellington Women": "Wellington Women"
+  }
+}
