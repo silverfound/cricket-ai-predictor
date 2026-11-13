@@ -34,6 +34,23 @@ class ChronologicalEloBacktestTests(unittest.TestCase):
         self.assertEqual(report["eligible_matches"], 0)
         self.assertEqual(report["skipped_rows"], 2)
 
+    def test_provider_aliases_share_one_team_identity(self):
+        matches = [
+            {"date": "2025-01-01", "teams": ["Sudur Paschim Royals", "Kathmandu Gurkhas"], "winner": "S Paschim", "gender": "male", "match_type": "T20"},
+            {"date": "2025-01-02", "teams": ["S Paschim", "Kathmandu Gurkhas"], "winner": "Kathmandu Gurkhas", "gender": "male", "match_type": "T20"},
+        ]
+        report = chronological_backtest(matches)
+        self.assertEqual(report["eligible_matches"], 2)
+        self.assertEqual(report["skipped_rows"], 0)
+
+    def test_canonical_duplicate_team_names_are_rejected(self):
+        matches = [
+            {"date": "2025-01-01", "teams": ["Sudurpaschim Royals", "Sudur Paschim Royals"], "winner": "Sudur Paschim Royals", "gender": "male", "match_type": "T20"},
+        ]
+        report = chronological_backtest(matches)
+        self.assertEqual(report["eligible_matches"], 0)
+        self.assertEqual(report["skipped_rows"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()
