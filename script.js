@@ -1504,10 +1504,16 @@ async function fetchMatches() {
                     if (!id) return;
                     if (byId.has(id)) {
                         const index = byId.get(id);
-                        allMatches[index] = { ...allMatches[index],
-                            status_note: allMatches[index].status_note || archived.status_note,
-                            status_str: allMatches[index].status_str || archived.status_str,
-                            match_ended: allMatches[index].match_ended ?? archived.match_ended };
+                        const current = allMatches[index];
+                        const currentResult = getMatchResultText(current);
+                        const archivedResult = getMatchResultText(archived);
+                        allMatches[index] = { ...archived, ...current,
+                            status_note: currentResult ? current.status_note : (archived.status_note || archivedResult),
+                            status_str: currentResult ? current.status_str : (archived.status_str || archivedResult),
+                            result_text: current.result_text || archived.result_text,
+                            result: current.result || archived.result,
+                            match_ended: current.match_ended ?? archived.match_ended,
+                            provider_metadata: { ...(archived.provider_metadata || {}), ...(current.provider_metadata || {}) } };
                     } else {
                         allMatches.push({ ...archived, archived_result: true });
                         byId.set(id, allMatches.length - 1);
