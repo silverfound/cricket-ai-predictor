@@ -133,6 +133,7 @@ Object.assign(urduTeams, {
     "Lumbini Lions": "لمبنی لائنز",
     "Pokhara Avengers": "پوکھرا ایونجرز",
     "Sudurpaschim Royals": "سدورپشچم رائلز",
+    "Sudur Paschim Royals": "سدورپشچم رائلز",
     "Karnali Yaks": "کرنالی یاکس",
 
     "Durban's Super Giants": "ڈربن سپر جائنٹس", "Joburg Super Kings": "جوبرگ سپر کنگز",
@@ -318,8 +319,10 @@ Object.assign(urduTeams, {
 
 // Exact match first; then case/spacing/punctuation-insensitive alias match.
 function normalizeIlmiName(value) {
-    return String(value || "").toLowerCase().replace(/&/g, "and")
-        .replace(/[^a-z0-9]/g, "");
+    // Feed fixture labels sometimes append league tags such as "(NPL)" to team names.
+    // Strip known competition tags before resolving captain/Urdu mappings.
+    const clean = String(value || "").trim().replace(/\\s*\\((?:NPL|IPL|PSL|BBL|WBBL|BPL|CPL|WCPL|LPL|ILT20|SA20|MLC|WPL|T10|The Hundred)\\)\\s*$/i, "");
+    return clean.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]/g, "");
 }
 // Dataset-wide Urdu fallback for every Cricsheet international/major-league name.
 const ilmiWordUrdu = {
@@ -710,6 +713,7 @@ const teamCaptains = {
     "Lumbini Lions": "Rohit Paudel",
     "Pokhara Avengers": "Kushal Bhurtel",
     "Sudurpaschim Royals": "Dipendra Singh Airee",
+    "Sudur Paschim Royals": "Dipendra Singh Airee",
     // Caribbean Premier League 2026
     "Trinbago Knight Riders": "Nicholas Pooran",
     "Guyana Amazon Warriors": "Imran Tahir",
@@ -1131,7 +1135,9 @@ async function resolveVenueLocation(city, country, venue, venueMeta = {}, timezo
     };
     const globalGround = await findGlobalGround(venue);
     if (globalGround) return globalGround;
-    const verifiedGround = verifiedGrounds[normalizeVenueText(venue)];
+    const venueKey = normalizeVenueText(venue);
+    const verifiedGround = verifiedGrounds[venueKey] || Object.entries(verifiedGrounds)
+        .find(([knownName]) => venueKey.startsWith(knownName + " "))?.[1];
     if (verifiedGround && isValidIanaTimezone(verifiedGround.timezone)) {
         const { name, city, country, ...coordinates } = verifiedGround;
         return { ...coordinates, source: "verified-venue-registry", confidence: 100,
