@@ -12,6 +12,7 @@ cricketTeamAliasIndex = Object.fromEntries(Object.entries(__aliases).map(([alias
 this.classifyMatchStatus = classifyMatchStatus;
 this.getMatchResultText = getMatchResultText;
 this.resultWinnerMatchesTeam = resultWinnerMatchesTeam;
+this.resolveResultWinnerTeam = resolveResultWinnerTeam;
 this.canonicalCricketTeamName = canonicalCricketTeamName;
 this.cricketTeamNamesEquivalent = cricketTeamNamesEquivalent;
 `;
@@ -49,5 +50,10 @@ if (sandbox.canonicalCricketTeamName("Auckland Hearts") !== "Auckland Women") th
 if (!sandbox.cricketTeamNamesEquivalent("Melbourne Stars (W)", "Melbourne Stars Women")) throw new Error("(W) and Women labels must identify the same women's team");
 if (sandbox.cricketTeamNamesEquivalent("Melbourne Stars", "Melbourne Stars Women")) throw new Error("men's and women's teams must never be treated as identical");
 if (sandbox.cricketTeamNamesEquivalent("Team A", "Team Alpha")) throw new Error("single-letter prefix must not create a false team match");
+
+
+if (sandbox.resolveResultWinnerTeam("Sudur Paschim won by 7 runs", fixture.teama.name, fixture.teamb.name) !== "Sudur Paschim Royals") throw new Error("unique multi-word winner abbreviation must resolve to canonical team");
+if (sandbox.resolveResultWinnerTeam("Mystery XI won by 10 runs", "United Tigers", "Emirates Eagles") !== "") throw new Error("unknown winner must remain unresolved");
+if (sandbox.resolveResultWinnerTeam("Match abandoned with no result", "United Tigers", "Emirates Eagles") !== "") throw new Error("no-result text must not invent a winner");
 
 process.stdout.write("PASS result note classifies as Finished\nPASS S Paschim alias matches Sudur Paschim Royals prediction\nPASS losing team remains incorrect\nPASS result can be read from status field\n");
