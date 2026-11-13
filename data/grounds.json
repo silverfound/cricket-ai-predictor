@@ -208,17 +208,21 @@
     {
       "id": "bay-oval",
       "name": "Bay Oval",
-      "aliases": [],
+      "aliases": [
+        "Bay Oval, Mount Maunganui",
+        "Bay Oval Cricket Ground",
+        "Bay Oval, Tauranga"
+      ],
       "city": "Mount Maunganui",
       "country": "New Zealand",
-      "latitude": -37.68,
-      "longitude": 176.215,
+      "latitude": -37.6528,
+      "longitude": 176.1907,
       "timezone": "Pacific/Auckland",
       "competitions": [
         "International",
         "Super Smash"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "source_url": "https://cricketfieldguide.com/ground/bay-oval-mount-maunganui",
       "verification_status": "needs_user_verification",
       "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
     },
