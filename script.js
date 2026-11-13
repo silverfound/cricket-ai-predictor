@@ -2,6 +2,43 @@
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
 let allowedPredictionMatchIds = new Set();
 
+function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
+    const metadata = match?.provider_metadata || {};
+    const asFlag = value => {
+        if (value === true || value === 1) return true;
+        if (typeof value === "string") return ["true", "yes", "1"].includes(value.trim().toLowerCase());
+        return false;
+    };
+    const ended = asFlag(match?.match_ended) || asFlag(match?.matchEnded)
+        || asFlag(metadata.matchEnded) || asFlag(metadata.match_ended);
+    if (ended) return "finished";
+
+    const started = asFlag(match?.match_started) || asFlag(match?.matchStarted)
+        || asFlag(metadata.matchStarted) || asFlag(metadata.match_started);
+    const status = [match?.status_str, match?.status, match?.status_note]
+        .filter(Boolean).join(" ").trim().toLowerCase();
+    const startSeconds = Number(match?.timestamp_start);
+    const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
+
+    // "Innings completed" means an innings ended, not necessarily the match.
+    const terminalText = status.replace(/\binnings?\s+(?:is\s+)?completed?\b/g, " ");
+    const hasResultEvidence = /\b(result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText);
+    const isFinished = /\b(match\s+(?:is\s+)?(?:completed|finished|ended)|result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText)
+        || /^(?:finished|complete|completed)$/.test(terminalText.trim());
+    // A generic Finished/Completed label must not override a future kickoff.
+    // Explicit provider matchEnded flags and actual result evidence remain authoritative.
+    if (isFinished && hasStartTime && startSeconds > nowSeconds && !hasResultEvidence) return "upcoming";
+    if (isFinished) return "finished";
+
+    const isLive = started || /\b(live|in progress|break|stumps|innings|in play|day [1-5]|lunch|tea|drinks|rain delay|bad light)\b/.test(status);
+    if (isLive) return "live";
+
+    // Future start is the strongest Upcoming signal when provider text is absent or stale.
+    if (hasStartTime && startSeconds > nowSeconds) return "upcoming";
+    return "unknown";
+}
+
+
 // ==========================================
 // NAME MAPPING (API Name -> Model Name)
 // ==========================================
@@ -1449,25 +1486,15 @@ async function fetchMatches() {
             if (seen.has(fixtureKey)) return;
             seen.add(fixtureKey);
 
-            const status = String(m.status_str || m.status_note || m.status || '').trim().toLowerCase();
-            const startSeconds = Number(m.timestamp_start);
-            const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
-
-            // Terminal states take priority over live keywords (e.g. "innings completed").
-            const isFinished = /\b(completed|complete|finished|finish|result|won|draw|tied|abandoned|abandon|cancelled|canceled)\b/.test(status);
-            const isLive = /\b(live|in progress|progress|break|stumps|innings|in play|day [1-5]|lunch|tea|drinks|rain delay|bad light)\b/.test(status);
-            const isScheduled = /\b(scheduled|upcoming|fixture|not started|yet to begin|match starts|toss)\b/.test(status);
-
-            if (isFinished) {
+            const matchBucket = classifyMatchStatus(m, nowSeconds);
+            if (matchBucket === 'finished') {
                 finishedMatches.push(m);
-            } else if (isLive) {
+            } else if (matchBucket === 'live') {
                 liveMatches.push(m);
-            } else if (isScheduled && hasStartTime && startSeconds > nowSeconds) {
-                // A scheduled fixture is Upcoming only while its start time is still in the future.
+            } else if (matchBucket === 'upcoming') {
                 upcomingMatches.push(m);
             }
-            // Stale "Scheduled" records with a past start time, and unknown statuses,
-            // are deliberately omitted instead of being incorrectly shown as Upcoming.
+            // Past fixtures without reliable started/ended evidence remain hidden.
         });
 
         // Prediction eligibility follows the same visible, classified fixture set.
