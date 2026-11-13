@@ -2248,9 +2248,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://ticketing.ncg.com.na/",
-      "verification_status": "needs_user_verification",
-      "notes": "Separated from Wanderers Cricket Ground: official Namibia Cricket Ground ticketing page identifies the distinct venue at Cricket Street, Olympia, Windhoek. Public coordinate reference is -22.6059, 17.0875; keep unverified until its exact field boundary is independently mapped."
+      "source_url": "https://en.wikipedia.org/wiki/Namibia_Cricket_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://ticketing.ncg.com.na/ and https://cricketnamibia.com/contact-us/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Namibia_Cricket_Ground. Verified as a separate venue from Wanderers Cricket Ground: Cricket Namibia's official ticketing/contact pages give Cricket Street, Olympia, Windhoek; published ground coordinate is -22.6059, 17.0875."
     },
     {
       "id": "buffalo-park",
@@ -2494,15 +2494,15 @@
       "aliases": [],
       "city": "Windhoek",
       "country": "Namibia",
-      "latitude": -22.56,
-      "longitude": 17.08,
+      "latitude": -22.5922697,
+      "longitude": 17.0701141,
       "timezone": "Africa/Windhoek",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://en.wikipedia.org/wiki/Affies_Park",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://cricketnamibia.com/contact-us/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Affies_Park. Corrected the starter pin to the published Affies Park/Windhoek Afrikaans Primary School Ground location; Cricket Namibia confirms its Windhoek cricket operations. Kept unverified pending a specific school/ground map."
     },
     {
       "id": "ar-nos-vale",
@@ -2886,15 +2886,15 @@
       "aliases": [],
       "city": "Gelephu",
       "country": "Bhutan",
-      "latitude": 26.86,
-      "longitude": 90.49,
+      "latitude": 26.8787,
+      "longitude": 90.4826,
       "timezone": "Asia/Thimphu",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://cricketfieldguide.com/ground/gelephu-international-cricket-ground-gelephu",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricketbhutan.org/gelephu-international-cricket-ground/. Coordinates cross-checked against https://cricketfieldguide.com/ground/gelephu-international-cricket-ground-gelephu. Corrected the starter pin to the published Gelephu International Cricket Ground point; Bhutan Cricket Council Board confirms the international stadium in Gelephu, Sarpang District."
     },
     {
       "id": "st-albans-club",
@@ -3483,15 +3483,15 @@
       "aliases": [],
       "city": "Peshawar",
       "country": "Pakistan",
-      "latitude": 34.0151,
-      "longitude": 71.5249,
+      "latitude": 34.02173,
+      "longitude": 71.5781,
       "timezone": "Asia/Karachi",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/29594120",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://mapcarta.com/29594120. Coordinates cross-checked against https://mapcarta.com/29594120. Corrected the starter pin by about 5 km to the OSM cricket-stadium footprint for Imran Khan Cricket Stadium (formerly Arbab Niaz Stadium), Peshawar; PCB primary map confirmation is still needed."
     },
     {
       "id": "pakistan-iqbal",
@@ -3516,15 +3516,15 @@
       "aliases": [],
       "city": "Sialkot",
       "country": "Pakistan",
-      "latitude": 32.4945,
-      "longitude": 74.5229,
+      "latitude": 32.5007,
+      "longitude": 74.55381,
       "timezone": "Asia/Karachi",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W641306619",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://mapcarta.com/W641306619. Coordinates cross-checked against https://mapcarta.com/W641306619. Corrected the starter pin by about 3 km to the OSM cricket-stadium point for Jinnah Stadium, Sialkot; kept unverified pending a PCB primary venue page."
     },
     {
       "id": "pakistan-lcca",
@@ -3532,15 +3532,15 @@
       "aliases": [],
       "city": "Lahore",
       "country": "Pakistan",
-      "latitude": 31.5204,
-      "longitude": 74.3587,
+      "latitude": 31.5129012,
+      "longitude": 74.3359814,
       "timezone": "Asia/Karachi",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://en.wikipedia.org/wiki/Lahore_City_Cricket_Association_Ground",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://en.wikipedia.org/wiki/Lahore_City_Cricket_Association_Ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Lahore_City_Cricket_Association_Ground. Corrected the starter pin by about 2.5 km to the published LCCA Ground coordinate; the ground is opposite Gaddafi Stadium in Lahore. Kept unverified pending a primary LRCA/PCB venue map."
     },
     {
       "id": "pakistan-zafar-ali",
@@ -3548,15 +3548,15 @@
       "aliases": [],
       "city": "Sahiwal",
       "country": "Pakistan",
-      "latitude": 30.67,
-      "longitude": 73.106,
+      "latitude": 30.66027,
+      "longitude": 73.10007,
       "timezone": "Asia/Karachi",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W367866386",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://mapcarta.com/W367866386. Coordinates cross-checked against https://mapcarta.com/W367866386. Corrected the starter pin by about 1.2 km to the OSM cricket-stadium point for Zafar Ali Stadium, Sahiwal; kept unverified pending a Punjab sports/PCB primary map."
     },
     {
       "id": "bangladesh-khulna",
