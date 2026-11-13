@@ -18,32 +18,62 @@ function getMatchResultText(match) {
     return useful.join(" | ").trim();
 }
 
+function cleanCricketTeamLabel(value) {
+    let label = String(value || "").trim();
+    label = label.replace(/\s*\((?:NPL|IPL|PSL|BBL|WBBL|BPL|CPL|WCPL|LPL|ILT20|SA20|MLC|WPL|T10|The Hundred)\)\s*$/i, "");
+    label = label.replace(/\s*\((?:W|Women)\)\s*$/i, " Women");
+    return label.replace(/\s+/g, " ").trim();
+}
+
 function normalizeCricketTeamName(value) {
-    return String(value || "").toLowerCase()
-        .replace(/\([^)]*\)/g, " ")
-        .replace(/\b(npl|ipl|bbl|psl|sa20|ilt20)\b/g, " ")
-        .replace(/\bs\.?\s*paschim\b/g, "sudur paschim")
-        .replace(/\bsudurpaschim\b/g, "sudur paschim")
+    return cleanCricketTeamLabel(value).toLowerCase()
+        .replace(/&/g, " and ")
         .replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
 }
 
+let cricketTeamAliasIndex = {};
+let cricketTeamAliasLoadPromise = null;
+
+function canonicalCricketTeamName(value) {
+    const cleaned = cleanCricketTeamLabel(value);
+    if (!cleaned) return "";
+    return cricketTeamAliasIndex[normalizeCricketTeamName(cleaned)] || cleaned;
+}
+
+async function ensureCricketTeamAliases() {
+    if (!cricketTeamAliasLoadPromise) {
+        cricketTeamAliasLoadPromise = (async () => {
+            try {
+                const response = await fetch("data/team_aliases.json?ts=" + Date.now(), { cache: "no-store" });
+                if (!response.ok) throw new Error("HTTP " + response.status);
+                const data = await response.json();
+                const aliases = data && data.aliases && typeof data.aliases === "object" ? data.aliases : {};
+                const index = {};
+                Object.entries(aliases).forEach(([alias, canonical]) => {
+                    const key = normalizeCricketTeamName(alias);
+                    if (key && typeof canonical === "string" && canonical.trim()) index[key] = cleanCricketTeamLabel(canonical);
+                });
+                cricketTeamAliasIndex = index;
+            } catch (error) {
+                console.error("Shared cricket team alias registry unavailable", error);
+                cricketTeamAliasIndex = {};
+            }
+        })();
+    }
+    return cricketTeamAliasLoadPromise;
+}
+
 function cricketTeamNamesEquivalent(left, right) {
-    const a = normalizeCricketTeamName(left).split(" ").filter(Boolean);
-    const b = normalizeCricketTeamName(right).split(" ").filter(Boolean);
-    if (!a.length || !b.length) return false;
-    const shorter = a.length <= b.length ? a : b;
-    const longer = a.length <= b.length ? b : a;
-    return shorter.every((token, index) => token === longer[index]
-        || (token.length === 1 && token === longer[index][0]));
+    const a = normalizeCricketTeamName(canonicalCricketTeamName(left));
+    const b = normalizeCricketTeamName(canonicalCricketTeamName(right));
+    return Boolean(a && b && a === b);
 }
 
 function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
     if (cricketTeamNamesEquivalent(winner, team)) return true;
-    const alias = normalizeCricketTeamName(winner).split(" ").filter(Boolean);
-    const full = normalizeCricketTeamName(team).split(" ").filter(Boolean);
-    const other = normalizeCricketTeamName(opponent).split(" ").filter(Boolean);
-    // Accept a one-word provider abbreviation only when it uniquely identifies
-    // the final word of exactly one of the two competing team names.
+    const alias = normalizeCricketTeamName(canonicalCricketTeamName(winner)).split(" ").filter(Boolean);
+    const full = normalizeCricketTeamName(canonicalCricketTeamName(team)).split(" ").filter(Boolean);
+    const other = normalizeCricketTeamName(canonicalCricketTeamName(opponent)).split(" ").filter(Boolean);
     return alias.length === 1 && full.length > 1
         && alias[0] === full[full.length - 1]
         && (!other.length || alias[0] !== other[other.length - 1]);
@@ -101,25 +131,8 @@ function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) 
 }
 
 // ==========================================
-// NAME MAPPING (API Name -> Model Name)
+// NAME MAPPING (shared data/team_aliases.json registry)
 // ==========================================
-const teamMapping = {
-    // Pichli mappings
-    "Saint Lucia Kings": "St Lucia Kings",
-    "Northern Brave": "Northern Districts",
-    "Northern Brave Women": "Northern Districts Women",
-    "Central Hinds": "Central Districts Women",
-    "Sudurpaschim Royals": "Sudur Paschim Royals",
-    
-    // Nayi mappings (Jo test mein mili)
-    "Antigua & Barbuda Falcons": "Antigua and Barbuda Falcons",
-    "St Kitts & Nevis Patriots": "St Kitts and Nevis Patriots",
-    "Canterbury Kings": "Canterbury",
-    "Auckland Hearts": "Auckland Women",
-    "Canterbury Magicians": "Canterbury Women",
-    "Otago Sparks": "Otago Women",
-    "Wellington Blaze": "Wellington Women"
-};
 
 // ==========================================
 // ILMI DATA (DICTIONARY & CONSTANTS)
@@ -1495,6 +1508,7 @@ function getAccuracyStats() {
 }
 
 async function fetchMatches() {
+    await ensureCricketTeamAliases();
     let container = document.getElementById("dynamic-prediction-area");
     let stats = getAccuracyStats();
     let accPercent = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
@@ -1751,8 +1765,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
 
     // --- NAME MAPPING FOR AI ---
-    let modelT1 = teamMapping[t1] || t1;
-    let modelT2 = teamMapping[t2] || t2;
+    let modelT1 = canonicalCricketTeamName(t1);
+    let modelT2 = canonicalCricketTeamName(t2);
 
     // 1. AI PRE-TOSS CALCULATION
     let preDiv = document.getElementById('pre-toss-result');
@@ -1970,7 +1984,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         document.getElementById('post-toss-area').style.display = 'block';
         postDiv.innerHTML = "Calculating Post-Toss Impact...";
 
-        let modelTw = teamMapping[tw] || tw;
+        let modelTw = canonicalCricketTeamName(tw);
 
         try {
             const tossSide = modelTw === modelT1 ? 't1' : 't2';
