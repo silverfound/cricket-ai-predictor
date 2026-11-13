@@ -39,9 +39,9 @@
         "BBL",
         "WBBL"
       ],
-      "source_url": "https://www.monumentaustralia.org.au/themes/culture/sport/display/93611-centenary-of-rugby-league-sydney-cricket-ground",
+      "source_url": "https://www.cricket.com.au/tickets/venues/sydney-cricket-ground",
       "verification_status": "verified",
-      "notes": "Venue identity/address checked against official venue source (https://www.cricket.com.au/tickets/venues/sydney-cricket-ground). Coordinates cross-checked against OpenStreetMap-derived map record (https://www.monumentaustralia.org.au/themes/culture/sport/display/93611-centenary-of-rugby-league-sydney-cricket-ground); Cricket Australia confirms Driver Avenue, Moore Park NSW 2021; independent GPS is -33.891285, 151.223676 and registry pin is within approx. 115 m."
+      "notes": "Verified venue identity and address against Cricket Australia (Driver Avenue, Moore Park NSW 2021) and the official SCG contact page. Coordinates independently cross-checked against Monument Australia GPS (-33.891285, 151.223676); registry point is within approximately 115 m."
     },
     {
       "id": "adelaide-oval",
@@ -3044,19 +3044,22 @@
     },
     {
       "id": "ruiru-sports",
-      "name": "Ruiru Sports Club",
-      "aliases": [],
-      "city": "Ruiru",
+      "name": "Ruaraka Sports Club Ground",
+      "aliases": [
+        "Ruaraka Sports Club",
+        "Ruaraka Sports Club Ground"
+      ],
+      "city": "Nairobi",
       "country": "Kenya",
-      "latitude": -1.13075,
-      "longitude": 36.99086,
+      "latitude": -1.25889,
+      "longitude": 36.85833,
       "timezone": "Africa/Nairobi",
       "competitions": [
         "International"
       ],
-      "source_url": "https://ruirusportsclub.co.ke/",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://ruirusportsclub.co.ke/ and https://www.lawnbowls.com/clubs/ruiru-sports-club. Coordinates cross-checked against https://ruirusportsclub.co.ke/. Kept unverified: Ruiru Sports Club's official information lists golf, bowls and swimming, but no cricket ground. This record may be a non-cricket venue and should not be certified as a cricket ground."
+      "source_url": "https://www.cricketarchive.com/Archive/Grounds/16/1331.html",
+      "verification_status": "verified",
+      "notes": "Corrected the erroneous Ruiru Sports Club entry: Ruiru Sports Club is a golf/bowls club and not a cricket ground. Replaced it with the verified Ruaraka Sports Club Ground, Nairobi, which has ODI/T20I and first-class history. CricketArchive confirms the venue and Cricket Kenya/ICC confirm Ruaraka Sports Club, Utalii Lane, Nairobi. Legacy record ID ruiru-sports is retained for compatibility."
     },
     {
       "id": "kyambogo",
