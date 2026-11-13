@@ -1621,7 +1621,7 @@ function renderMatches(matches) {
         const resultText = getMatchResultText(m);
         if (currentTab === 'finished' && resultText) {
             let note = resultText;
-            statusText = \`<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">\${note}</p>\`;
+            statusText = `<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${note}</p>`;
             let savedPred = history.find(h => String(h.matchId) === String(m.match_id));
             if (savedPred) {
                 let predictedTeam = savedPred.predictedTeam;
@@ -1629,15 +1629,15 @@ function renderMatches(matches) {
                 let isCorrect = !isDrawOrNoResult && resultWinnerMatchesTeam(note, predictedTeam, m.teama?.name, m.teamb?.name);
                 let badgeColor = isCorrect ? '#22c55e' : '#ef4444';
                 let badgeText = isCorrect ? '✅ Prediction Correct' : '❌ Prediction Wrong';
-                statusText += \`
-                    <div style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px dashed \${badgeColor};">
-                        <p style="color: #cbd5e1; margin: 0 0 4px 0; font-size: 0.75rem;">AI predicted: <b>\${predictedTeam}</b></p>
-                        <p style="color: \${badgeColor}; margin: 0; font-size: 0.8rem; font-weight: bold;">\${badgeText}</p>
-                    </div>\`;
+                statusText += `
+                    <div style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px dashed ${badgeColor};">
+                        <p style="color: #cbd5e1; margin: 0 0 4px 0; font-size: 0.75rem;">AI predicted: <b>${predictedTeam}</b></p>
+                        <p style="color: ${badgeColor}; margin: 0; font-size: 0.8rem; font-weight: bold;">${badgeText}</p>
+                    </div>`;
                 savedPred.fixture = { ...m };
                 savedPred.isCorrect = isCorrect;
                 localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history));
-            } else { statusText += \`<p style="color: #94a3b8; margin: 5px 0 0 0; font-size: 0.75rem; font-style: italic;">AI prediction not recorded.</p>\`; }
+            } else { statusText += `<p style="color: #94a3b8; margin: 5px 0 0 0; font-size: 0.75rem; font-style: italic;">AI prediction not recorded.</p>`; }
         }
 
         html += `
