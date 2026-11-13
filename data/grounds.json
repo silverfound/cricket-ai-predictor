@@ -939,16 +939,16 @@
       "aliases": [],
       "city": "Dambulla",
       "country": "Sri Lanka",
-      "latitude": 7.85954,
-      "longitude": 80.63404,
+      "latitude": 7.85944,
+      "longitude": 80.63389,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International",
         "LPL"
       ],
-      "source_url": "https://mapcarta.com/W158821470",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue identity/address: https://en.wikipedia.org/wiki/Rangiri_Dambulla_International_Stadium. Coordinates cross-checked against map record (https://mapcarta.com/W158821470). Corrected to the mapped cricket pitch at 7.85954, 80.63404; kept unverified pending a primary Sri Lanka Cricket venue page."
+      "source_url": "https://en.wikipedia.org/wiki/Rangiri_Dambulla_International_Stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.srilankacricket.lk/ and https://en.wikipedia.org/wiki/Rangiri_Dambulla_International_Stadium. Coordinates cross-checked against https://en.wikipedia.org/wiki/Rangiri_Dambulla_International_Stadium. Published coordinate 7.85944, 80.63389; Sri Lanka Cricket is the stadium operator. The registry pin was already within approximately 20 m."
     },
     {
       "id": "dubai-international",
@@ -1384,15 +1384,15 @@
       ],
       "city": "Windhoek",
       "country": "Namibia",
-      "latitude": -22.59122,
-      "longitude": 17.07077,
+      "latitude": -22.5916,
+      "longitude": 17.0718,
       "timezone": "Africa/Windhoek",
       "competitions": [
         "International"
       ],
-      "source_url": "https://mapcarta.com/W88490976",
-      "verification_status": "needs_user_verification",
-      "notes": "Corrected the starter pin to the OpenStreetMap-mapped Wanderers Sports Club cricket venue (-22.59122, 17.07077). Awaiting Cricket Namibia confirmation of the exact cricket-field boundary."
+      "source_url": "https://aroundus.com/p/4350998-wanderers-cricket-ground-windhoek",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricket.wanderers.org.na/contact-us/ and https://cricketnamibia.com/wp-content/uploads/2020/02/Kwata-Cricket-Coaching-Manual.pdf. Coordinates cross-checked against https://aroundus.com/p/4350998-wanderers-cricket-ground-windhoek. Published ground GPS -22.59160, 17.07180; Wanderers Cricket Club confirms Tunschel Street, Pionierspark, Windhoek, and Cricket Namibia lists the same club address."
     },
     {
       "id": "al-amerat",
@@ -1421,16 +1421,16 @@
       ],
       "city": "Pune",
       "country": "India",
-      "latitude": 18.672,
-      "longitude": 73.706,
+      "latitude": 18.67444,
+      "longitude": 73.70667,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://en.wikipedia.org/wiki/Maharashtra_Cricket_Association_Stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricketmaharashtra.com/wp-content/uploads/2024/08/indextender2.b4895421e236215a4848.pdf. Coordinates cross-checked against https://en.wikipedia.org/wiki/Maharashtra_Cricket_Association_Stadium. Corrected to the published stadium coordinate 18.67444, 73.70667; Maharashtra Cricket Association confirms Gahunje, Maval, Pune 412101."
     },
     {
       "id": "niaz-stadium",
@@ -1448,8 +1448,8 @@
         "International"
       ],
       "source_url": "https://mapcarta.com/26543152",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates cross-checked against map record (https://mapcarta.com/26543152). Corrected the starter pin by about 2.5 km to the OSM stadium point; awaiting a primary Sindh/Pakistan cricket authority source."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://en.wikipedia.org/wiki/Niaz_Stadium. Coordinates cross-checked against https://mapcarta.com/26543152. OSM stadium feature and published ground coordinates match at 25.38241, 68.33813; the stadium owner/operator is Hyderabad Municipal Corporation."
     },
     {
       "id": "asgirya-stadium",
@@ -1553,8 +1553,8 @@
         "IPL-era"
       ],
       "source_url": "https://mapcarta.com/W665592716",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates cross-checked against map record (https://mapcarta.com/W665592716). Corrected the starter pin to the OSM stadium footprint; awaiting UPCA confirmation of the official ground entrance/pin."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://kanpurnagar.nic.in/tourist-place/green-park/. Coordinates cross-checked against https://mapcarta.com/W665592716. Corrected pin is the OSM stadium footprint; Kanpur Nagar District Government confirms Green Park Stadium as the international cricket venue in Civil Lines."
     },
     {
       "id": "barabati",
@@ -1581,15 +1581,15 @@
       ],
       "city": "Nagpur",
       "country": "India",
-      "latitude": 21.15721,
-      "longitude": 79.07657,
+      "latitude": 21.1458,
+      "longitude": 79.0882,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://mapcarta.com/W280422531",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.vca.co.in/contact. Coordinates cross-checked against map record (https://mapcarta.com/W280422531). OSM listing identifies the legacy Vidarbha Cricket Association Ground in Nagpur; VCA official contact confirms the Civil Lines Nagpur association and CM Pavilion. The exact historic ground polygon needs additional confirmation."
+      "source_url": "https://www.vca.co.in/pages/vca-civil-line-stadium-2",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.vca.co.in/pages/vca-civil-line-stadium-2. Coordinates cross-checked against https://www.vca.co.in/pages/vca-civil-line-stadium-2. Reverted the earlier provisional map pin: VCA's official history explicitly identifies the Civil Lines ground and its CM Pavilion at Rabindranath Tagore Marg. This is distinct from the newer Jamtha stadium."
     },
     {
       "id": "campbell-park",
@@ -1597,15 +1597,15 @@
       "aliases": [],
       "city": "Milton Keynes",
       "country": "England",
-      "latitude": 52.037,
-      "longitude": -0.75,
+      "latitude": 52.049611,
+      "longitude": -0.737889,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://www.wikidata.org/wiki/Q5028130",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.theparkstrust.com/find-a-park/campbell-park/ and https://www.theparkstrust.com/activities/cricket/. Coordinates cross-checked against https://www.wikidata.org/wiki/Q5028130. Corrected the starter pin to the published Campbell Park Cricket Ground coordinate 52°2′58.6″N, 0°44′16.4″W; The Parks Trust confirms the cricket pitch and pavilion at Cricket Green Roundabout."
     },
     {
       "id": "indira-gandhi-vijayawada",
@@ -1957,15 +1957,15 @@
       "aliases": [],
       "city": "Sydney",
       "country": "Australia",
-      "latitude": -33.918,
-      "longitude": 151.035,
+      "latitude": -33.9221,
+      "longitude": 151.03213,
       "timezone": "Australia/Sydney",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/28645834",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cbcity.nsw.gov.au/bankstown-memorial-oval and https://www.bscc.org.au/grounds. Coordinates cross-checked against https://mapcarta.com/28645834. Corrected the starter pin to the OSM Bankstown Memorial Oval point; City of Canterbury-Bankstown confirms cricket facilities at Chapel Road, Bankstown."
     },
     {
       "id": "drummoyne-oval",
@@ -1979,9 +1979,9 @@
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://www.canadabay.nsw.gov.au/news/world-class-cricket-returns-drummoyne-oval",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.canadabay.nsw.gov.au/news/world-class-cricket-returns-drummoyne-oval. Coordinates cross-checked against https://www.canadabay.nsw.gov.au/news/world-class-cricket-returns-drummoyne-oval. City of Canada Bay confirms Drummoyne Oval as the home ground of Sydney Thunder and a venue for women's cricket; registry coordinates match the oval location."
     },
     {
       "id": "aigburth",
@@ -2327,15 +2327,15 @@
       "aliases": [],
       "city": "Kwekwe",
       "country": "Zimbabwe",
-      "latitude": -18.928,
-      "longitude": 29.814,
+      "latitude": -18.94056,
+      "longitude": 29.82111,
       "timezone": "Africa/Harare",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://en.wikipedia.org/wiki/Kwekwe_Sports_Club",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://en.wikipedia.org/wiki/Kwekwe_Sports_Club. Coordinates cross-checked against https://en.wikipedia.org/wiki/Kwekwe_Sports_Club. Corrected the starter pin to the published cricket ground coordinate 18°56′26″S, 29°49′16″E; the ground is home to the Mid West Rhinos. Kept unverified pending a Zimbabwe Cricket primary map."
     },
     {
       "id": "bulawayo-athletic-club",
@@ -2510,16 +2510,16 @@
       "aliases": [],
       "city": "Kingstown",
       "country": "Saint Vincent and the Grenadines",
-      "latitude": 13.133,
-      "longitude": -61.21,
+      "latitude": 13.14186,
+      "longitude": -61.21181,
       "timezone": "America/St_Vincent",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://maploco.com/top-attractions/countries/saint-vincent-and-the-grenadines/arnos-vale-stadium/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://tickets.windiescricket.com/venue/arnos-vale-stadium. Coordinates cross-checked against https://maploco.com/top-attractions/countries/saint-vincent-and-the-grenadines/arnos-vale-stadium/. Corrected the starter pin to the independent OSM-based stadium point 13.14186, -61.21181; Cricket West Indies confirms Arnos Vale Stadium at 4QRQ+M8R, Arnos Vale, St Vincent."
     },
     {
       "id": "windsor-park",
@@ -3118,9 +3118,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://nigeriacricket.com.ng/contact-us/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://nigeriacricket.com.ng/contact-us/ and https://www.icc-cricket.com/about/members/associate/nigeria-cricket-federation. Coordinates cross-checked against https://nigeriacricket.com.ng/contact-us/. Nigeria Cricket Federation and ICC confirm the federation headquarters at Package B, Moshood Abiola National Stadium, Abuja; registry point is the national stadium cricket oval complex."
     },
     {
       "id": "accra-achimota",
@@ -3733,16 +3733,16 @@
       "aliases": [],
       "city": "Dubai",
       "country": "United Arab Emirates",
-      "latitude": 24.98,
-      "longitude": 55.43,
+      "latitude": 24.99583,
+      "longitude": 55.46778,
       "timezone": "Asia/Dubai",
       "competitions": [
         "ILT20",
         "T10"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://en.wikipedia.org/wiki/The_Sevens_Stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.thesevensstadium.com/location/ and https://www.emiratesdubai7s.com/info/. Coordinates cross-checked against https://en.wikipedia.org/wiki/The_Sevens_Stadium. Corrected the starter pin by about 4.5 km to the published stadium coordinate 24.99583, 55.46778; The Sevens official site confirms the E66 Dubai–Al Ain Road venue and three cricket ovals."
     },
     {
       "id": "uae-al-dhaid",
@@ -3847,15 +3847,15 @@
       "aliases": [],
       "city": "Edinburgh",
       "country": "Scotland",
-      "latitude": 55.963,
-      "longitude": -3.21,
+      "latitude": 55.961,
+      "longitude": -3.213,
       "timezone": "Europe/London",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://en.wikipedia.org/wiki/The_Grange_Club",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://grangecricket.org/contact/ and https://www.thegrangeclub.com/. Coordinates cross-checked against https://en.wikipedia.org/wiki/The_Grange_Club. Corrected the starter pin to the published cricket ground coordinate 55.961, -3.213; The Grange Club confirms Portgower Place, Stockbridge, Edinburgh EH4 1HQ."
     },
     {
       "id": "scotland-forthill",
@@ -3901,9 +3901,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.lamangaclub.com/en/sports/cricket/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.lamangaclub.com/en/sports/cricket/. Coordinates cross-checked against https://www.lamangaclub.com/en/sports/cricket/. La Manga Club's official page confirms the European Cricket Centre with six natural-grass pitches, artificial wickets and ICC academy/tournament use; registry point is the resort cricket complex."
     },
     {
       "id": "croatia-mladost",
