@@ -845,20 +845,22 @@
       "id": "zahur-ahmed",
       "name": "Zahur Ahmed Chowdhury Stadium",
       "aliases": [
-        "Chattogram Stadium"
+        "Chattogram Stadium",
+        "Bir Shreshtho Flight Lieutenant Matiur Rahman Cricket Stadium",
+        "Matiur Rahman Cricket Stadium"
       ],
       "city": "Chattogram",
       "country": "Bangladesh",
-      "latitude": 22.3569,
-      "longitude": 91.7832,
+      "latitude": 22.3558,
+      "longitude": 91.7679,
       "timezone": "Asia/Dhaka",
       "competitions": [
         "International",
         "BPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://cricketfieldguide.com/ground/zahur-ahmed-chowdhury-stadium-chattogram",
+      "verification_status": "verified",
+      "notes": "Coordinates checked against the ground-specific Field Guide page (22.3558 N, 91.7679 E). Current renamed venue alias retained; timezone Asia/Dhaka. Distinct from MA Aziz Stadium."
     },
     {
       "id": "sylhet-stadium",
@@ -1483,7 +1485,7 @@
       ],
       "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Conflicting public coordinate sources found; do not certify this pin yet. The Cricket Field Guide/DBpedia place it near Zahur Ahmed Chowdhury Stadium, while other stadium/OSM listings place MA Aziz Stadium elsewhere in Chattogram. Keep unverified and require exact OSM boundary/official venue confirmation."
     },
     {
       "id": "khan-shaheb-osman-ali",
