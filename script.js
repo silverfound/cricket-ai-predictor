@@ -75,7 +75,7 @@ function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
     const full = normalizeCricketTeamName(canonicalCricketTeamName(team)).split(" ").filter(Boolean);
     const other = normalizeCricketTeamName(canonicalCricketTeamName(opponent)).split(" ").filter(Boolean);
     if (!alias.length || alias.length >= full.length) return false;
-    const isUniquePrefix = alias.every((token, index) => token === full[index])
+    const isUniquePrefix = alias.length > 1 && alias.every((token, index) => token === full[index])
         && !alias.every((token, index) => token === other[index]);
     const isUniqueFinalToken = alias.length === 1 && alias[0] === full[full.length - 1]
         && !other.includes(alias[0]);
