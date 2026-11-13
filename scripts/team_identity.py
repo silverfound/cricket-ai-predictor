@@ -59,6 +59,49 @@ def team_gender(value: Any) -> str:
     return "female" if "women" in tokens or (tokens and tokens[-1] == "w") else "male"
 
 
+def resolve_fixture_team(value: Any, team1: Any, team2: Any) -> str:
+    """Resolve provider shorthand to one side of a known fixture, or fail closed.
+
+    Exact shared aliases are preferred. Contextual matching then accepts:
+    - a multi-token prefix (e.g. "Northern Brave" for a longer canonical label),
+    - an initial plus following exact tokens (e.g. "S Paschim"),
+    - a unique final token (e.g. "Tigers" for "United Tigers").
+
+    Every shorthand must identify exactly one side; ambiguous names never match.
+    """
+    candidate = canonical_team_name(value)
+    sides = [canonical_team_name(team1), canonical_team_name(team2)]
+    if not candidate or not all(sides) or team_names_equivalent(*sides):
+        return ""
+    exact = [side for side in sides if team_names_equivalent(candidate, side)]
+    if len(exact) == 1:
+        return exact[0]
+    if exact:
+        return ""
+
+    alias_tokens = normalize_team_name(candidate).split()
+    if not alias_tokens:
+        return ""
+    matches = []
+    for side in sides:
+        full = normalize_team_name(side).split()
+        if not full or len(alias_tokens) >= len(full):
+            continue
+        multi_prefix = len(alias_tokens) > 1 and all(
+            token == full[index] for index, token in enumerate(alias_tokens)
+        )
+        initial_prefix = (
+            len(alias_tokens) > 1
+            and len(alias_tokens[0]) == 1
+            and full[0].startswith(alias_tokens[0])
+            and all(alias_tokens[index] == full[index] for index in range(1, len(alias_tokens)))
+        )
+        unique_final = len(alias_tokens) == 1 and alias_tokens[0] == full[-1]
+        if multi_prefix or initial_prefix or unique_final:
+            matches.append(side)
+    return matches[0] if len(matches) == 1 else ""
+
+
 def history_team_key(value: Any) -> str:
     """Cricsheet may omit Women; gender is filtered separately before this key is used."""
     tokens = normalize_team_name(canonical_team_name(value)).split()
