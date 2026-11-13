@@ -102,6 +102,20 @@ def resolve_fixture_team(value: Any, team1: Any, team2: Any) -> str:
     return matches[0] if len(matches) == 1 else ""
 
 
+def fixture_teams_equivalent(
+    first_team1: Any, first_team2: Any, second_team1: Any, second_team2: Any
+) -> bool:
+    """Return true only when two fixture pairs map one-to-one, in either order."""
+    first = [canonical_team_name(first_team1), canonical_team_name(first_team2)]
+    if not all(first) or team_names_equivalent(*first):
+        return False
+    second = [
+        resolve_fixture_team(second_team1, first[0], first[1]),
+        resolve_fixture_team(second_team2, first[0], first[1]),
+    ]
+    return bool(all(second) and len(set(second)) == 2 and set(second) == set(first))
+
+
 def history_team_key(value: Any) -> str:
     """Cricsheet may omit Women; gender is filtered separately before this key is used."""
     tokens = normalize_team_name(canonical_team_name(value)).split()
