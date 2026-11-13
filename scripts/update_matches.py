@@ -4,6 +4,12 @@
 import json, os
 from datetime import datetime, timezone
 from pathlib import Path
+try:
+    from scripts.result_archive import merge_recent_results
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from result_archive import merge_recent_results
 import joblib, numpy as np, pandas as pd, requests
 # Support both direct script execution (python scripts/update_matches.py) and
 # package execution/imports (python -m scripts.update_matches).
@@ -386,6 +392,21 @@ def main():
             'filtered_out_items':raw_count-len(items),
             'provider_total_pages':total_pages,'response':response}
     Path('data').mkdir(exist_ok=True)
+    # Keep completed fixtures across provider feed rollovers. The archive is
+    # rebuilt from its previous contents, the prior snapshot, and this feed.
+    archive_path=Path('data/recent_results.json')
+    previous_snapshot_path=Path('data/matches.json')
+    try:
+        existing_archive=json.loads(archive_path.read_text(encoding='utf-8')) if archive_path.exists() else {}
+    except (OSError, ValueError):
+        existing_archive={}
+    try:
+        previous_snapshot=json.loads(previous_snapshot_path.read_text(encoding='utf-8')) if previous_snapshot_path.exists() else {}
+        previous_items=(previous_snapshot.get('response') or {}).get('items', [])
+    except (OSError, ValueError, AttributeError):
+        previous_items=[]
+    recent_archive=merge_recent_results(items, previous_items, existing_archive)
+    archive_path.write_text(json.dumps(recent_archive,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
     Path('data/matches.json').write_text(json.dumps(output,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
     print(f'Generated snapshot with {len(items)} eligible fixtures (filtered {raw_count-len(items)} of {raw_count} API fixtures) across {start_date} to {end_date} using {total_pages} provider page(s).')
 if __name__=='__main__': main()

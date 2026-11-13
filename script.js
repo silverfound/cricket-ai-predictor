@@ -4,10 +4,18 @@ let allowedPredictionMatchIds = new Set();
 
 function getMatchResultText(match) {
     const metadata = match?.provider_metadata || {};
-    return [match?.status_note, match?.status_str, match?.status, match?.result,
-        match?.result_text, metadata?.result, metadata?.status_note]
-        .filter(value => typeof value === "string" && value.trim())
-        .join(" ").trim();
+    const values = [match?.result_text, match?.result, match?.status_note, match?.status_str,
+        metadata?.result, metadata?.status_note, match?.status]
+        .filter(value => typeof value === "string" && value.trim());
+    const seen = new Set();
+    const useful = values.filter(value => {
+        const key = value.trim().toLowerCase().replace(/\s+/g, " ");
+        if (/^(?:finished|complete|completed|match finished|match completed|ended|full time)$/.test(key)) return false;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+    });
+    return useful.join(" | ").trim();
 }
 
 function normalizeCricketTeamName(value) {
@@ -19,18 +27,31 @@ function normalizeCricketTeamName(value) {
         .replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
 }
 
+function cricketTeamNamesEquivalent(left, right) {
+    const a = normalizeCricketTeamName(left).split(" ").filter(Boolean);
+    const b = normalizeCricketTeamName(right).split(" ").filter(Boolean);
+    if (!a.length || !b.length) return false;
+    const shorter = a.length <= b.length ? a : b;
+    const longer = a.length <= b.length ? b : a;
+    return shorter.every((token, index) => token === longer[index]
+        || (token.length === 1 && token === longer[index][0]));
+}
+
 function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
-    const winnerMatch = String(resultText || "").match(/^\s*(.+?)\s+(?:won|beat|defeated)\b/i);
-    if (!winnerMatch) return false;
-    const winner = normalizeCricketTeamName(winnerMatch[1]);
-    const predicted = normalizeCricketTeamName(predictedTeam);
-    const first = normalizeCricketTeamName(team1);
-    const second = normalizeCricketTeamName(team2);
-    const matchesName = (shortName, fullName) => Boolean(shortName && fullName)
-        && (shortName === fullName || fullName.startsWith(shortName + " ") || shortName.startsWith(fullName + " "));
-    return matchesName(winner, predicted)
-        || (matchesName(winner, first) && matchesName(predicted, first))
-        || (matchesName(winner, second) && matchesName(predicted, second));
+    const text = String(resultText || "");
+    const winnerCandidates = [];
+    const pattern = /([^|;\n.!]+?)\s+(?:won|beat|defeated)\b/ig;
+    let match;
+    while ((match = pattern.exec(text)) !== null) {
+        const candidate = match[1].trim().replace(/^(?:(?:match|result|finished|completed|complete|ended|full time)\s*[-:|]?\s*)+/i, "");
+        if (candidate) winnerCandidates.push(candidate);
+    }
+    const predictedIsTeam1 = cricketTeamNamesEquivalent(predictedTeam, team1);
+    const predictedIsTeam2 = cricketTeamNamesEquivalent(predictedTeam, team2);
+    if (predictedIsTeam1 === predictedIsTeam2) return false;
+    return winnerCandidates.some(winner =>
+        (predictedIsTeam1 && cricketTeamNamesEquivalent(winner, team1))
+        || (predictedIsTeam2 && cricketTeamNamesEquivalent(winner, team2)));
 }
 
 function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
@@ -46,7 +67,7 @@ function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) 
 
     const started = asFlag(match?.match_started) || asFlag(match?.matchStarted)
         || asFlag(metadata.matchStarted) || asFlag(metadata.match_started);
-    const status = getMatchResultText(match).toLowerCase();
+    const status = [getMatchResultText(match), match?.status].filter(value => typeof value === "string" && value.trim()).join(" ").toLowerCase();
     const startSeconds = Number(match?.timestamp_start);
     const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
     const terminalText = status.replace(/\binnings?\s+(?:is\s+)?completed?\b/g, " ");
@@ -1511,10 +1532,16 @@ async function fetchMatches() {
                     if (!id) return;
                     if (byId.has(id)) {
                         const index = byId.get(id);
-                        allMatches[index] = { ...allMatches[index],
-                            status_note: allMatches[index].status_note || archived.status_note,
-                            status_str: allMatches[index].status_str || archived.status_str,
-                            match_ended: allMatches[index].match_ended ?? archived.match_ended };
+                        const current = allMatches[index];
+                        const currentResult = getMatchResultText(current);
+                        const archivedResult = getMatchResultText(archived);
+                        allMatches[index] = { ...archived, ...current,
+                            status_note: currentResult ? current.status_note : (archived.status_note || archivedResult),
+                            status_str: currentResult ? current.status_str : (archived.status_str || archivedResult),
+                            result_text: current.result_text || archived.result_text,
+                            result: current.result || archived.result,
+                            match_ended: current.match_ended ?? archived.match_ended,
+                            provider_metadata: { ...(archived.provider_metadata || {}), ...(current.provider_metadata || {}) } };
                     } else {
                         allMatches.push({ ...archived, archived_result: true });
                         byId.set(id, allMatches.length - 1);
