@@ -37,6 +37,18 @@ function cricketTeamNamesEquivalent(left, right) {
         || (token.length === 1 && token === longer[index][0]));
 }
 
+function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
+    if (cricketTeamNamesEquivalent(winner, team)) return true;
+    const alias = normalizeCricketTeamName(winner).split(" ").filter(Boolean);
+    const full = normalizeCricketTeamName(team).split(" ").filter(Boolean);
+    const other = normalizeCricketTeamName(opponent).split(" ").filter(Boolean);
+    // Accept a one-word provider abbreviation only when it uniquely identifies
+    // the final word of exactly one of the two competing team names.
+    return alias.length === 1 && full.length > 1
+        && alias[0] === full[full.length - 1]
+        && (!other.length || alias[0] !== other[other.length - 1]);
+}
+
 function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
     const text = String(resultText || "");
     const winnerCandidates = [];
@@ -49,9 +61,12 @@ function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
     const predictedIsTeam1 = cricketTeamNamesEquivalent(predictedTeam, team1);
     const predictedIsTeam2 = cricketTeamNamesEquivalent(predictedTeam, team2);
     if (predictedIsTeam1 === predictedIsTeam2) return false;
-    return winnerCandidates.some(winner =>
-        (predictedIsTeam1 && cricketTeamNamesEquivalent(winner, team1))
-        || (predictedIsTeam2 && cricketTeamNamesEquivalent(winner, team2)));
+    return winnerCandidates.some(winner => {
+        const winnerIsTeam1 = cricketWinnerAliasMatchesTeam(winner, team1, team2);
+        const winnerIsTeam2 = cricketWinnerAliasMatchesTeam(winner, team2, team1);
+        if (winnerIsTeam1 === winnerIsTeam2) return false;
+        return (predictedIsTeam1 && winnerIsTeam1) || (predictedIsTeam2 && winnerIsTeam2);
+    });
 }
 
 function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
@@ -71,13 +86,16 @@ function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) 
     const startSeconds = Number(match?.timestamp_start);
     const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
     const terminalText = status.replace(/\binnings?\s+(?:is\s+)?completed?\b/g, " ");
-    const hasResultEvidence = /\b(result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText);
-    const isFinished = /\b(match\s+(?:is\s+)?(?:completed|finished|ended)|result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText)
-        || /^(?:finished|complete|completed)$/.test(terminalText.trim());
-    if (isFinished && hasStartTime && startSeconds > nowSeconds && !hasResultEvidence) return "upcoming";
-    if (isFinished) return "finished";
+    const hasResultEvidence = /\b(result|won|lost|beat|defeated|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText);
     const isLive = started || /\b(live|in progress|break|stumps|innings|in play|day [1-5]|lunch|tea|drinks|rain delay|bad light)\b/.test(status);
+    const isFinished = /\b(match\s+(?:is\s+)?(?:completed|finished|ended)|result|won|lost|beat|defeated|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText)
+        || /^(?:finished|complete|completed)$/.test(terminalText.trim());
+    // Explicit result/ended evidence wins. A generic provider "Finished" label
+    // must not override a confirmed in-progress fixture (seen in T10 feeds).
+    if (hasResultEvidence) return "finished";
     if (isLive) return "live";
+    if (isFinished && hasStartTime && startSeconds > nowSeconds) return "upcoming";
+    if (isFinished) return "finished";
     if (hasStartTime && startSeconds > nowSeconds) return "upcoming";
     return "unknown";
 }
