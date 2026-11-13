@@ -15,7 +15,7 @@ function getMatchResultText(match) {
         seen.add(key);
         return true;
     });
-    return (useful.length ? useful : values.slice(-1)).join(" | ").trim();
+    return useful.join(" | ").trim();
 }
 
 function normalizeCricketTeamName(value) {
