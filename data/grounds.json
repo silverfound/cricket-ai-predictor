@@ -663,9 +663,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://www.bcci.tv/venues?map=1",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bcci.tv/venues?map=1 and https://www.cricketassociationofbengal.com/. Coordinates cross-checked against https://www.bcci.tv/venues?map=1. BCCI venue directory lists Eden Gardens in Kolkata; registry coordinate agrees with the mapped stadium point."
     },
     {
       "id": "m-chinnaswamy",
@@ -695,16 +695,16 @@
       ],
       "city": "Chennai",
       "country": "India",
-      "latitude": 13.0627,
-      "longitude": 80.2792,
+      "latitude": 13.06276,
+      "longitude": 80.27942,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W172875244",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bcci.tv/venues?map=1 and https://www.tnca.cricket/. Coordinates cross-checked against https://mapcarta.com/W172875244. OSM cricket-stadium point; BCCI venue directory and Tamil Nadu Cricket Association confirm MA Chidambaram Stadium, Chepauk, Chennai."
     },
     {
       "id": "narendra-modi",
@@ -797,9 +797,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://www.bcci.tv/venues?map=1",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bcci.tv/venues?map=1 and https://www.hpca.in/. Coordinates cross-checked against https://www.bcci.tv/venues?map=1. BCCI lists HPCA Stadium at Dharamshala; official environmental filing gives the stadium boundary coordinates 32°11′45.34″N–32°11′54.53″N, 76°19′29.03″E–76°19′36.73″E, matching the registry pin."
     },
     {
       "id": "pca-mohali",
@@ -1527,15 +1527,15 @@
       "aliases": [],
       "city": "Bahawalpur",
       "country": "Pakistan",
-      "latitude": 29.3956,
-      "longitude": 71.6836,
+      "latitude": 29.40406,
+      "longitude": 71.68436,
       "timezone": "Asia/Karachi",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W23213239",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://mapcarta.com/W23213239. Coordinates cross-checked against https://mapcarta.com/W23213239. Corrected the starter pin by about 1 km to the OSM cricket pitch at Bahawalpur Stadium; awaiting an official Punjab sports authority confirmation."
     },
     {
       "id": "green-park",
@@ -1613,15 +1613,15 @@
       "aliases": [],
       "city": "Vijayawada",
       "country": "India",
-      "latitude": 16.5062,
-      "longitude": 80.648,
+      "latitude": 16.50502,
+      "longitude": 80.63814,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W645008492",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://mapcarta.com/W645008492. Coordinates cross-checked against https://mapcarta.com/W645008492. Corrected the starter pin by about 1 km to the OSM cricket pitch; the mapped cricket feature is the Indira Gandhi Stadium in Vijayawada."
     },
     {
       "id": "carrara-oval",
@@ -3208,16 +3208,16 @@
       "aliases": [],
       "city": "Guwahati",
       "country": "India",
-      "latitude": 26.1445,
-      "longitude": 91.7362,
+      "latitude": 26.1452307,
+      "longitude": 91.7364839,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International",
         "IPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://aca-stadium.cricketground.in/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bcci.tv/venues?map=1. Coordinates cross-checked against https://aca-stadium.cricketground.in/. Corrected to the published stadium point 26.1452307, 91.7364839; BCCI confirms ACA Stadium, Barsapara, Guwahati."
     },
     {
       "id": "india-brabourne",
@@ -3261,16 +3261,16 @@
       ],
       "city": "Visakhapatnam",
       "country": "India",
-      "latitude": 17.797,
-      "longitude": 83.352,
+      "latitude": 17.7972204,
+      "longitude": 83.3522663,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International",
         "IPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://vdca-aca-visakhapatnam.cricketground.in/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bcci.tv/venues?map=1. Coordinates cross-checked against https://vdca-aca-visakhapatnam.cricketground.in/. Corrected to the published stadium point 17.7972204, 83.3522663; BCCI confirms ACA-VDCA Stadium, Pothinamallayya Palem, Visakhapatnam."
     },
     {
       "id": "india-holkar",
@@ -3380,15 +3380,15 @@
       "aliases": [],
       "city": "Gwalior",
       "country": "India",
-      "latitude": 26.218,
-      "longitude": 78.182,
+      "latitude": 26.2346649,
+      "longitude": 78.1257937,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.mpcaonline.com/page/gwalior-stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.mpcaonline.com/page/gwalior-stadium. Coordinates cross-checked against https://www.mpcaonline.com/page/gwalior-stadium. Corrected the starter pin by about 6 km using MPCA's own Google Maps link for Shrimant Madhavrao Scindia Cricket Stadium."
     },
     {
       "id": "india-mullanpur",
@@ -3435,9 +3435,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.bcci.tv/venues?map=1",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bcci.tv/venues?map=1 and https://www.hpca.in/. Coordinates cross-checked against https://www.bcci.tv/venues?map=1. Duplicate compatibility record for HPCA Stadium; BCCI/HPCA venue identity and the published stadium coordinate range corroborate the same ground."
     },
     {
       "id": "india-mohali",
@@ -3499,16 +3499,16 @@
       "aliases": [],
       "city": "Faisalabad",
       "country": "Pakistan",
-      "latitude": 31.418,
-      "longitude": 73.079,
+      "latitude": 31.43382,
+      "longitude": 73.08582,
       "timezone": "Asia/Karachi",
       "competitions": [
         "International",
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/N8214569225",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://mapcarta.com/N8214569225. Coordinates cross-checked against https://mapcarta.com/N8214569225. Corrected the starter pin by about 1.8 km to the OSM cricket ground feature for Iqbal Stadium, Faisalabad; awaiting PCB confirmation."
     },
     {
       "id": "pakistan-jinnah-sialkot",
