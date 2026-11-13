@@ -82,7 +82,7 @@ function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
     return isUniquePrefix || isUniqueFinalToken;
 }
 
-function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
+function resolveResultWinnerTeam(resultText, team1, team2) {
     const text = String(resultText || "");
     const winnerCandidates = [];
     const pattern = /([^|;\n.!]+?)\s+(?:won|beat|defeated)\b/ig;
@@ -91,15 +91,19 @@ function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
         const candidate = match[1].trim().replace(/^(?:(?:match|result|finished|completed|complete|ended|full time)\s*[-:|]?\s*)+/i, "");
         if (candidate) winnerCandidates.push(candidate);
     }
-    const predictedIsTeam1 = cricketTeamNamesEquivalent(predictedTeam, team1);
-    const predictedIsTeam2 = cricketTeamNamesEquivalent(predictedTeam, team2);
-    if (predictedIsTeam1 === predictedIsTeam2) return false;
-    return winnerCandidates.some(winner => {
+    const resolvedWinners = new Set();
+    winnerCandidates.forEach(winner => {
         const winnerIsTeam1 = cricketWinnerAliasMatchesTeam(winner, team1, team2);
         const winnerIsTeam2 = cricketWinnerAliasMatchesTeam(winner, team2, team1);
-        if (winnerIsTeam1 === winnerIsTeam2) return false;
-        return (predictedIsTeam1 && winnerIsTeam1) || (predictedIsTeam2 && winnerIsTeam2);
+        if (winnerIsTeam1 === winnerIsTeam2) return;
+        resolvedWinners.add(canonicalCricketTeamName(winnerIsTeam1 ? team1 : team2));
     });
+    return resolvedWinners.size === 1 ? [...resolvedWinners][0] : "";
+}
+
+function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
+    const winner = resolveResultWinnerTeam(resultText, team1, team2);
+    return Boolean(winner && cricketTeamNamesEquivalent(predictedTeam, winner));
 }
 
 function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
