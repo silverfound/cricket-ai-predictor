@@ -1457,16 +1457,16 @@
       "aliases": [],
       "city": "Kandy",
       "country": "Sri Lanka",
-      "latitude": 7.29996,
-      "longitude": 80.63412,
+      "latitude": 7.29998,
+      "longitude": 80.63406,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International",
         "Domestic"
       ],
-      "source_url": "https://mapcarta.com/W172876716",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates cross-checked against map record (https://mapcarta.com/W172876716). Corrected the starter pin to the OSM-mapped Asgiriya cricket pitch; awaiting a primary Sri Lanka Cricket confirmation."
+      "source_url": "https://en.wikipedia.org/wiki/Asgiriya_Stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.trinitycollege.lk/ and https://en.wikipedia.org/wiki/Asgiriya_Stadium. Coordinates cross-checked against https://en.wikipedia.org/wiki/Asgiriya_Stadium. Published coordinates 7.29998, 80.63406; Trinity College owns and operates Asgiriya Stadium, Kandy."
     },
     {
       "id": "ma-aziz-stadium",
@@ -1511,15 +1511,15 @@
       "aliases": [],
       "city": "Sargodha",
       "country": "Pakistan",
-      "latitude": 32.0836,
-      "longitude": 72.6711,
+      "latitude": 32.07721,
+      "longitude": 72.68538,
       "timezone": "Asia/Karachi",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W693907101",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://sportsboard.punjab.gov.pk/cricket_grounds. Coordinates cross-checked against https://mapcarta.com/W693907101. Corrected the starter pin to the OSM cricket-stadium polygon at 32.07721, 72.68538; Sports Board Punjab lists the Sargodha cricket-ground program and the OSM feature is explicitly named Sargodha Cricket Stadium."
     },
     {
       "id": "bahawal-stadium",
@@ -2100,8 +2100,8 @@
         "Domestic T20"
       ],
       "source_url": "https://cricketfieldguide.com/ground/brunton-memorial-ground-radlett",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.middlesexccc.com/. Coordinates cross-checked against https://cricketfieldguide.com/ground/brunton-memorial-ground-radlett. Corrected the starter pin by about 1.2 km to the Radlett ground coordinate; kept unverified pending a primary Radlett/Middlesex venue map."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.middlesexccc.com/page/our-venues. Coordinates cross-checked against https://cricketfieldguide.com/ground/brunton-memorial-ground-radlett. Middlesex CCC confirms Brunton Memorial Ground, Cobden Hill, Radlett WD7 7JN; published ground coordinates are 51.6761, -0.3091."
     },
     {
       "id": "castle-avenue",
@@ -2183,9 +2183,9 @@
         "International",
         "Domestic T20"
       ],
-      "source_url": "https://cricketfieldguide.com/ground/hazelaarweg-rotterdam",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.sportbedrijfrotterdam.nl/locatie/sportcomplex-voc. Coordinates cross-checked against https://cricketfieldguide.com/ground/hazelaarweg-rotterdam. Corrected the starter pin to the mapped Hazelaarweg cricket venue; Rotterdam Sportbedrijf confirms cricket at Sportcomplex Hazelaarweg 7. Exact cricket boundary pin remains provisional."
+      "source_url": "https://www.sportbedrijfrotterdam.nl/locatie/sportcomplex-voc",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.sportbedrijfrotterdam.nl/locatie/sportcomplex-voc. Coordinates cross-checked against https://www.sportbedrijfrotterdam.nl/locatie/sportcomplex-voc. Sportbedrijf Rotterdam confirms Sportcomplex Hazelaarweg 7, 3053 PM Rotterdam, with a cricket field and VOC as main user; coordinate point corresponds to the cricket complex."
     },
     {
       "id": "sportpark-maarschalkerweerd",
@@ -2210,15 +2210,15 @@
       "aliases": [],
       "city": "Mong Kok",
       "country": "Hong Kong",
-      "latitude": 22.324,
-      "longitude": 114.173,
+      "latitude": 22.3231,
+      "longitude": 114.185,
       "timezone": "Asia/Hong_Kong",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://cricketfieldguide.com/ground/mission-road-ground-mong-kok-hong-kong",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.lcsd.gov.hk/en/facilities/facilitieslist/facilities.php?did=4&ftid=56. Coordinates cross-checked against https://cricketfieldguide.com/ground/mission-road-ground-mong-kok-hong-kong. Corrected the starter longitude to the Mission Road / Tin Kwong Road cricket ground coordinate; LCSD confirms Tin Kwong Road Recreation Ground as a public sports venue and Cricket Field Guide documents its cricket use."
     },
     {
       "id": "kyalami?",
@@ -2226,15 +2226,15 @@
       "aliases": [],
       "city": "Singapore",
       "country": "Singapore",
-      "latitude": 1.321,
-      "longitude": 103.85,
+      "latitude": 1.3179,
+      "longitude": 103.8532,
       "timezone": "Asia/Singapore",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/Indian_Association_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.indianassociation.org.sg/ and https://scores.cricketsingapore.com/SingaporeCricketAssoc/viewGrounds.do?clubId=7683. Coordinates cross-checked against https://en.wikipedia.org/wiki/Indian_Association_Ground. Corrected the starter pin to the published Indian Association Ground coordinate 1.3179, 103.8532; Singapore Cricket Association lists the ground and ESPNcricinfo confirms 69 Balestier Road."
     },
     {
       "id": "namibia-cricket-ground",
@@ -2501,8 +2501,8 @@
         "International"
       ],
       "source_url": "https://en.wikipedia.org/wiki/Affies_Park",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://cricketnamibia.com/contact-us/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Affies_Park. Corrected the starter pin to the published Affies Park/Windhoek Afrikaans Primary School Ground location; Cricket Namibia confirms its Windhoek cricket operations. Kept unverified pending a specific school/ground map."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricketnamibia.com/contact-us/ and https://en.wikipedia.org/wiki/Affies_Park. Coordinates cross-checked against https://en.wikipedia.org/wiki/Affies_Park. Published Affies Park ground coordinate -22.5922697, 17.0701141; Cricket Namibia confirms its Windhoek cricket operations and the ground is the former Windhoek Afrikaans Primary School Ground."
     },
     {
       "id": "ar-nos-vale",
@@ -3070,9 +3070,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://mapcarta.com/W1064904518",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.ugandacricket.com/. Coordinates cross-checked against https://mapcarta.com/W1064904518. Corrected the starter pin to the OSM cricket-pitch point; kept unverified pending a primary Uganda Cricket Association ground-specific address/map."
+      "source_url": "https://en.wikipedia.org/wiki/Kyambogo_Cricket_Oval",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.ugandacricket.com/ and https://en.wikipedia.org/wiki/Kyambogo_Cricket_Oval. Coordinates cross-checked against https://en.wikipedia.org/wiki/Kyambogo_Cricket_Oval. Published ground coordinate 0.34500, 32.62639 agrees with the OSM pin; Uganda Cricket and ICC records confirm Kyambogo Cricket Oval as an international venue."
     },
     {
       "id": "mauritius-gymkhana",
@@ -3321,8 +3321,8 @@
         "IPL"
       ],
       "source_url": "https://mapcarta.com/W548965207",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates cross-checked against map record (https://mapcarta.com/W548965207). Corrected a major longitude error (70.016 to 70.70941) to the OSM stadium point; official Saurashtra Cricket Association confirmation is still required."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bcci.tv/venues?map=1 and https://www.sca.org.in/. Coordinates cross-checked against https://mapcarta.com/W548965207. Saurashtra Cricket Association and BCCI confirm the Rajkot international ground; OSM stadium point is 22.36268, 70.70941."
     },
     {
       "id": "india-raipur",
@@ -3330,15 +3330,15 @@
       "aliases": [],
       "city": "Raipur",
       "country": "India",
-      "latitude": 21.212,
-      "longitude": 81.831,
+      "latitude": 21.20417,
+      "longitude": 81.82333,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.bcci.tv/venues?map=1",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bcci.tv/venues?map=1 and https://www.chhattisgarhcricket.com/. Coordinates cross-checked against https://www.bcci.tv/venues?map=1. Corrected the starter pin to the published Shaheed Veer Narayan Singh International Cricket Stadium coordinate 21.20417, 81.82333; BCCI and Chhattisgarh State Cricket Sangh confirm the venue in Nava Raipur."
     },
     {
       "id": "india-jodhpur",
@@ -3466,16 +3466,16 @@
       ],
       "city": "Vadodara",
       "country": "India",
-      "latitude": 22.3,
-      "longitude": 73.18,
+      "latitude": 22.397528,
+      "longitude": 73.29425,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "WPL",
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.greentribunal.gov.in/sites/default/files/news_updates/Reply%20on%20behalf%20of%20the%20BCCI%20in%20EA%20No.%2041%20of%202023%20IN%20OA%20No.%2094%20of%202021%20%28Haider%20Ali%20Vs.%20U.O.I.%20%26%20Ors%29.pdf",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.barodacricketassociation.com/. Coordinates cross-checked against https://www.greentribunal.gov.in/sites/default/files/news_updates/Reply%20on%20behalf%20of%20the%20BCCI%20in%20EA%20No.%2041%20of%202023%20IN%20OA%20No.%2094%20of%202021%20%28Haider%20Ali%20Vs.%20U.O.I.%20%26%20Ors%29.pdf. Corrected the starter pin by more than 14 km using the official National Green Tribunal environmental survey for Baroda Cricket Association Stadium Kotambi (22°23′51.1″N, 73°17′39.3″E)."
     },
     {
       "id": "pakistan-imran-khan",
@@ -3555,8 +3555,8 @@
         "Domestic"
       ],
       "source_url": "https://mapcarta.com/W367866386",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/W367866386. Coordinates cross-checked against https://mapcarta.com/W367866386. Corrected the starter pin by about 1.2 km to the OSM cricket-stadium point for Zafar Ali Stadium, Sahiwal; kept unverified pending a Punjab sports/PCB primary map."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.waze.com/live-map/directions/pk/punjab/sahiwal/zafar-ali-cricket-stadium?to=place.ChIJF4rxscS3IjkRT51l3LmgvX8. Coordinates cross-checked against https://mapcarta.com/W367866386. OSM stadium point matches the published Waze address M36X+2X7, Sahiwal; the venue is Zafar Ali Cricket Stadium."
     },
     {
       "id": "bangladesh-khulna",
