@@ -14,7 +14,12 @@ from pathlib import Path
 
 from sklearn.metrics import accuracy_score, brier_score_loss, log_loss, roc_auc_score
 
-from scripts.team_identity import canonical_team_name, normalize_team_name, team_names_equivalent
+try:
+    from scripts.team_identity import canonical_team_name, normalize_team_name, team_names_equivalent
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from team_identity import canonical_team_name, normalize_team_name, team_names_equivalent
 
 ROOT = Path(__file__).resolve().parents[1]
 HISTORY_PATH = ROOT / "data" / "cricsheet_match_history_2024_2026.json"
