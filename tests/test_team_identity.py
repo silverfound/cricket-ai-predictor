@@ -81,8 +81,8 @@ class TeamIdentityTests(unittest.TestCase):
             "United Tigers", "Desert Tigers", "Tigers", "United Tigers",
         ))
         self.assertFalse(fixture_teams_equivalent(
-            "Melbourne Stars", "Melbourne Stars Women",
-            "Melbourne Stars Women", "Melbourne Stars",
+            "Melbourne Stars", "Sydney Sixers",
+            "Melbourne Stars Women", "Sydney Sixers",
         ))
 
     def test_history_key_only_drops_gender_after_gender_is_separately_known(self):
