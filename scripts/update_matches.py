@@ -6,12 +6,12 @@ from datetime import datetime, timezone
 from pathlib import Path
 try:
     from scripts.result_archive import merge_recent_results
-    from scripts.team_identity import canonical_team_name, history_team_key, team_gender, team_names_equivalent
+    from scripts.team_identity import canonical_team_name, fixture_teams_equivalent, history_team_key, resolve_fixture_team, team_gender, team_names_equivalent
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
     from result_archive import merge_recent_results
-    from team_identity import canonical_team_name, history_team_key, team_gender, team_names_equivalent
+    from team_identity import canonical_team_name, fixture_teams_equivalent, history_team_key, resolve_fixture_team, team_gender, team_names_equivalent
 import joblib, numpy as np, pandas as pd, requests
 # Support both direct script execution (python scripts/update_matches.py) and
 # package execution/imports (python -m scripts.update_matches).
@@ -186,9 +186,10 @@ def _canonical_toss(item):
     elif raw in {"bowl", "bowling", "field", "fielding", "elected to field", "elected to bowl", "choose to bowl"}: raw = "field"
     else: raw = ""
     teams = [str((item.get(k) or {}).get("name") or "").strip() for k in ("teama", "teamb")]
-    if winner:
-        matched = [name for name in teams if name and team_names_equivalent(winner, name)]
-        winner = matched[0] if len(matched) == 1 else ""
+    if winner and all(teams):
+        winner = resolve_fixture_team(winner, teams[0], teams[1])
+    else:
+        winner = ""
     return {"winner": winner, "decision": raw} if winner and raw else None
 
 
@@ -196,17 +197,23 @@ def _canonical_toss(item):
 
 def _merge_provider_enrichment(primary_items, cricketdata_items):
     """Merge unambiguous same-fixture score/team/toss details; preserve source names."""
-    def key(item):
-        names = [canonical_team_name((item.get(k) or {}).get("name") or "").casefold()
-                 for k in ("teama", "teamb")]
-        if not all(names): return None
-        return (tuple(sorted(names)), _history_format(item.get("format_str")))
-    index = {}
-    for candidate in cricketdata_items or []:
-        index.setdefault(key(candidate), []).append(candidate)
+    def fixture_names(item):
+        return [str((item.get(key) or {}).get("name") or "").strip()
+                for key in ("teama", "teamb")]
+
+    def same_fixture(primary, candidate):
+        if _history_format(primary.get("format_str")) != _history_format(candidate.get("format_str")):
+            return False
+        primary_names = fixture_names(primary)
+        candidate_names = fixture_names(candidate)
+        if not all(primary_names) or not all(candidate_names):
+            return False
+        return fixture_teams_equivalent(*primary_names, *candidate_names)
+
     merged = 0
     for item in primary_items:
-        matches = index.get(key(item), [])
+        matches = [candidate for candidate in (cricketdata_items or [])
+                   if same_fixture(item, candidate)]
         if len(matches) != 1: continue
         extra = matches[0]
         for field in ("score", "team_info", "scorecard", "toss_winner", "toss_decision"):

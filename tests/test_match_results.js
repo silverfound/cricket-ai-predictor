@@ -39,6 +39,7 @@ const upcomingT10 = {
     teamb: {name:"Yas Lions"}
 };
 if (sandbox.classifyMatchStatus(upcomingT10, now) !== "upcoming") throw new Error("generic Finished label must not finish a future fixture");
+if (!sandbox.resultWinnerMatchesTeam("S Paschim won by 7 runs", "Sudur Paschim Royals (NPL)", "Kathmandu Gurkhas (NPL)", "Sudur Paschim Royals (NPL)")) throw new Error("initial-based S Paschim abbreviation must match Sudur Paschim Royals even if alias registry is unavailable");
 if (!sandbox.resultWinnerMatchesTeam("Tigers won by 24 runs", "United Tigers", "Emirates Eagles", "United Tigers")) throw new Error("Tigers provider alias must match United Tigers");
 if (sandbox.resultWinnerMatchesTeam("Tigers won by 24 runs", "Emirates Eagles", "Emirates Eagles", "United Tigers")) throw new Error("winner alias must not mark losing team correct");
 if (sandbox.resultWinnerMatchesTeam("Tigers won by 24 runs", "United Tigers", "Desert Tigers", "United Tigers")) throw new Error("ambiguous one-word team alias must not be accepted");

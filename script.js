@@ -77,9 +77,14 @@ function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
     if (!alias.length || alias.length >= full.length) return false;
     const isUniquePrefix = alias.length > 1 && alias.every((token, index) => token === full[index])
         && !alias.every((token, index) => token === other[index]);
+    const isUniqueInitialPrefix = alias.length > 1 && alias[0].length === 1
+        && full[0] && full[0].startsWith(alias[0])
+        && alias.slice(1).every((token, index) => token === full[index + 1])
+        && !(other[0] && other[0].startsWith(alias[0])
+            && alias.slice(1).every((token, index) => token === other[index + 1]));
     const isUniqueFinalToken = alias.length === 1 && alias[0] === full[full.length - 1]
         && !other.includes(alias[0]);
-    return isUniquePrefix || isUniqueFinalToken;
+    return isUniquePrefix || isUniqueInitialPrefix || isUniqueFinalToken;
 }
 
 function resolveResultWinnerTeam(resultText, team1, team2) {
