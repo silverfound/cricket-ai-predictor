@@ -2902,15 +2902,15 @@
       "aliases": [],
       "city": "Buenos Aires",
       "country": "Argentina",
-      "latitude": -34.6037,
-      "longitude": -58.3816,
+      "latitude": -34.8412,
+      "longitude": -58.3854,
       "timezone": "America/Argentina/Buenos_Aires",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://cricketfieldguide.com/ground/st-albans-club-buenos-aires",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://cricketfieldguide.com/ground/st-albans-club-buenos-aires. Coordinates cross-checked against https://cricketfieldguide.com/ground/st-albans-club-buenos-aires. Corrected the starter pin from central Buenos Aires to the published St Albans Club ground coordinate in Burzaco; kept unverified pending a club/Argentine Cricket Association primary map."
     },
     {
       "id": "sao-fernando",
@@ -2934,15 +2934,15 @@
       "aliases": [],
       "city": "Waterloo",
       "country": "Belgium",
-      "latitude": 50.714,
-      "longitude": 4.399,
+      "latitude": 50.697559,
+      "longitude": 4.449366,
       "timezone": "Europe/Brussels",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://rbcc.be/find-us/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://rbcc.be/find-us/. Coordinates cross-checked against https://rbcc.be/find-us/. Corrected the starter pin to the club's own precise GPS coordinates and address, Chemin des Messes 39, 1380 Lasne."
     },
     {
       "id": "vasil-levski",
@@ -2982,15 +2982,15 @@
       "aliases": [],
       "city": "Doha",
       "country": "Qatar",
-      "latitude": 25.285,
-      "longitude": 51.531,
+      "latitude": 25.18939,
+      "longitude": 51.46028,
       "timezone": "Asia/Qatar",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W239171216",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.olympic.qa/qatar-cricket-association. Coordinates cross-checked against https://mapcarta.com/W239171216. Corrected the starter pin by about 12 km to the OSM cricket-stadium footprint; Qatar Olympic Committee confirms West End Park International Cricket Stadium as the national cricket venue."
     },
     {
       "id": "muscat-oman",
@@ -3128,15 +3128,15 @@
       "aliases": [],
       "city": "Accra",
       "country": "Ghana",
-      "latitude": 5.6037,
-      "longitude": -0.187,
+      "latitude": 5.629108,
+      "longitude": -0.207177,
       "timezone": "Africa/Accra",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.wikidata.org/wiki/Q124655864",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://ghanacricketassociation.com/contacts/ and https://ghanacricketassociation.com/ghana-cricket-association-continues-development-of-cricket-to-over-1700-students-at-achimota-school/. Coordinates cross-checked against https://www.wikidata.org/wiki/Q124655864. Corrected the starter pin to the Achimota Cricket Oval point; Ghana Cricket Association confirms the cricket ovals on Nii Owuo Lane and the school oval upgrade."
     },
     {
       "id": "sierra-leone-national",
@@ -3176,15 +3176,15 @@
       "aliases": [],
       "city": "Lima",
       "country": "Peru",
-      "latitude": -12.0464,
-      "longitude": -77.0428,
+      "latitude": -12.09821,
+      "longitude": -77.0614,
       "timezone": "America/Lima",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W39556348",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cdn.www.gob.pe/uploads/document/file/3077052/Resoluci%C3%B3n%20N%C2%B0197-2022-IPD-DNCTD-SRND%20-%20Organizaci%C3%B3n%20Deportiva%20Lima%20Cricket%20%26%20Football%20Club%3A%20Inscripci%C3%B3n%20en%20RENADE..pdf. Coordinates cross-checked against https://mapcarta.com/W39556348. Corrected the starter pin by about 6 km to the OSM cricket sports-centre point; Peru's Instituto Peruano del Deporte confirms the club's registered address at Jr. Faustino Sánchez Carrión 200, Magdalena del Mar."
     },
     {
       "id": "canada-caledon",
@@ -3911,15 +3911,15 @@
       "aliases": [],
       "city": "Zagreb",
       "country": "Croatia",
-      "latitude": 45.815,
-      "longitude": 15.982,
+      "latitude": 45.78275,
+      "longitude": 15.94518,
       "timezone": "Europe/Zagreb",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/35685310",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://www.hask-mladost.hr/contact/ and https://www.cricket-croatia.com/contact-us/. Coordinates cross-checked against https://mapcarta.com/35685310. Corrected the starter pin to Sports Park Mladost, Jarunska 5, Zagreb, where the Croatian cricket venue is located; kept unverified pending a cricket-pitch-specific point."
     },
     {
       "id": "belgium-meersen",
@@ -3943,15 +3943,15 @@
       "aliases": [],
       "city": "Toronto",
       "country": "Canada",
-      "latitude": 43.6532,
-      "longitude": -79.3832,
+      "latitude": 43.7399,
+      "longitude": -79.41902,
       "timezone": "America/Toronto",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://en.wikipedia.org/wiki/Toronto_Cricket,_Skating_and_Curling_Club_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://torontocscc.curling.io/en. Coordinates cross-checked against https://en.wikipedia.org/wiki/Toronto_Cricket,_Skating_and_Curling_Club_Ground. Corrected the starter pin by about 10 km to the published 141 Wilson Avenue ground coordinate; the official club contact confirms the address."
     },
     {
       "id": "australia-gmhba",
