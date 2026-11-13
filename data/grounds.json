@@ -1476,16 +1476,16 @@
       ],
       "city": "Chattogram",
       "country": "Bangladesh",
-      "latitude": 22.3558,
-      "longitude": 91.7678,
+      "latitude": 22.3569,
+      "longitude": 91.7832,
       "timezone": "Asia/Dhaka",
       "competitions": [
         "International",
         "Domestic"
       ],
-      "source_url": "https://cricketfieldguide.com/ground/ma-aziz-stadium-chittagong",
-      "verification_status": "verified",
-      "notes": "Coordinates independently checked against the ground-specific Field Guide page (22.3558 N, 91.7678 E); timezone Asia/Dhaka. Distinct from Zahur Ahmed Chowdhury Stadium."
+      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "verification_status": "needs_user_verification",
+      "notes": "Conflicting public coordinate sources found; do not certify this pin yet. The Cricket Field Guide/DBpedia place it near Zahur Ahmed Chowdhury Stadium, while other stadium/OSM listings place MA Aziz Stadium elsewhere in Chattogram. Keep unverified and require exact OSM boundary/official venue confirmation."
     },
     {
       "id": "khan-shaheb-osman-ali",
