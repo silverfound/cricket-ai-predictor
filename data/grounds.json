@@ -1366,15 +1366,15 @@
       "aliases": [],
       "city": "Harare",
       "country": "Zimbabwe",
-      "latitude": -17.829,
-      "longitude": 31.13,
+      "latitude": -17.88762,
+      "longitude": 30.99047,
       "timezone": "Africa/Harare",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W1185679280",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.takashingacricket.com/visit. Coordinates cross-checked against https://mapcarta.com/W1185679280. Corrected the starter pin by more than 15 km to the OSM cricket pitch; Takashinga's official visitor page confirms Ground No. 5 at Zimbabwe Grounds, Highfields, Harare."
     },
     {
       "id": "namibia-wanderers",
@@ -1402,15 +1402,15 @@
       ],
       "city": "Al Amerat",
       "country": "Oman",
-      "latitude": 23.501,
-      "longitude": 58.623,
+      "latitude": 23.48806,
+      "longitude": 58.49389,
       "timezone": "Asia/Muscat",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground. Corrected the starter pin by about 15 km to the Oman Cricket Academy Ground point (23.48806, 58.49389); Oman Cricket confirms its New Oman Cricket Academy Building and OC Turf Grounds in Al Amerat."
     },
     {
       "id": "maharashtra-cricket",
@@ -2361,15 +2361,15 @@
       ],
       "city": "Al Amerat",
       "country": "Oman",
-      "latitude": 23.501,
-      "longitude": 58.623,
+      "latitude": 23.48806,
+      "longitude": 58.49389,
       "timezone": "Asia/Muscat",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://www.omancricket.org/contact-us/office-ground-address/",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://www.omancricket.org/contact-us/office-ground-address/. Corrected the starter pin to the official Oman Cricket Academy/OC Turf Grounds campus. Ministry Turf 2's exact field-specific pin remains unverified; this campus coordinate is not claimed as the pitch centroid."
     },
     {
       "id": "seebarn",
@@ -3000,15 +3000,15 @@
       ],
       "city": "Al Amerat",
       "country": "Oman",
-      "latitude": 23.501,
-      "longitude": 58.623,
+      "latitude": 23.5212,
+      "longitude": 58.5266,
       "timezone": "Asia/Muscat",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://cricketquota.com/al-amerat-cricket-ground-oman-cricket-ministry-turf-1/",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://cricketquota.com/al-amerat-cricket-ground-oman-cricket-ministry-turf-1/. Corrected to the published Ministry Turf 1 candidate point (23.5212, 58.5266). Oman Cricket confirms the Al Amerat OC Turf Grounds campus, but this specific pin conflicts with the official campus map and remains unverified."
     },
     {
       "id": "nairobi-gymkhana",
@@ -3080,15 +3080,15 @@
       "aliases": [],
       "city": "Vacoas-Phoenix",
       "country": "Mauritius",
-      "latitude": -20.298,
-      "longitude": 57.478,
+      "latitude": -20.29113,
+      "longitude": 57.49938,
       "timezone": "Indian/Mauritius",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W1005886066",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://mauritiusgymkhana.mu/contact. Coordinates cross-checked against https://mapcarta.com/W1005886066. Corrected the starter pin by about 2.5 km to the OSM Gymkhana Grounds; the club's official site confirms Suffolk Road, Vacoas 73420."
     },
     {
       "id": "lagos-tafawa",
@@ -3799,15 +3799,15 @@
       "aliases": [],
       "city": "Al Amerat",
       "country": "Oman",
-      "latitude": 23.501,
-      "longitude": 58.623,
+      "latitude": 23.5212,
+      "longitude": 58.5266,
       "timezone": "Asia/Muscat",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://cricketquota.com/al-amerat-cricket-ground-oman-cricket-ministry-turf-1/",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://cricketquota.com/al-amerat-cricket-ground-oman-cricket-ministry-turf-1/. Duplicate compatibility record for Ministry Turf 1; corrected to the published candidate point (23.5212, 58.5266), but kept unverified because the exact pitch pin conflicts with the official campus map."
     },
     {
       "id": "oman-ministry-turf2",
@@ -3815,15 +3815,15 @@
       "aliases": [],
       "city": "Al Amerat",
       "country": "Oman",
-      "latitude": 23.501,
-      "longitude": 58.623,
+      "latitude": 23.48806,
+      "longitude": 58.49389,
       "timezone": "Asia/Muscat",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://www.omancricket.org/contact-us/office-ground-address/",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://www.omancricket.org/contact-us/office-ground-address/. Duplicate compatibility record for Ministry Turf 2; corrected to the Oman Cricket Academy/OC Turf Grounds campus coordinate. Exact Turf 2 pitch pin remains unverified."
     },
     {
       "id": "hongkong-tin-kwong",
