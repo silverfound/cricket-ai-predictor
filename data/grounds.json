@@ -398,16 +398,16 @@
       ],
       "city": "Cardiff",
       "country": "Wales",
-      "latitude": 51.4857,
-      "longitude": -3.201,
+      "latitude": 51.48747,
+      "longitude": -3.19188,
       "timezone": "Europe/London",
       "competitions": [
         "International",
         "The Hundred"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W779005346",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.visitwales.com/attraction/sports-venue/sophia-gardens-stadium-cardiff-560251. Coordinates cross-checked against https://mapcarta.com/W779005346. Corrected the starter pin to the OSM cricket-stadium footprint; Visit Wales confirms Sophia Gardens Stadium, Cardiff, CF11 9XR."
     },
     {
       "id": "bristol-county-ground",
@@ -1989,15 +1989,15 @@
       "aliases": [],
       "city": "Liverpool",
       "country": "England",
-      "latitude": 53.372,
-      "longitude": -2.939,
+      "latitude": 53.36303,
+      "longitude": -2.91909,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W38732178",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.liverpoolcricketclub.co.uk/. Coordinates cross-checked against https://mapcarta.com/W38732178. Corrected the starter pin by about 1.7 km to the OSM cricket sports-centre point; Liverpool Cricket Club confirms this is its Aigburth home ground."
     },
     {
       "id": "grace-road",
@@ -2007,15 +2007,15 @@
       ],
       "city": "Leicester",
       "country": "England",
-      "latitude": 52.607,
-      "longitude": -1.132,
+      "latitude": 52.60732,
+      "longitude": -1.1425,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://commons.wikimedia.org/wiki/File:Floodlight_at_Grace_Road_Cricket_Ground_-_geograph.org.uk_-_364796.jpg",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://leicestershireccc.co.uk/contact. Coordinates cross-checked against https://commons.wikimedia.org/wiki/File:Floodlight_at_Grace_Road_Cricket_Ground_-_geograph.org.uk_-_364796.jpg. Corrected the longitude to the geotagged ground location; Leicestershire CCC confirms Uptonsteel Grace Road, Leicester LE2 8EB."
     },
     {
       "id": "new-road-worcester",
@@ -2025,15 +2025,15 @@
       ],
       "city": "Worcester",
       "country": "England",
-      "latitude": 52.19,
-      "longitude": -2.224,
+      "latitude": 52.18917,
+      "longitude": -2.22694,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/New_Road_(cricket)",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://wccc.co.uk/contact/. Coordinates cross-checked against https://en.wikipedia.org/wiki/New_Road_(cricket). Corrected to the published New Road cricket-ground coordinate; Worcestershire CCC confirms the ground at New Road, Worcester WR2 4QQ."
     },
     {
       "id": "st-lawrence-ground",
@@ -2043,15 +2043,15 @@
       ],
       "city": "Canterbury",
       "country": "England",
-      "latitude": 51.271,
+      "latitude": 51.267,
       "longitude": 1.091,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/St_Lawrence_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.kentcricket.co.uk/grounds/st-lawrence-ground/. Coordinates cross-checked against https://en.wikipedia.org/wiki/St_Lawrence_Ground. Corrected the starter latitude to the published ground coordinate; Kent Cricket confirms Old Dover Road, Canterbury CT1 3NZ."
     },
     {
       "id": "county-ground-taunton",
@@ -2061,15 +2061,15 @@
       ],
       "city": "Taunton",
       "country": "England",
-      "latitude": 51.019,
-      "longitude": -3.1,
+      "latitude": 51.01886,
+      "longitude": -3.10071,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W28655137",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://somersetcountycc.co.uk/contact/. Coordinates cross-checked against https://mapcarta.com/W28655137. OSM cricket-stadium point; Somerset CCC confirms the Cooper Associates County Ground, Taunton TA1 1JT."
     },
     {
       "id": "county-ground-chelmsford",
@@ -2077,15 +2077,15 @@
       "aliases": [],
       "city": "Chelmsford",
       "country": "England",
-      "latitude": 51.731,
-      "longitude": 0.469,
+      "latitude": 51.7316,
+      "longitude": 0.4691,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://cricketfieldguide.com/ground/county-ground-chelmsford",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://essexcricket.org.uk/wp-content/uploads/2019/04/Ground-Map-2019.pdf. Coordinates cross-checked against https://cricketfieldguide.com/ground/county-ground-chelmsford. Adjusted the pin to the mapped County Ground point; Essex Cricket's official ground map confirms New Writtle Street, Chelmsford CM2 0PG."
     },
     {
       "id": "brunton-memorial",
@@ -2093,15 +2093,15 @@
       "aliases": [],
       "city": "Radlett",
       "country": "England",
-      "latitude": 51.686,
-      "longitude": -0.318,
+      "latitude": 51.6761,
+      "longitude": -0.3091,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://cricketfieldguide.com/ground/brunton-memorial-ground-radlett",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://www.middlesexccc.com/. Coordinates cross-checked against https://cricketfieldguide.com/ground/brunton-memorial-ground-radlett. Corrected the starter pin by about 1.2 km to the Radlett ground coordinate; kept unverified pending a primary Radlett/Middlesex venue map."
     },
     {
       "id": "castle-avenue",
@@ -2109,16 +2109,16 @@
       "aliases": [],
       "city": "Dublin",
       "country": "Ireland",
-      "latitude": 53.372,
-      "longitude": -6.193,
+      "latitude": 53.368035,
+      "longitude": -6.207107,
       "timezone": "Europe/Dublin",
       "competitions": [
         "International",
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://www.clontarfcricket.com/about/ground/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.clontarfcricket.com/about/ground/. Coordinates cross-checked against https://www.clontarfcricket.com/about/ground/. Corrected the starter pin using Clontarf Cricket Club's published Sat Nav coordinates; the OSM ground point is within approximately 100 m."
     },
     {
       "id": "clontarf-ground",
@@ -2143,15 +2143,15 @@
       "aliases": [],
       "city": "Malahide",
       "country": "Ireland",
-      "latitude": 53.451,
-      "longitude": -6.163,
+      "latitude": 53.4493,
+      "longitude": -6.1612,
       "timezone": "Europe/Dublin",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/Malahide_Cricket_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricketireland.ie/international/venues-and-facilities/international-grounds/malahide/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Malahide_Cricket_Ground. Corrected the starter pin to the published Malahide ground coordinate; Cricket Ireland confirms The Village at Dublin Road, Malahide, Co Dublin."
     },
     {
       "id": "vra-ground",
@@ -3859,15 +3859,15 @@
       "aliases": [],
       "city": "Dundee",
       "country": "Scotland",
-      "latitude": 56.478,
-      "longitude": -2.936,
+      "latitude": 56.475,
+      "longitude": -2.87,
       "timezone": "Europe/London",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://en.wikipedia.org/wiki/Forthill",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.forfarshire.co.uk/pages/page_33038/How-To-Find-Us.aspx. Coordinates cross-checked against https://en.wikipedia.org/wiki/Forthill. Corrected the starter pin by about 4 km to Forthill's published coordinate; Forfarshire confirms Forthill Community Sports Club, Fintry Place, Broughty Ferry, Dundee."
     },
     {
       "id": "germany-berlin",
@@ -3971,15 +3971,15 @@
       "aliases": [],
       "city": "Liverpool",
       "country": "England",
-      "latitude": 53.372,
-      "longitude": -2.939,
+      "latitude": 53.36303,
+      "longitude": -2.91909,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W38732178",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.liverpoolcricketclub.co.uk/. Coordinates cross-checked against https://mapcarta.com/W38732178. Duplicate legacy ID for Aigburth Cricket Ground; set to the same verified Liverpool Cricket Club ground point for compatibility."
     },
     {
       "id": "england-woodbridge",
