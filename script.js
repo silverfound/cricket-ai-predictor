@@ -2,6 +2,37 @@
 let liveMatches = [], upcomingMatches = [], finishedMatches = [], currentTab = 'live';
 let allowedPredictionMatchIds = new Set();
 
+function getMatchResultText(match) {
+    const metadata = match?.provider_metadata || {};
+    return [match?.status_note, match?.status_str, match?.status, match?.result,
+        match?.result_text, metadata?.result, metadata?.status_note]
+        .filter(value => typeof value === "string" && value.trim())
+        .join(" ").trim();
+}
+
+function normalizeCricketTeamName(value) {
+    return String(value || "").toLowerCase()
+        .replace(/\([^)]*\)/g, " ")
+        .replace(/\b(npl|ipl|bbl|psl|sa20|ilt20)\b/g, " ")
+        .replace(/\bs\.?\s*paschim\b/g, "sudur paschim")
+        .replace(/\bsudurpaschim\b/g, "sudur paschim")
+        .replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
+}
+
+function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
+    const winnerMatch = String(resultText || "").match(/^\s*(.+?)\s+(?:won|beat|defeated)\b/i);
+    if (!winnerMatch) return false;
+    const winner = normalizeCricketTeamName(winnerMatch[1]);
+    const predicted = normalizeCricketTeamName(predictedTeam);
+    const first = normalizeCricketTeamName(team1);
+    const second = normalizeCricketTeamName(team2);
+    const matchesName = (shortName, fullName) => Boolean(shortName && fullName)
+        && (shortName === fullName || fullName.startsWith(shortName + " ") || shortName.startsWith(fullName + " "));
+    return matchesName(winner, predicted)
+        || (matchesName(winner, first) && matchesName(predicted, first))
+        || (matchesName(winner, second) && matchesName(predicted, second));
+}
+
 function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
     const metadata = match?.provider_metadata || {};
     const asFlag = value => {
@@ -15,29 +46,20 @@ function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) 
 
     const started = asFlag(match?.match_started) || asFlag(match?.matchStarted)
         || asFlag(metadata.matchStarted) || asFlag(metadata.match_started);
-    const status = [match?.status_str, match?.status, match?.status_note]
-        .filter(Boolean).join(" ").trim().toLowerCase();
+    const status = getMatchResultText(match).toLowerCase();
     const startSeconds = Number(match?.timestamp_start);
     const hasStartTime = Number.isFinite(startSeconds) && startSeconds > 0;
-
-    // "Innings completed" means an innings ended, not necessarily the match.
     const terminalText = status.replace(/\binnings?\s+(?:is\s+)?completed?\b/g, " ");
     const hasResultEvidence = /\b(result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText);
     const isFinished = /\b(match\s+(?:is\s+)?(?:completed|finished|ended)|result|won|drawn?|tied|abandoned|cancelled|canceled|no result)\b/.test(terminalText)
         || /^(?:finished|complete|completed)$/.test(terminalText.trim());
-    // A generic Finished/Completed label must not override a future kickoff.
-    // Explicit provider matchEnded flags and actual result evidence remain authoritative.
     if (isFinished && hasStartTime && startSeconds > nowSeconds && !hasResultEvidence) return "upcoming";
     if (isFinished) return "finished";
-
     const isLive = started || /\b(live|in progress|break|stumps|innings|in play|day [1-5]|lunch|tea|drinks|rain delay|bad light)\b/.test(status);
     if (isLive) return "live";
-
-    // Future start is the strongest Upcoming signal when provider text is absent or stale.
     if (hasStartTime && startSeconds > nowSeconds) return "upcoming";
     return "unknown";
 }
-
 
 // ==========================================
 // NAME MAPPING (API Name -> Model Name)
@@ -1415,10 +1437,13 @@ document.body.insertAdjacentHTML('beforeend', popupHTML);
 function wakeUpBackend() {}
 function getFormattedDate(offset) { let d = new Date(); d.setDate(d.getDate() + offset); return d.toISOString().split('T')[0]; }
 
-function savePrediction(matchId, team1, team2, predictedTeam, prob) {
+function savePrediction(matchId, team1, team2, predictedTeam, prob, fixture) {
     let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
-    history = history.filter(h => h.matchId !== matchId);
-    history.push({ matchId, team1, team2, predictedTeam, probability: prob, date: new Date().toISOString() });
+    const previous = history.find(h => String(h.matchId) === String(matchId)) || {};
+    history = history.filter(h => String(h.matchId) !== String(matchId));
+    history.push({ ...previous, matchId: String(matchId), team1, team2, predictedTeam,
+        probability: prob, date: previous.date || new Date().toISOString(),
+        fixture: fixture ? { ...fixture } : previous.fixture });
     localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history));
 }
 
@@ -1473,6 +1498,18 @@ async function fetchMatches() {
         if (!dataResponse.ok) throw new Error(`GitHub match snapshot unavailable: HTTP ${dataResponse.status}`);
         const snapshot = await dataResponse.json();
         allMatches = Array.isArray(snapshot.response?.items) ? snapshot.response.items : [];
+
+        // Restore previously predicted fixtures if the provider removes them from its current feed.
+        const predictionHistory = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
+        const feedIds = new Set(allMatches.map(m => String(m.match_id || '')));
+        predictionHistory.forEach(entry => {
+            const cachedFixture = entry?.fixture;
+            const cachedId = String(entry?.matchId || '');
+            if (cachedFixture && cachedId && !feedIds.has(cachedId)) {
+                allMatches.push({ ...cachedFixture, match_id: cachedId, archived_from_prediction_history: true });
+                feedIds.add(cachedId);
+            }
+        });
 
         liveMatches = []; upcomingMatches = []; finishedMatches = [];
         const seen = new Set();
@@ -1555,23 +1592,26 @@ function renderMatches(matches) {
         
         let statusText = currentTab === 'live' ? `<p style="color: #ff4d4d; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">🔴 LIVE</p>` : '';
         
-        if (currentTab === 'finished' && m.status_note) {
-            let note = m.status_note;
-            statusText = `<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">${note}</p>`;
-            let savedPred = history.find(h => h.matchId === m.match_id);
+        const resultText = getMatchResultText(m);
+        if (currentTab === 'finished' && resultText) {
+            let note = resultText;
+            statusText = \`<p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 0.85rem; font-weight: bold;">\${note}</p>\`;
+            let savedPred = history.find(h => String(h.matchId) === String(m.match_id));
             if (savedPred) {
                 let predictedTeam = savedPred.predictedTeam;
-                let isCorrect = note.toLowerCase().includes(predictedTeam.toLowerCase()) && note.toLowerCase().includes("won");
-                if (note.toLowerCase().includes("draw") || note.toLowerCase().includes("tie") || note.toLowerCase().includes("abandon")) isCorrect = false; 
+                let isDrawOrNoResult = /\b(draw|tie|tied|abandon|cancel|no result)\b/i.test(note);
+                let isCorrect = !isDrawOrNoResult && resultWinnerMatchesTeam(note, predictedTeam, m.teama?.name, m.teamb?.name);
                 let badgeColor = isCorrect ? '#22c55e' : '#ef4444';
                 let badgeText = isCorrect ? '✅ Prediction Correct' : '❌ Prediction Wrong';
-                statusText += `
-                    <div style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px dashed ${badgeColor};">
-                        <p style="color: #cbd5e1; margin: 0 0 4px 0; font-size: 0.75rem;">AI predicted: <b>${predictedTeam}</b></p>
-                        <p style="color: ${badgeColor}; margin: 0; font-size: 0.8rem; font-weight: bold;">${badgeText}</p>
-                    </div>`;
-                if (savedPred.isCorrect === undefined) { savedPred.isCorrect = isCorrect; localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history)); }
-            } else { statusText += `<p style="color: #94a3b8; margin: 5px 0 0 0; font-size: 0.75rem; font-style: italic;">AI prediction not recorded.</p>`; }
+                statusText += \`
+                    <div style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px dashed \${badgeColor};">
+                        <p style="color: #cbd5e1; margin: 0 0 4px 0; font-size: 0.75rem;">AI predicted: <b>\${predictedTeam}</b></p>
+                        <p style="color: \${badgeColor}; margin: 0; font-size: 0.8rem; font-weight: bold;">\${badgeText}</p>
+                    </div>\`;
+                savedPred.fixture = { ...m };
+                savedPred.isCorrect = isCorrect;
+                localStorage.setItem('ai_prediction_history_v3', JSON.stringify(history));
+            } else { statusText += \`<p style="color: #94a3b8; margin: 5px 0 0 0; font-size: 0.75rem; font-style: italic;">AI prediction not recorded.</p>\`; }
         }
 
         html += `
@@ -1667,7 +1707,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             if (!isLiveMatch) {
                 let p1 = parseFloat(pred.predictions[modelT1]), p2 = parseFloat(pred.predictions[modelT2]);
                 let winner = p1 > p2 ? t1 : t2;
-                savePrediction(matchId, t1, t2, winner, Math.max(p1, p2));
+                savePrediction(matchId, t1, t2, winner, Math.max(p1, p2), match);
             }
         }
     } catch (e) { preDiv.innerText = "Error loading prediction."; }
@@ -1875,7 +1915,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
                 
                 if (!isLiveMatch) {
                     let n1 = parseFloat(p1), n2 = parseFloat(p2);
-                    savePrediction(matchId, t1, t2, (n1 > n2 ? t1 : t2), Math.max(n1, n2));
+                    savePrediction(matchId, t1, t2, (n1 > n2 ? t1 : t2), Math.max(n1, n2), match);
                 }
 
                 if (window.prePred) {
