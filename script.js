@@ -76,7 +76,7 @@ function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
     const other = normalizeCricketTeamName(canonicalCricketTeamName(opponent)).split(" ").filter(Boolean);
     return alias.length === 1 && full.length > 1
         && alias[0] === full[full.length - 1]
-        && (!other.length || alias[0] !== other[other.length - 1]);
+        && !other.includes(alias[0]);
 }
 
 function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
