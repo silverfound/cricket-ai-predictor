@@ -1168,16 +1168,16 @@
       ],
       "city": "Basseterre",
       "country": "Saint Kitts and Nevis",
-      "latitude": 17.302,
-      "longitude": -62.718,
+      "latitude": 17.29856,
+      "longitude": -62.72207,
       "timezone": "America/St_Kitts",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W576357921",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://tickets.windiescricket.com/venue/warner-park-cricket-stadium. Coordinates cross-checked against https://mapcarta.com/W576357921. Corrected the starter pin to the OSM cricket-stadium point; Cricket West Indies confirms Warner Park Cricket Stadium, Basseterre, St Kitts."
     },
     {
       "id": "sabina-park",
@@ -1204,16 +1204,16 @@
       ],
       "city": "St George's",
       "country": "Grenada",
-      "latitude": 12.056,
-      "longitude": -61.753,
+      "latitude": 12.05903,
+      "longitude": -61.75222,
       "timezone": "America/Grenada",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W25571056",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://grenadastadium.gd/about/. Coordinates cross-checked against https://mapcarta.com/W25571056. Corrected the starter pin to the OSM cricket pitch; Grenada National Stadium Authority confirms the National Cricket Stadium at Queen's Park, St George's."
     },
     {
       "id": "daren-sammy",
@@ -1242,16 +1242,16 @@
       ],
       "city": "Providence",
       "country": "Guyana",
-      "latitude": 6.801,
-      "longitude": -58.166,
+      "latitude": 6.75777,
+      "longitude": -58.17783,
       "timezone": "America/Guyana",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W576678606",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://ntg.gov.gy/monument/providence-cricket-stadium/. Coordinates cross-checked against https://mapcarta.com/W576678606. Corrected the starter pin by about 5 km to the OSM cricket field; Guyana National Trust confirms Providence Cricket Stadium on the East Bank Demerara, and the official stadium site confirms its address."
     },
     {
       "id": "grand-prairie",
@@ -1261,15 +1261,15 @@
       ],
       "city": "Grand Prairie",
       "country": "United States",
-      "latitude": 32.746,
-      "longitude": -96.999,
+      "latitude": 32.7679287,
+      "longitude": -96.9865441,
       "timezone": "America/Chicago",
       "competitions": [
         "MLC"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://www.visitgrandprairietx.com/Things-To-Do/Attractions/Major-League-Cricket-Stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.visitgrandprairietx.com/Things-To-Do/Attractions/Major-League-Cricket-Stadium. Coordinates cross-checked against https://www.visitgrandprairietx.com/Things-To-Do/Attractions/Major-League-Cricket-Stadium. Corrected the starter pin by about 2.6 km to the official City of Grand Prairie map point at 1600 Lone Star Parkway."
     },
     {
       "id": "church-street-park",
@@ -1279,15 +1279,15 @@
       ],
       "city": "Morrisville",
       "country": "United States",
-      "latitude": 35.823,
-      "longitude": -78.827,
+      "latitude": 35.846638,
+      "longitude": -78.845151,
       "timezone": "America/New_York",
       "competitions": [
         "MLC"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://www.morrisvillenc.gov/Events-directory/Minor-League-Cricket-at-Church-Street-Park",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.morrisvillenc.gov/Events-directory/Minor-League-Cricket-at-Church-Street-Park. Coordinates cross-checked against https://www.morrisvillenc.gov/Events-directory/Minor-League-Cricket-at-Church-Street-Park. Corrected the starter pin by about 3 km to the Town of Morrisville's official coordinates for 5800 Cricket Pitch Way."
     },
     {
       "id": "central-broward",
@@ -1297,16 +1297,16 @@
       ],
       "city": "Lauderhill",
       "country": "United States",
-      "latitude": 26.116,
-      "longitude": -80.286,
+      "latitude": 26.13998,
+      "longitude": -80.19869,
       "timezone": "America/New_York",
       "competitions": [
         "International",
         "MLC"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W405997023",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.broward.org/parks/parklocations?park=centralbrowardparkbrowardcountystadium. Coordinates cross-checked against https://mapcarta.com/W405997023. Corrected the starter pin by about 9 km to the OSM cricket pitch; Broward County confirms Central Broward Park & Broward County Stadium, 3700 NW 11th Place, Lauderhill."
     },
     {
       "id": "maple-leaf-ground",
@@ -2527,16 +2527,16 @@
       "aliases": [],
       "city": "Roseau",
       "country": "Dominica",
-      "latitude": 15.302,
-      "longitude": -61.388,
+      "latitude": 15.30187,
+      "longitude": -61.38446,
       "timezone": "America/Dominica",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/30473592",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://tickets.windiescricket.com/venue/windsor-park. Coordinates cross-checked against https://mapcarta.com/30473592. Corrected the starter pin to the OSM stadium point; Cricket West Indies confirms Windsor Park, 131 Bath Road, Roseau, Dominica."
     },
     {
       "id": "coolidge-cricket-ground",
@@ -2544,16 +2544,16 @@
       "aliases": [],
       "city": "Coolidge",
       "country": "Antigua and Barbuda",
-      "latitude": 17.136,
-      "longitude": -61.792,
+      "latitude": 17.14097,
+      "longitude": -61.7948,
       "timezone": "America/Antigua",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W19881453",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.windiescricket.com/grounds/coolidge-cricket-ground-antigua/. Coordinates cross-checked against https://mapcarta.com/W19881453. Corrected the starter pin to the OSM cricket-stadium point; Cricket West Indies confirms Coolidge Cricket Ground as its international venue and headquarters."
     },
     {
       "id": "antigua-rec-ground",
@@ -2628,16 +2628,16 @@
       "aliases": [],
       "city": "East Meadow",
       "country": "United States",
-      "latitude": 40.725,
-      "longitude": -73.585,
+      "latitude": 40.72995,
+      "longitude": -73.57584,
       "timezone": "America/New_York",
       "competitions": [
         "International",
         "T20 World Cup"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/N8783550500",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.icc-cricket.com/media-releases/state-of-the-art-nassau-county-international-cricket-stadium-in-new-york-unveiled-ahead-of-men-s-t20-world-cup?appview=true. Coordinates cross-checked against https://mapcarta.com/N8783550500. Corrected the starter pin to the OSM stadium node; ICC and Nassau County confirm the temporary international cricket stadium was built in Eisenhower Park, East Meadow."
     },
     {
       "id": "moosa-cricket-stadium",
@@ -2645,15 +2645,15 @@
       "aliases": [],
       "city": "Pearland",
       "country": "United States",
-      "latitude": 29.563,
-      "longitude": -95.286,
+      "latitude": 29.51768,
+      "longitude": -95.32565,
       "timezone": "America/Chicago",
       "competitions": [
         "MLC"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/Moosa_Stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://visitpearland.com/venues/sports-tournaments/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Moosa_Stadium. Corrected the starter pin by about 5.7 km to the published Moosa Stadium coordinate; Visit Pearland confirms Moosa Stadium at 5515 McKeever Road, Pearland TX 77581."
     },
     {
       "id": "prairie-view-cricket-complex",
@@ -2661,15 +2661,15 @@
       "aliases": [],
       "city": "Prairie View",
       "country": "United States",
-      "latitude": 30.086,
-      "longitude": -95.987,
+      "latitude": 30.0879,
+      "longitude": -96.00761,
       "timezone": "America/Chicago",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W1065030333",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://pvcricketcomplex.com/. Coordinates cross-checked against https://mapcarta.com/W1065030333. Corrected the starter pin to the OSM sports-complex point; official Prairie View Cricket Complex site confirms the five-field cricket facility in Prairie View, Texas."
     },
     {
       "id": "oakland-coliseum",
@@ -2677,15 +2677,15 @@
       "aliases": [],
       "city": "Oakland",
       "country": "United States",
-      "latitude": 37.751,
-      "longitude": -122.2,
+      "latitude": 37.75168,
+      "longitude": -122.20048,
       "timezone": "America/Los_Angeles",
       "competitions": [
         "MLC"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W23426664",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.majorleaguecricket.com/news/255. Coordinates cross-checked against https://mapcarta.com/W23426664. OSM stadium point; Major League Cricket confirms the Oakland Coliseum hosted its 2026 MLC playoff matches, so this is a temporary cricket venue rather than a dedicated cricket ground."
     },
     {
       "id": "maple-leaf-ground-nw",
