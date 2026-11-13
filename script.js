@@ -1712,10 +1712,10 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
     const hijriDateStr = `${numberToUrdu(parseInt(hijriDay, 10))} ${urduMonths[parseInt(hijriMonth, 10) - 1]} ${numberToUrdu(parseInt(hijriYear.replace(' AH', '').replace(' BC', ''), 10))}`;
 
-    // Civil weekday remains the venue-local match weekday. Hijri date advances
-    // at Maghrib, but the Gregorian weekday does not advance until midnight.
-    const [localYear, localMonth, localDay] = venueDateParts.iso.split("-").map(Number);
-    let dayUrdu = urduDays[new Date(Date.UTC(localYear, localMonth - 1, localDay, 12)).getUTCDay()];
+    // The Ilmi (Islamic) date and weekday both roll over at Maghrib.
+    // Use the effective Islamic-day Gregorian date for the displayed Urdu weekday.
+    const [ilmiYear, ilmiMonth, ilmiDay] = finalGregorianDate.split("-").map(Number);
+    let dayUrdu = urduDays[new Date(Date.UTC(ilmiYear, ilmiMonth - 1, ilmiDay, 12)).getUTCDay()];
 
     let urduT1 = getUrduTeamName(t1);
     let urduT2 = getUrduTeamName(t2);
@@ -1788,7 +1788,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         matchTimeMultA: timeMultA, matchTimeMultB: timeMultB,
         sunrise: maghribData.sunrise, sunset: maghribData.sunset,
         nextSunrise: nextDayPrayerData.sunrise, matchStartTime: matchTimeStr,
-        weekdayIndex: new Date(Date.UTC(...venueDateParts.iso.split("-").map((v,i)=>i===1?Number(v)-1:Number(v)))).getUTCDay()
+        // Planetary weekday ruler follows the Islamic day, which changes at Maghrib.
+        weekdayIndex: new Date(Date.UTC(...finalGregorianDate.split("-").map((v,i)=>i===1?Number(v)-1:Number(v)))).getUTCDay()
     };
 
     let ilmiHtml = `
