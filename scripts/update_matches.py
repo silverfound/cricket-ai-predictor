@@ -208,8 +208,9 @@ def _merge_provider_enrichment(primary_items, cricketdata_items):
         candidate_names = fixture_names(candidate)
         if not all(primary_names) or not all(candidate_names):
             return False
+        canonical_sides = [canonical_team_name(name) for name in primary_names]
         resolved = [resolve_fixture_team(name, *primary_names) for name in candidate_names]
-        return bool(all(resolved) and set(resolved) == set(primary_names))
+        return bool(all(resolved) and set(resolved) == set(canonical_sides))
 
     merged = 0
     for item in primary_items:
