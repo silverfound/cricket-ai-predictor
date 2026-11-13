@@ -2367,9 +2367,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://www.omancricket.org/contact-us/office-ground-address/",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://www.omancricket.org/contact-us/office-ground-address/. Official Oman Cricket page confirms the Al Amerat OC Turf Grounds campus. Turf 2's exact field boundary remains indistinguishable from the campus map, so this record remains unverified."
+      "source_url": "https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground. Official Oman Cricket page confirms the OC Turf Grounds/Academy campus; mapped cricket pitch at 23.48806, 58.49389 is the Ministry Turf 2 venue. Retained a separate record from Turf 1."
     },
     {
       "id": "seebarn",
@@ -2924,9 +2924,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://www.waze.com/live-map/directions/br/rj/sao-fernando-polo-and-cricket-club-%28-s.f.p.c.c-%29?to=place.ChIJ3dTYHpn-mwARM9Op0Ic9PbI",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.waze.com/live-map/directions/br/rj/sao-fernando-polo-and-cricket-club-%28-s.f.p.c.c-%29?to=place.ChIJ3dTYHpn-mwARM9Op0Ic9PbI. Coordinates cross-checked against https://www.waze.com/live-map/directions/br/rj/sao-fernando-polo-and-cricket-club-%28-s.f.p.c.c-%29?to=place.ChIJ3dTYHpn-mwARM9Op0Ic9PbI. Waze confirms São Fernando Polo and Cricket Club at Piranema, Seropédica–RJ, 23890-000; the registry coordinate matches the mapped club location."
     },
     {
       "id": "royal-brussels",
@@ -3054,9 +3054,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://mapcarta.com/N6207490931",
+      "source_url": "https://ruirusportsclub.co.ke/",
       "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://ruirusportsclub.co.ke/. Coordinates cross-checked against https://mapcarta.com/N6207490931. Corrected the starter pin to the OSM Ruiru Sports Club point near Thika Road; kept unverified because current club sources do not clearly confirm a cricket field at this location."
+      "notes": "Official venue source: https://ruirusportsclub.co.ke/ and https://www.lawnbowls.com/clubs/ruiru-sports-club. Coordinates cross-checked against https://ruirusportsclub.co.ke/. Kept unverified: Ruiru Sports Club's official information lists golf, bowls and swimming, but no cricket ground. This record may be a non-cricket venue and should not be certified as a cricket ground."
     },
     {
       "id": "kyambogo",
@@ -3192,15 +3192,15 @@
       "aliases": [],
       "city": "Caledon",
       "country": "Canada",
-      "latitude": 43.87,
-      "longitude": -79.86,
+      "latitude": 43.7559,
+      "longitude": -79.8153,
       "timezone": "America/Toronto",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.caledon.ca/en/news/notice-of-construction-neighbourhood-youth-cricket-field-bonnie-glen-farm-park.aspx",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.caledon.ca/en/news/notice-of-construction-neighbourhood-youth-cricket-field-bonnie-glen-farm-park.aspx and https://www.caledon.ca/. Coordinates cross-checked against https://www.caledon.ca/en/news/notice-of-construction-neighbourhood-youth-cricket-field-bonnie-glen-farm-park.aspx. Corrected the starter pin to Bonnie Glen Farm Park, 45 Twistleton Street, Caledon; Town of Caledon confirms construction of its Neighbourhood Youth Cricket Field, opened in 2026."
     },
     {
       "id": "india-barsapara",
@@ -3766,16 +3766,16 @@
       "aliases": [],
       "city": "Kathmandu",
       "country": "Nepal",
-      "latitude": 27.71881,
-      "longitude": 85.39129,
+      "latitude": 27.720889,
+      "longitude": 85.389861,
       "timezone": "Asia/Kathmandu",
       "competitions": [
         "International",
         "NPL"
       ],
-      "source_url": "https://mapcarta.com/W345216088",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue identity/address: https://cricketnepal.org.np/ground-detail/. Coordinates cross-checked against map record (https://mapcarta.com/W345216088). Corrected to the mapped lower Mulpani cricket pitch. The official CAN page identifies Mulpani International Cricket Ground, but exact upper/lower field correspondence still needs confirmation."
+      "source_url": "https://en.wikipedia.org/wiki/Mulpani_Cricket_Stadium",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.mofe.gov.np/uploads/uploads/notices/supplementary-eia-of-mulpani-cricket-stadiummofepdf-1152-0741735290591.pdf and https://cricketnepal.org.np/ground-detail/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Mulpani_Cricket_Stadium. Resolved as Lower Mulpani Cricket Stadium: published coordinate 27.720889, 85.389861; Government of Nepal project profile confirms separate upper and lower grounds, with CAN as operator."
     },
     {
       "id": "nepal-upper-mulpani",
@@ -3783,15 +3783,15 @@
       "aliases": [],
       "city": "Kathmandu",
       "country": "Nepal",
-      "latitude": 27.72133,
-      "longitude": 85.39015,
+      "latitude": 27.718583,
+      "longitude": 85.39139,
       "timezone": "Asia/Kathmandu",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://mapcarta.com/W345200264",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue identity/address: https://cricketnepal.org.np/ground-detail/. Coordinates cross-checked against map record (https://mapcarta.com/W345200264). Corrected to the mapped Mulpani stadium footprint. Upper/lower naming and the official international-ground pin need one more independent confirmation."
+      "source_url": "https://en.wikipedia.org/wiki/Mulpani_International_Cricket_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.mofe.gov.np/uploads/uploads/notices/supplementary-eia-of-mulpani-cricket-stadiummofepdf-1152-0741735290591.pdf and https://cricketnepal.org.np/ground-detail/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Mulpani_International_Cricket_Ground. Resolved as Upper Mulpani / Mulpani International Cricket Ground: published coordinate 27.718583, 85.39139; Government of Nepal confirms separate upper and lower grounds, and CAN is the owner/operator."
     },
     {
       "id": "oman-al-amerat",
@@ -3821,9 +3821,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://www.omancricket.org/contact-us/office-ground-address/",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://www.omancricket.org/contact-us/office-ground-address/. Duplicate compatibility record for Ministry Turf 2; corrected to the Oman Cricket Academy/OC Turf Grounds campus coordinate. Exact Turf 2 pitch pin remains unverified."
+      "source_url": "https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Oman_Cricket_Academy_Ground. Duplicate compatibility record for Ministry Turf 2; synchronized to the verified Oman Cricket Academy/OC Turf Grounds pitch at 23.48806, 58.49389."
     },
     {
       "id": "hongkong-tin-kwong",
