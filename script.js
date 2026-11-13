@@ -1499,6 +1499,32 @@ async function fetchMatches() {
         const snapshot = await dataResponse.json();
         allMatches = Array.isArray(snapshot.response?.items) ? snapshot.response.items : [];
 
+        // Merge the persistent recent-results archive so completed fixtures do not
+        // disappear when the current-day provider feed drops them.
+        try {
+            const archiveResponse = await fetch(`data/recent_results.json?ts=${Date.now()}`, { cache: "no-store" });
+            if (archiveResponse.ok) {
+                const archive = await archiveResponse.json();
+                const byId = new Map(allMatches.map((m, i) => [String(m.match_id || ""), i]));
+                (Array.isArray(archive.matches) ? archive.matches : []).forEach(archived => {
+                    const id = String(archived?.match_id || "");
+                    if (!id) return;
+                    if (byId.has(id)) {
+                        const index = byId.get(id);
+                        allMatches[index] = { ...allMatches[index],
+                            status_note: allMatches[index].status_note || archived.status_note,
+                            status_str: allMatches[index].status_str || archived.status_str,
+                            match_ended: allMatches[index].match_ended ?? archived.match_ended };
+                    } else {
+                        allMatches.push({ ...archived, archived_result: true });
+                        byId.set(id, allMatches.length - 1);
+                    }
+                });
+            }
+        } catch (archiveError) {
+            console.warn("Recent result archive unavailable; continuing with live feed.", archiveError);
+        }
+
         // Restore previously predicted fixtures if the provider removes them from its current feed.
         const predictionHistory = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
         const feedIds = new Set(allMatches.map(m => String(m.match_id || '')));
