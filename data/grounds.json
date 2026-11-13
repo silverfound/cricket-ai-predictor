@@ -3359,18 +3359,20 @@
     {
       "id": "india-lucknow",
       "name": "Ekana Cricket Stadium",
-      "aliases": [],
+      "aliases": [
+        "Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium"
+      ],
       "city": "Lucknow",
       "country": "India",
-      "latitude": 26.812,
-      "longitude": 81.02,
+      "latitude": 26.81126,
+      "longitude": 81.01678,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "IPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/N10902298853",
+      "verification_status": "verified",
+      "notes": "Duplicate compatibility record for Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium; coordinates, source evidence and verification status are synchronized with canonical record ekana."
     },
     {
       "id": "india-gwalior",
@@ -3440,7 +3442,9 @@
     {
       "id": "india-mohali",
       "name": "PCA IS Bindra Stadium",
-      "aliases": [],
+      "aliases": [
+        "Punjab Cricket Association IS Bindra Stadium"
+      ],
       "city": "Mohali",
       "country": "India",
       "latitude": 30.69,
@@ -3450,9 +3454,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W664455147",
+      "verification_status": "verified",
+      "notes": "Duplicate compatibility record for Punjab Cricket Association IS Bindra Stadium; coordinates, source evidence and verification status are synchronized with canonical record pca-mohali."
     },
     {
       "id": "india-vadodara",
@@ -4098,19 +4102,21 @@
     {
       "id": "pakistan-karachi",
       "name": "National Stadium",
-      "aliases": [],
+      "aliases": [
+        "National Bank Cricket Arena"
+      ],
       "city": "Karachi",
       "country": "Pakistan",
-      "latitude": 24.8936,
-      "longitude": 67.0822,
+      "latitude": 24.89603,
+      "longitude": 67.08144,
       "timezone": "Asia/Karachi",
       "competitions": [
         "International",
         "PSL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W480397211",
+      "verification_status": "verified",
+      "notes": "Duplicate compatibility record for National Bank Cricket Arena; coordinates, source evidence and verification status are synchronized with canonical record national-stadium-karachi."
     }
   ]
 }
