@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.provider_fallbacks import normalize_cricketdata, normalize_highlightly
+from scripts.provider_fallbacks import normalize_cricketdata, normalize_highlightly, should_fetch_match_info_enrichment
 
 
 class ProviderFallbackAdapterTests(unittest.TestCase):
@@ -130,6 +130,13 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertFalse(should_refresh_cricketdata_enrichment(half_hour_run, "schedule"))
         self.assertFalse(should_refresh_cricketdata_enrichment(hourly_slot, "workflow_dispatch"))
         self.assertFalse(should_refresh_cricketdata_enrichment(hourly_slot, "push"))
+
+    def test_match_info_enrichment_is_skipped_for_emergency_cricketdata_feed(self):
+        self.assertFalse(should_fetch_match_info_enrichment("CricketData", True))
+        self.assertFalse(should_fetch_match_info_enrichment("CricketData", False))
+        self.assertTrue(should_fetch_match_info_enrichment("Cricket Live Line Advance", True))
+        self.assertFalse(should_fetch_match_info_enrichment("Cricket Live Line Advance", False))
+        self.assertTrue(should_fetch_match_info_enrichment("Highlightly", True))
 
     def test_error_or_empty_provider_payload_is_rejected(self):
         with self.assertRaises(ValueError):
