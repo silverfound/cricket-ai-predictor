@@ -4,9 +4,11 @@ const source = fs.readFileSync("script.js", "utf8");
 const start = source.indexOf("function getMatchResultText(");
 const end = source.indexOf("\n\n// ==========================================\n// NAME MAPPING", start);
 if (start < 0 || end < 0) throw new Error("match result helpers not found");
-const sandbox = { __aliases: JSON.parse(fs.readFileSync("data/team_aliases.json", "utf8")).aliases };
+const aliasesJson = JSON.stringify(JSON.parse(fs.readFileSync("data/team_aliases.json", "utf8")).aliases);
+const sandbox = {};
 sandbox.__source = source.slice(start, end) + `
-cricketTeamAliasIndex = Object.fromEntries(Object.entries(this.__aliases).map(([alias, canonical]) => [normalizeCricketTeamName(alias), cleanCricketTeamLabel(canonical)]));
+const __aliases = ${aliasesJson};
+cricketTeamAliasIndex = Object.fromEntries(Object.entries(__aliases).map(([alias, canonical]) => [normalizeCricketTeamName(alias), cleanCricketTeamLabel(canonical)]));
 this.classifyMatchStatus = classifyMatchStatus;
 this.getMatchResultText = getMatchResultText;
 this.resultWinnerMatchesTeam = resultWinnerMatchesTeam;
