@@ -34,6 +34,7 @@ jobs:
           python scripts/chronological_elo_backtest.py
           node --check script.js
           node tests/test_match_status.js
+          node tests/test_match_results.js
           test "$(git hash-object cricket_ensemble_modern.joblib)" = "e6d7ba073174ddbafaa504c090702483063649a2"
           test "$(git hash-object latest_elo_ratings.joblib)" = "ba9b707b9bb4915e812fd3b310616059154b0bf5"
           test "$(git hash-object category_mappings.joblib)" = "682ae8a0568d4c2a88282ca78f5785ca0f761b7e"
@@ -74,6 +75,7 @@ jobs:
           mkdir -p _site/data
           cp index.html script.js manifest.json _site/
           cp data/matches.json _site/data/matches.json
+          cp data/recent_results.json _site/data/recent_results.json
           cp data/grounds.json _site/data/grounds.json
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
