@@ -1059,8 +1059,11 @@ async function findGlobalGround(venue) {
     if (!target) return null;
     const grounds = await loadGlobalGroundRegistry();
     const matches = grounds.filter(ground => {
-        const names = [ground.name, ...(ground.aliases || [])];
-        return names.some(name => normalizeVenueText(name) === target);
+        const names = [ground.name, ...(ground.aliases || [])]
+            .map(normalizeVenueText).filter(Boolean);
+        // Match a canonical ground name when a provider appends its city,
+        // region or country (for example, "Bay Oval, Mount Maunganui").
+        return names.some(name => target === name || target.startsWith(name + " "));
     });
     if (matches.length !== 1) return null;
     const ground = matches[0];
