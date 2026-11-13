@@ -85,7 +85,7 @@ function cricketWinnerAliasMatchesTeam(winner, team, opponent) {
     // Some providers shorten "Chitwan Rhinos" to "Chitwan". Accept a
     // one-token leading name only when it uniquely identifies one fixture side.
     const isUniqueFirstToken = alias.length === 1 && alias[0] === full[0]
-        && alias[0] !== other[0];
+        && !other.includes(alias[0]);
     const isUniqueFinalToken = alias.length === 1 && alias[0] === full[full.length - 1]
         && !other.includes(alias[0]);
     return isUniquePrefix || isUniqueInitialPrefix || isUniqueFirstToken || isUniqueFinalToken;
