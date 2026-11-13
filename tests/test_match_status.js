@@ -1,10 +1,10 @@
 const fs = require("fs");
 const vm = require("vm");
 const source = fs.readFileSync("script.js", "utf8");
-const match = source.match(/function classifyMatchStatus[\\s\\S]*?\\n}/);
+const match = source.match(/function classifyMatchStatus[\s\S]*?\n}/);
 if (!match) throw new Error("classifyMatchStatus helper not found");
 const sandbox = {};
-vm.runInNewContext(match[0] + "\\nthis.classifyMatchStatus = classifyMatchStatus;", sandbox);
+vm.runInNewContext(match[0] + "\nthis.classifyMatchStatus = classifyMatchStatus;", sandbox);
 const classify = sandbox.classifyMatchStatus;
 const now = 1_800_000_000;
 const future = now + 3600;
@@ -21,5 +21,5 @@ const cases = [
 for (const [name, fixture, expected] of cases) {
   const actual = classify(fixture, now);
   if (actual !== expected) throw new Error(name + ": expected " + expected + ", got " + actual);
-  process.stdout.write("PASS " + name + "\\n");
+  process.stdout.write("PASS " + name + "\n");
 }
