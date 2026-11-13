@@ -1508,8 +1508,8 @@ function savePrediction(matchId, team1, team2, predictedTeam, prob, fixture) {
 
 function getAccuracyStats() {
     let history = JSON.parse(localStorage.getItem('ai_prediction_history_v3') || '[]');
-    let evaluated = history.filter(h => h.isCorrect !== undefined);
-    let pending = history.filter(h => h.isCorrect === undefined);
+    let evaluated = history.filter(h => typeof h.isCorrect === 'boolean');
+    let pending = history.filter(h => typeof h.isCorrect !== 'boolean');
     let correct = evaluated.filter(h => h.isCorrect === true).length;
     return { total: evaluated.length, correct: correct, pending: pending.length };
 }
@@ -1691,10 +1691,13 @@ function renderMatches(matches) {
             let savedPred = history.find(h => String(h.matchId) === String(m.match_id));
             if (savedPred) {
                 let predictedTeam = savedPred.predictedTeam;
-                let isDrawOrNoResult = /\b(draw|tie|tied|abandon|cancel|no result)\b/i.test(note);
-                let isCorrect = !isDrawOrNoResult && resultWinnerMatchesTeam(note, predictedTeam, m.teama?.name, m.teamb?.name);
-                let badgeColor = isCorrect ? '#22c55e' : '#ef4444';
-                let badgeText = isCorrect ? '✅ Prediction Correct' : '❌ Prediction Wrong';
+                let isDrawOrNoResult = /\b(draw|drawn|tie|tied|abandon|cancel|no result)\b/i.test(note);
+                let actualWinner = isDrawOrNoResult ? "" : resolveResultWinnerTeam(note, m.teama?.name, m.teamb?.name);
+                let isCorrect = actualWinner ? cricketTeamNamesEquivalent(predictedTeam, actualWinner) : null;
+                let badgeColor = isCorrect === true ? '#22c55e' : (isCorrect === false ? '#ef4444' : '#fbbf24');
+                let badgeText = isCorrect === true ? '✅ Prediction Correct'
+                    : (isCorrect === false ? '❌ Prediction Wrong'
+                    : (isDrawOrNoResult ? '➖ No winner — not evaluated' : '⚠️ Winner name not recognized — not evaluated'));
                 statusText += `
                     <div style="margin-top: 8px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px; border: 1px dashed ${badgeColor};">
                         <p style="color: #cbd5e1; margin: 0 0 4px 0; font-size: 0.75rem;">AI predicted: <b>${predictedTeam}</b></p>
