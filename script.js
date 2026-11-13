@@ -1067,6 +1067,9 @@ async function findGlobalGround(venue) {
     });
     if (matches.length !== 1) return null;
     const ground = matches[0];
+    // A provider venue-name match is not proof that registry coordinates were verified.
+    // Unverified entries must continue through the live POI resolution path below.
+    if (ground.verification_status !== "verified") return null;
     const coords = validVenueCoordinates(ground.latitude, ground.longitude);
     if (!coords || !isValidIanaTimezone(ground.timezone)) return null;
     return {
