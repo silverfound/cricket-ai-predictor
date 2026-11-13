@@ -1666,16 +1666,16 @@
       "aliases": [],
       "city": "Voorburg",
       "country": "Netherlands",
-      "latitude": 52.07,
-      "longitude": 4.35,
+      "latitude": 52.06695,
+      "longitude": 4.37309,
       "timezone": "Europe/Amsterdam",
       "competitions": [
         "International",
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W49532732",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.voorburgcc.nl/. Coordinates cross-checked against https://mapcarta.com/W49532732. Corrected the starter pin to the OSM sports-centre point; Voorburg Cricket Club is mapped 110 m northeast within Sportpark Westvliet."
     },
     {
       "id": "boland-park",
@@ -2159,16 +2159,16 @@
       "aliases": [],
       "city": "Amstelveen",
       "country": "Netherlands",
-      "latitude": 52.294,
-      "longitude": 4.858,
+      "latitude": 52.31944,
+      "longitude": 4.84917,
       "timezone": "Europe/Amsterdam",
       "competitions": [
         "International",
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/VRA_Amsterdam_Cricket_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.vra.nl/en/about/contacts and https://kncb.nl/en/clubs-vra-volharding-rap-amstels-47. Coordinates cross-checked against https://en.wikipedia.org/wiki/VRA_Amsterdam_Cricket_Ground. Corrected the starter pin by about 3 km to the published VRA ground coordinate; VRA/KNCB confirm Nieuwe Kalfjeslaan 21B, Amstelveen and that it is the Dutch national team's home ground."
     },
     {
       "id": "hazelaarweg",
@@ -2176,16 +2176,16 @@
       "aliases": [],
       "city": "Rotterdam",
       "country": "Netherlands",
-      "latitude": 51.958,
-      "longitude": 4.475,
+      "latitude": 51.9675,
+      "longitude": 4.4806,
       "timezone": "Europe/Amsterdam",
       "competitions": [
         "International",
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://cricketfieldguide.com/ground/hazelaarweg-rotterdam",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://www.sportbedrijfrotterdam.nl/locatie/sportcomplex-voc. Coordinates cross-checked against https://cricketfieldguide.com/ground/hazelaarweg-rotterdam. Corrected the starter pin to the mapped Hazelaarweg cricket venue; Rotterdam Sportbedrijf confirms cricket at Sportcomplex Hazelaarweg 7. Exact cricket boundary pin remains provisional."
     },
     {
       "id": "sportpark-maarschalkerweerd",
@@ -2193,16 +2193,16 @@
       "aliases": [],
       "city": "Utrecht",
       "country": "Netherlands",
-      "latitude": 52.075,
-      "longitude": 5.153,
+      "latitude": 52.0749,
+      "longitude": 5.1514,
       "timezone": "Europe/Amsterdam",
       "competitions": [
         "International",
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://cricketfieldguide.com/ground/sportpark-maarschalkerweerd-utrecht",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.kampongvoetbal.nl/281/sportpark/. Coordinates cross-checked against https://cricketfieldguide.com/ground/sportpark-maarschalkerweerd-utrecht. Adjusted to the mapped Sportpark Maarschalkerweerd cricket venue; Kampong confirms the multisport complex at Laan van Maarschalkerweerd 14, Utrecht."
     },
     {
       "id": "mission-road-ground",
@@ -2393,15 +2393,15 @@
       "aliases": [],
       "city": "Marsa",
       "country": "Malta",
-      "latitude": 35.876,
-      "longitude": 14.493,
+      "latitude": 35.875722,
+      "longitude": 14.487639,
       "timezone": "Europe/Malta",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://www.marsasportsclub.com/contact/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://marsasportsclub.com/contact/ and https://marsasportsclub.com/cricket/. Coordinates cross-checked against https://www.marsasportsclub.com/contact/. Corrected the starter longitude by about 500 m to Marsa Sports Club's own published GPS coordinates (N35°52′32.6″ E014°29′15.5″); the club confirms its international cricket oval."
     },
     {
       "id": "sano",
@@ -2409,15 +2409,15 @@
       "aliases": [],
       "city": "Sano",
       "country": "Japan",
-      "latitude": 36.315,
-      "longitude": 139.579,
+      "latitude": 36.35721,
+      "longitude": 139.59233,
       "timezone": "Asia/Tokyo",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W1306990408",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cricket.or.jp/ja/resources?ground=sano-international-cricket-ground-2&tab=grounds. Coordinates cross-checked against https://mapcarta.com/W1306990408. Corrected the starter pin by about 5 km to the OSM cricket sports-centre point; Japan Cricket Association's ground directory confirms Sano International Cricket Ground at 300-1 Tochimoto-cho, Sano."
     },
     {
       "id": "mission-road?",
@@ -2425,15 +2425,15 @@
       "aliases": [],
       "city": "Bangi",
       "country": "Malaysia",
-      "latitude": 2.9,
-      "longitude": 101.78,
+      "latitude": 2.93476,
+      "longitude": 101.78338,
       "timezone": "Asia/Kuala_Lumpur",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W1064910331",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://www.ukm.my/. Coordinates cross-checked against https://mapcarta.com/W1064910331. Corrected the starter pin by about 4 km to the OSM cricket pitch at UKM-YSD Cricket Oval, Bangi. Kept unverified pending an official UKM/Cricket Malaysia ground-specific map."
     },
     {
       "id": "national-cricket-ground-kigali",
@@ -2712,15 +2712,15 @@
       "aliases": [],
       "city": "Belgrade",
       "country": "Serbia",
-      "latitude": 44.82,
-      "longitude": 20.47,
+      "latitude": 44.93333,
+      "longitude": 20.4425,
       "timezone": "Europe/Belgrade",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/Lisicji_Jarak_Cricket_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.beograd.rs/lat/beoinfo-vesti/a116120/Trofej-Beograda-2026-u-kriketu.html. Coordinates cross-checked against https://en.wikipedia.org/wiki/Lisicji_Jarak_Cricket_Ground. Corrected the starter pin by about 13 km to the published Lisicji Jarak cricket ground coordinate; City of Belgrade confirms cricket tournaments at Lisicji Jarak, Zrenjaninski put bb, Padinska Skela."
     },
     {
       "id": "meersen",
@@ -2744,15 +2744,15 @@
       "aliases": [],
       "city": "Ljubljana",
       "country": "Slovenia",
-      "latitude": 46.056,
-      "longitude": 14.505,
+      "latitude": 46.1674669,
+      "longitude": 14.4305263,
       "timezone": "Europe/Ljubljana",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://kriket.si/playing-field/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://kriket.si/playing-field/ and https://kriket.si/faq/. Coordinates cross-checked against https://kriket.si/playing-field/. Corrected the starter pin by more than 13 km to the Slovene Cricket Association's own Google Maps embed for 'Valburga (Smlednik) Cricket Ground'; SCA confirms all outdoor cricket is played at Valburga."
     },
     {
       "id": "happy-valley",
@@ -2776,15 +2776,15 @@
       "aliases": [],
       "city": "Copenhagen",
       "country": "Denmark",
-      "latitude": 55.676,
-      "longitude": 12.568,
+      "latitude": 55.67139,
+      "longitude": 12.39784,
       "timezone": "Europe/Copenhagen",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W25552050",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.glostrup.dk/borger/miljoe-energi-og-affald/ud-i-naturen/parker-og-gronne-aandehuller/solvangsparken and https://cricket.dk/klub/glostrup-cricket-club/. Coordinates cross-checked against https://mapcarta.com/W25552050. Corrected the starter pin from Copenhagen city centre to Solvangsparken, Glostrup; Glostrup Municipality confirms the park's cricket ground is home to Glostrup Cricket Club."
     },
     {
       "id": "santarem-cricket-ground",
@@ -2792,15 +2792,15 @@
       "aliases": [],
       "city": "Albergaria",
       "country": "Portugal",
-      "latitude": 40.693,
-      "longitude": -8.48,
+      "latitude": 39.233528,
+      "longitude": -8.84875,
       "timezone": "Europe/Lisbon",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://en.wikipedia.org/wiki/Santarem_Cricket_Ground",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Corrected the starter pin by over 150 km to the published Gucherre/Santarém Cricket Ground coordinate. Kept unverified until Portugal Cricket Federation confirms the ground address and pin."
     },
     {
       "id": "farmers-cricket-club",
@@ -2822,15 +2822,15 @@
       "aliases": [],
       "city": "Gibraltar",
       "country": "Gibraltar",
-      "latitude": 36.14,
-      "longitude": -5.353,
+      "latitude": 36.11073,
+      "longitude": -5.34685,
       "timezone": "Europe/Gibraltar",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/17168858",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.gsla.gi/contact-us/ and https://www.icc-cricket.com/about/members/associate/gibraltar. Coordinates cross-checked against https://mapcarta.com/17168858. Corrected the starter pin by about 3 km to Europa Point Cricket Pitch; GSLA and Gibraltar Cricket sources confirm the Europa Sports Complex is a cricket facility."
     },
     {
       "id": "king-george-v-sports-ground",
@@ -2838,15 +2838,15 @@
       "aliases": [],
       "city": "Castel",
       "country": "Guernsey",
-      "latitude": 49.463,
-      "longitude": -2.58,
+      "latitude": 49.4725,
+      "longitude": -2.574,
       "timezone": "Europe/Guernsey",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/King_George_V_Sports_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://guernseycricket.com/about-us/venues/ and https://kgv.gg/home. Coordinates cross-checked against https://en.wikipedia.org/wiki/King_George_V_Sports_Ground. Corrected the starter pin to the published KGV cricket-ground coordinate; Guernsey Cricket confirms KGV Playing Fields, Rue Cohu, Castel, Guernsey."
     },
     {
       "id": "white-hill-field",
