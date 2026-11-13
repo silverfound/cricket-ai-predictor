@@ -2908,9 +2908,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/ground/st-albans-club-buenos-aires",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://cricketfieldguide.com/ground/st-albans-club-buenos-aires. Coordinates cross-checked against https://cricketfieldguide.com/ground/st-albans-club-buenos-aires. Corrected the starter pin from central Buenos Aires to the published St Albans Club ground coordinate in Burzaco; kept unverified pending a club/Argentine Cricket Association primary map."
+      "source_url": "https://www.clubsanalbano.com/ and https://cricketfieldguide.com/ground/st-albans-club-buenos-aires",
+      "verification_status": "verified",
+      "notes": "Official San Albano Club listing confirms Av. Espora 4920, Burzaco, Buenos Aires; Cricket Field Guide records the St Albans Club cricket venue at -34.8412, -58.3854 and documents 29 T20Is at this ground. Venue identity and ground coordinates cross-checked."
     },
     {
       "id": "sao-fernando",
@@ -2966,15 +2966,15 @@
       "aliases": [],
       "city": "Tallinn",
       "country": "Estonia",
-      "latitude": 59.42204,
-      "longitude": 24.58193,
+      "latitude": 59.430611,
+      "longitude": 24.582733,
       "timezone": "Europe/Tallinn",
       "competitions": [
         "International"
       ],
-      "source_url": "https://www.spordiregister.ee/en/ehitis/5203/tiskre_ragbi_ja_kriketiväljakud/detail",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.spordiregister.ee/en/ehitis/5203/tiskre_ragbi_ja_kriketiväljakud/detail. Coordinates cross-checked against https://www.spordiregister.ee/en/ehitis/5203/tiskre_ragbi_ja_kriketiväljakud/detail. Corrected the starter pin from Tallinn city centre to Tiskre, Harku Parish; Estonian Sports Register confirms two active cricket fields at Kallasmaa/Rajakalda/Reinu. Pin is currently the Tiskre locality centre, not a verified pitch centroid."
+      "source_url": "https://www.spordiregister.ee/en/ehitis/5203/tiskre_ragbi_ja_kriketivaljakud/detail",
+      "verification_status": "verified",
+      "notes": "Estonian Sports Register confirms the active Tiskre rugby and cricket facility, including two cricket fields, at Kallasmaa/Rajakalda/Reinu, Tiskre. Eesti Kriketi Liit confirms the permanent national cricket ground at Tiskre; venue pin uses the official Tammiku tee 5 address point (59.430611, 24.582733) as the entrance/complex locator."
     },
     {
       "id": "qatar-west-end",
