@@ -107,15 +107,15 @@
       ],
       "city": "Perth",
       "country": "Australia",
-      "latitude": -31.9609,
-      "longitude": 115.8798,
+      "latitude": -31.95982,
+      "longitude": 115.87952,
       "timezone": "Australia/Perth",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/25576808",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.waca.com.au/. Coordinates cross-checked against https://mapcarta.com/25576808. OSM cricket-stadium point; WACA/WA Cricket confirms the historic WACA Ground, Nelson Crescent, East Perth."
     },
     {
       "id": "bellerive-oval",
@@ -143,16 +143,16 @@
       "aliases": [],
       "city": "Canberra",
       "country": "Australia",
-      "latitude": -35.3187,
-      "longitude": 149.1353,
+      "latitude": -35.31796,
+      "longitude": 149.13465,
       "timezone": "Australia/Sydney",
       "competitions": [
         "International",
         "BBL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/16663330",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://manukaoval.com.au/contact/. Coordinates cross-checked against https://mapcarta.com/16663330. OSM stadium point; Venues Canberra confirms Manuka Circle, Griffith ACT 2603 and cricket use."
     },
     {
       "id": "eden-park",
@@ -160,16 +160,16 @@
       "aliases": [],
       "city": "Auckland",
       "country": "New Zealand",
-      "latitude": -36.8748,
-      "longitude": 174.744,
+      "latitude": -36.87504,
+      "longitude": 174.7441,
       "timezone": "Pacific/Auckland",
       "competitions": [
         "International",
         "Super Smash"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W96906574",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://edenpark.co.nz/contact/. Coordinates cross-checked against https://mapcarta.com/W96906574. OSM stadium point; Eden Park Trust confirms 42 Reimers Avenue, Kingsland, Auckland 1024."
     },
     {
       "id": "basin-reserve",
@@ -215,16 +215,16 @@
       ],
       "city": "Mount Maunganui",
       "country": "New Zealand",
-      "latitude": -37.6528,
-      "longitude": 176.1907,
+      "latitude": -37.65281,
+      "longitude": 176.19071,
       "timezone": "Pacific/Auckland",
       "competitions": [
         "International",
         "Super Smash"
       ],
-      "source_url": "https://cricketfieldguide.com/ground/bay-oval-mount-maunganui",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W345239057",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bayoval.co.nz/contact. Coordinates cross-checked against https://mapcarta.com/W345239057. OSM cricket pitch point; Bay Oval Trust confirms Blake Park, Kawaka Street, Mount Maunganui."
     },
     {
       "id": "seddon-park",
@@ -1718,15 +1718,15 @@
       "aliases": [],
       "city": "Perth",
       "country": "Australia",
-      "latitude": -31.742,
-      "longitude": 116.018,
+      "latitude": -31.89074,
+      "longitude": 115.97512,
       "timezone": "Australia/Perth",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/30060508",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.swan.wa.gov.au/explore-and-do/parks-venues-and-facilities/lilac-hill-park. Coordinates cross-checked against https://mapcarta.com/30060508. Corrected the starter pin by about 17 km to the OSM park/cricket-field point; City of Swan confirms three ovals and international-standard cricket facilities at West Swan Road, Caversham."
     },
     {
       "id": "amini-park",
@@ -1736,15 +1736,15 @@
       ],
       "city": "Port Moresby",
       "country": "Papua New Guinea",
-      "latitude": -9.443,
-      "longitude": 147.18,
+      "latitude": -9.47333,
+      "longitude": 147.20167,
       "timezone": "Pacific/Port_Moresby",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://aroundus.com/p/4786149-amini-park",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cricketpng.org.pg/. Coordinates cross-checked against https://aroundus.com/p/4786149-amini-park. Corrected the starter pin by about 3.8 km to the published Boroko cricket-ground coordinate; Cricket PNG confirms Amini Park at Turua Street, Boroko, Port Moresby."
     },
     {
       "id": "nehru-stadium-pune",
@@ -1873,15 +1873,15 @@
       "aliases": [],
       "city": "Albury",
       "country": "Australia",
-      "latitude": -36.039,
-      "longitude": 146.948,
+      "latitude": -36.035,
+      "longitude": 146.91306,
       "timezone": "Australia/Sydney",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/Lavington_Sports_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.nsw.gov.au/visiting-and-exploring-nsw/locations-and-attractions/lavington-sports-ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Lavington_Sports_Ground. Corrected the starter pin by about 3 km to the published ground coordinate; NSW Government confirms 1 Hanna Street, Hamilton Valley NSW 2641 and Big Bash cricket use."
     },
     {
       "id": "great-barrier-reef-arena",
@@ -2577,16 +2577,16 @@
       "aliases": [],
       "city": "Nelson",
       "country": "New Zealand",
-      "latitude": -41.3,
-      "longitude": 173.22,
+      "latitude": -41.33095,
+      "longitude": 173.21284,
       "timezone": "Pacific/Auckland",
       "competitions": [
         "International",
         "Super Smash"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W141591288",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.nelson.govt.nz/recreation/sport-and-recreation/sportsgrounds/. Coordinates cross-checked against https://mapcarta.com/W141591288. Corrected the starter pin by about 3.5 km to the OSM cricket pitch; Nelson City Council confirms Saxton Field is a sports precinct in Stoke, Nelson."
     },
     {
       "id": "mclean-park",
@@ -2594,16 +2594,16 @@
       "aliases": [],
       "city": "Napier",
       "country": "New Zealand",
-      "latitude": -39.493,
-      "longitude": 176.912,
+      "latitude": -39.50186,
+      "longitude": 176.91275,
       "timezone": "Pacific/Auckland",
       "competitions": [
         "International",
         "Super Smash"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/36567292",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.napier.govt.nz/napier/sports-and-recreation/sports-grounds/mclean-park/. Coordinates cross-checked against https://mapcarta.com/36567292. Corrected the starter pin by about 1 km to the OSM stadium point; Napier City Council confirms McLean Park, Latham Street, Napier."
     },
     {
       "id": "john-davies-oval",
@@ -2611,16 +2611,16 @@
       "aliases": [],
       "city": "Queenstown",
       "country": "New Zealand",
-      "latitude": -45.032,
-      "longitude": 168.66,
+      "latitude": -45.01609,
+      "longitude": 168.73852,
       "timezone": "Pacific/Auckland",
       "competitions": [
         "International",
         "Super Smash"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W237750209",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.qldc.govt.nz/recreation/courts-and-fields. Coordinates cross-checked against https://mapcarta.com/W237750209. Corrected the starter pin by about 6 km to the OSM cricket pitch; Queenstown Lakes District Council lists John Davies Oval (QEC) as a bookable sports venue."
     },
     {
       "id": "nassau-county",
