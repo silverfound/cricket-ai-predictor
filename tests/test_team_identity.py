@@ -6,6 +6,7 @@ from scripts.team_identity import (
     normalize_team_name,
     team_gender,
     team_names_equivalent,
+    resolve_fixture_team,
 )
 
 
@@ -44,6 +45,28 @@ class TeamIdentityTests(unittest.TestCase):
     def test_no_unsafe_prefix_matching(self):
         self.assertFalse(team_names_equivalent("Team A", "Team Alpha"))
         self.assertFalse(team_names_equivalent("United Tigers", "United Tiger XI"))
+
+    def test_fixture_context_resolves_provider_abbreviations_safely(self):
+        self.assertEqual(
+            resolve_fixture_team("S Paschim", "Kathmandu Gurkhas (NPL)", "Sudur Paschim Royals (NPL)"),
+            "Sudur Paschim Royals",
+        )
+        self.assertEqual(
+            resolve_fixture_team("Tigers", "United Tigers", "Emirates Eagles"),
+            "United Tigers",
+        )
+        self.assertEqual(
+            resolve_fixture_team("Tigers", "United Tigers", "Desert Tigers"),
+            "",
+        )
+        self.assertEqual(
+            resolve_fixture_team("Mystery XI", "United Tigers", "Emirates Eagles"),
+            "",
+        )
+        self.assertEqual(
+            resolve_fixture_team("Melbourne Stars", "Melbourne Stars Women", "Sydney Sixers Women"),
+            "",
+        )
 
     def test_history_key_only_drops_gender_after_gender_is_separately_known(self):
         self.assertEqual(history_team_key("Melbourne Stars Women"), history_team_key("Melbourne Stars"))
