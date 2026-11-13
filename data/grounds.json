@@ -2760,15 +2760,15 @@
       "aliases": [],
       "city": "Episkopi",
       "country": "Cyprus",
-      "latitude": 34.672,
-      "longitude": 32.915,
+      "latitude": 34.67227,
+      "longitude": 32.82144,
       "timezone": "Asia/Nicosia",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W241638311",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cricket.cy/facilities/ and https://www.cricket.cy/news/icc-mens-t20-world-cup-qualifiers/. Coordinates cross-checked against https://mapcarta.com/W241638311. Corrected the starter longitude by about 8 km to the OSM cricket pitch in Episkopi; Cyprus Cricket Federation confirms Happy Valley as its international cricket venue."
     },
     {
       "id": "solvangs-park",
@@ -2808,13 +2808,13 @@
       "aliases": [],
       "city": "St Martin",
       "country": "Jersey",
-      "latitude": 49.22,
-      "longitude": -2.17,
+      "latitude": 49.21955,
+      "longitude": -2.06054,
       "timezone": "Europe/Jersey",
       "competitions": [],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/Farmers_Cricket_Club_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://jerseysport.je/directory/farmers-cricket-club-2/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Farmers_Cricket_Club_Ground. Corrected the starter longitude by about 12 km to the published Farmers Field coordinate; Jersey Sport confirms the club's private ground at Le Perchoir, Rue de la Vignette, St Martin."
     },
     {
       "id": "europa-sports-complex",
@@ -2854,15 +2854,15 @@
       "aliases": [],
       "city": "Sandys Parish",
       "country": "Bermuda",
-      "latitude": 32.294,
-      "longitude": -64.87,
+      "latitude": 32.27168,
+      "longitude": -64.8737,
       "timezone": "Atlantic/Bermuda",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W1218929276",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricketbermuda.com/contacts/. Coordinates cross-checked against https://mapcarta.com/W1218929276. Corrected the starter latitude by about 2.5 km to the OSM cricket pitch in Sandys Parish; Bermuda Cricket Board confirms the island's cricket facilities and member clubs."
     },
     {
       "id": "botswana-cricket-oval",
@@ -3096,15 +3096,15 @@
       "aliases": [],
       "city": "Lagos",
       "country": "Nigeria",
-      "latitude": 6.4541,
-      "longitude": 3.3947,
+      "latitude": 6.4472,
+      "longitude": 3.4014,
       "timezone": "Africa/Lagos",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://cricketfieldguide.com/ground/tafawa-balewa-square-cricket-oval-lagos",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://images.icc-cricket.com/image/upload/prd/v1sjpeistunm3ecsdwwc.pdf and https://nigeriacricket.com.ng/events/. Coordinates cross-checked against https://cricketfieldguide.com/ground/tafawa-balewa-square-cricket-oval-lagos. Corrected the starter pin to the published TBS Cricket Oval coordinate; ICC lists the Nigeria Cricket Federation address at Tafawa Balewa Square Cricket Oval, Race Course, Lagos, and NCF confirms TBS as its event venue."
     },
     {
       "id": "abuja-national",
