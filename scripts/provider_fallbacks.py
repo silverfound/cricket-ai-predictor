@@ -29,6 +29,11 @@ def should_refresh_cricketdata_enrichment(now=None, event_name=None):
     return int(now.minute) < 15
 
 
+def should_fetch_match_info_enrichment(provider_name, enrichment_due):
+    """Avoid spending detail-call quota when CricketData is the emergency feed."""
+    return bool(enrichment_due and provider_name != "CricketData")
+
+
 
 
 def _name(value):
