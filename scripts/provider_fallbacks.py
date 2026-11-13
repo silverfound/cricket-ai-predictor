@@ -70,6 +70,17 @@ def _format(value):
     return raw or "Unknown"
 
 
+def _venue_metadata(value):
+    """Preserve provider-supplied ground location data for the Ilmi resolver."""
+    if isinstance(value, dict):
+        metadata = dict(value)
+        name = _name(value)
+        if name:
+            metadata["name"] = name
+        return metadata
+    return {"name": _name(value)}
+
+
 def _normalized_fixture(match_id, team1, team2, fmt, venue, status, start, source, extra=None):
     team1, team2 = _name(team1), _name(team2)
     if not team1 or not team2 or team1.casefold() == team2.casefold():
@@ -79,7 +90,7 @@ def _normalized_fixture(match_id, team1, team2, fmt, venue, status, start, sourc
         "teama": {"name": team1},
         "teamb": {"name": team2},
         "format_str": _format(fmt),
-        "venue": {"name": _name(venue)},
+        "venue": _venue_metadata(venue),
         "status": str(status or ""),
         "timestamp_start": int(start or 0),
         "provider_source": source,
