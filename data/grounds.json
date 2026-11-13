@@ -1613,15 +1613,15 @@
       "aliases": [],
       "city": "Vijayawada",
       "country": "India",
-      "latitude": 16.50502,
-      "longitude": 80.63814,
+      "latitude": 16.50493,
+      "longitude": 80.63806,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://mapcarta.com/W645008492",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/W645008492. Coordinates cross-checked against https://mapcarta.com/W645008492. Corrected the starter pin by about 1 km to the OSM cricket pitch; the mapped cricket feature is the Indira Gandhi Stadium in Vijayawada."
+      "source_url": "https://mapcarta.com/W1363279896",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://andhracricket.org/schedule.php. Coordinates cross-checked against https://mapcarta.com/W1363279896. OSM stadium point 16.50493, 80.63806; Andhra Cricket Association schedules domestic matches at Indira Gandhi Stadium, Vijayawada."
     },
     {
       "id": "carrara-oval",
@@ -2950,15 +2950,15 @@
       "aliases": [],
       "city": "Sofia",
       "country": "Bulgaria",
-      "latitude": 42.6467,
-      "longitude": 23.34902,
+      "latitude": 42.64363,
+      "longitude": 23.34663,
       "timezone": "Europe/Sofia",
       "competitions": [
         "International"
       ],
-      "source_url": "https://mapcarta.com/W1365682394",
+      "source_url": "https://mapcarta.com/W170124699",
       "verification_status": "verified",
-      "notes": "Official venue source: https://nsa.bg/download.php?id=6635. Coordinates cross-checked against https://mapcarta.com/W1365682394. Corrected the starter pin from Vasil Levski National Stadium in central Sofia to the National Sports Academy campus; NSA's official 2026 sports map identifies a hockey and cricket pitch within the campus."
+      "notes": "Official venue source: https://nsa.bg/download.php?id=6635. Coordinates cross-checked against https://mapcarta.com/W170124699. Corrected the starter pin from the city-centre football stadium to the exact OSM hockey-and-cricket pitch at 42.64363, 23.34663; NSA's official sports map labels this field for hockey and cricket."
     },
     {
       "id": "estonian-national",
@@ -3750,15 +3750,15 @@
       "aliases": [],
       "city": "Al Dhaid",
       "country": "United Arab Emirates",
-      "latitude": 25.29,
-      "longitude": 55.88,
+      "latitude": 25.2222,
+      "longitude": 55.9212,
       "timezone": "Asia/Dubai",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://cricketfieldguide.com/ground/al-dhaid-cricket-village",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.waze.com/live-map/directions/ae/sharjah/sharjah/al-dhaid-cricket-village-sportsit?to=place.ChIJJxC9nb289T4Rfhk3-Zdi-ME. Coordinates cross-checked against https://cricketfieldguide.com/ground/al-dhaid-cricket-village. Corrected the starter pin to the published cricket-ground coordinate 25.2222, 55.9212; Waze confirms Al Dhaid Cricket Village / SportsIT on Al Shuwaib–Umm Al Quwain Road, Al Yafar 1."
     },
     {
       "id": "nepal-mulpani",
@@ -3879,15 +3879,15 @@
       "aliases": [],
       "city": "Berlin",
       "country": "Germany",
-      "latitude": 52.514,
-      "longitude": 13.239,
+      "latitude": 52.51424,
+      "longitude": 13.23468,
       "timezone": "Europe/Berlin",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/de/39807224",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://berlincc.de/ and https://www.berlin.de/ba-charlottenburg-wilmersdorf/ueber-den-bezirk/bauwerke/sportanlagen/artikel.224774.php. Coordinates cross-checked against https://mapcarta.com/de/39807224. OSM pitch point 52.51424, 13.23468; Berlin Cricket Club confirms Maifeld, Am Glockenturm, 14053 Berlin, as its cricket ground."
     },
     {
       "id": "spain-la-manga",
@@ -4023,15 +4023,15 @@
       "aliases": [],
       "city": "Cheltenham",
       "country": "England",
-      "latitude": 51.9,
-      "longitude": -2.08,
+      "latitude": 51.8912,
+      "longitude": -2.0739,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://cricketfieldguide.com/ground/college-ground-cheltenham",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.lords.org/mcc/mcc-cricket/fixtures-and-results?matchid=13594 and https://www.cricketarchive.com/Archive/Grounds/11/398.html. Coordinates cross-checked against https://cricketfieldguide.com/ground/college-ground-cheltenham. Corrected the starter pin to the published College Ground centre 51.8912, -2.0739; MCC confirms the ground at Cheltenham College, Thirlestaine Road, GL53 7AB."
     },
     {
       "id": "england-beckenham",
@@ -4061,9 +4061,9 @@
       "competitions": [
         "Historical"
       ],
-      "source_url": "https://en.wikipedia.org/wiki/Old_Wanderers",
-      "verification_status": "needs_user_verification",
-      "notes": "Corrected to the historic Old Wanderers site (-26.1977, 28.0407); this was a former ground replaced by Johannesburg Park Station in 1946. Kept unverified pending an authoritative heritage/map source."
+      "source_url": "https://repository.up.ac.za/bitstream/handle/2263/45298/04Lundie_Cinematic_2014.pdf?isAllowed=y&sequence=3",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://repository.up.ac.za/bitstream/handle/2263/45298/04Lundie_Cinematic_2014.pdf?isAllowed=y&sequence=3 and https://sahistory.org.za/place/wanderers-cricket-stadium-johannesburg. Coordinates cross-checked against https://repository.up.ac.za/bitstream/handle/2263/45298/04Lundie_Cinematic_2014.pdf?isAllowed=y&sequence=3. Verified as the historic Old Wanderers site, distinct from today's Illovo stadium: University of Pretoria research documents the old ground on the block now occupied by Johannesburg Park Station."
     },
     {
       "id": "southafrica-recreation",
