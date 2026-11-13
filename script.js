@@ -321,7 +321,7 @@ Object.assign(urduTeams, {
 function normalizeIlmiName(value) {
     // Feed fixture labels sometimes append league tags such as "(NPL)" to team names.
     // Strip known competition tags before resolving captain/Urdu mappings.
-    const clean = String(value || "").trim().replace(/\\s*\\((?:NPL|IPL|PSL|BBL|WBBL|BPL|CPL|WCPL|LPL|ILT20|SA20|MLC|WPL|T10|The Hundred)\\)\\s*$/i, "");
+    const clean = String(value || "").trim().replace(/\s*\((?:NPL|IPL|PSL|BBL|WBBL|BPL|CPL|WCPL|LPL|ILT20|SA20|MLC|WPL|T10|The Hundred)\)\s*$/i, "");
     return clean.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]/g, "");
 }
 // Dataset-wide Urdu fallback for every Cricsheet international/major-league name.
