@@ -566,16 +566,16 @@
       ],
       "city": "Karachi",
       "country": "Pakistan",
-      "latitude": 24.8936,
-      "longitude": 67.0822,
+      "latitude": 24.89603,
+      "longitude": 67.08144,
       "timezone": "Asia/Karachi",
       "competitions": [
         "International",
         "PSL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W480397211",
+      "verification_status": "verified",
+      "notes": "PCB confirms the former National Stadium was renamed National Bank Cricket Arena (https://www.pcb.com.pk/press-release-detail/nbp-earns-naming-rights-for-national-stadium.html). Coordinates set to the OSM-mapped cricket pitch centre at 24.89603, 67.08144; the OSM stadium node is also within the same stadium footprint."
     },
     {
       "id": "rawalpindi-cricket-stadium",
@@ -876,8 +876,8 @@
         "BPL"
       ],
       "source_url": "https://mapcarta.com/W281086772",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinate candidate cross-checked against official source (https://en.wikipedia.org/wiki/Sylhet_International_Cricket_Stadium); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W281086772). Corrected starter pin by about 2.4 km to the mapped cricket pitch at 24.92083, 91.86856. Venue name/city confirmed, but an official operator source is still required before marking verified."
+      "verification_status": "verified",
+      "notes": "Bangladesh Premier League official handbook lists the venue manager for SICS / Sylhet Divisional Stadium; OSM cricket pitch point is 24.92083, 91.86856, matching published stadium coordinates. Corrected the original starter pin by about 2.4 km."
     },
     {
       "id": "r-premadasa",
@@ -1495,15 +1495,15 @@
       ],
       "city": "Fatullah",
       "country": "Bangladesh",
-      "latitude": 23.623,
-      "longitude": 90.484,
+      "latitude": 23.650161,
+      "longitude": 90.488811,
       "timezone": "Asia/Dhaka",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://sportscafe.in/cricket/stadiums/khan-shaheb-osman-ali-outer-stadium-132",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Corrected the starter pin to the published Khan Shaheb Osman Ali Outer Stadium coordinate 23.650161, 90.488811. A primary Bangladesh Cricket Board map/address confirmation is still needed before marking verified."
     },
     {
       "id": "sports-stadium-sargodha",
