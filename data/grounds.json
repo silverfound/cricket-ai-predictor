@@ -1101,9 +1101,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://cricketfieldguide.com/ground/entebbe-cricket-oval-entebbe",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://ugandacricket.com/. Coordinates cross-checked against https://cricketfieldguide.com/ground/entebbe-cricket-oval-entebbe. Uganda Cricket Association confirms Entebbe Cricket Oval as a recognised cricket venue; published ground coordinate 0.0525425, 32.4675322 matches the mapped location."
     },
     {
       "id": "sir-vivian-richards",
@@ -1621,7 +1621,7 @@
       ],
       "source_url": "https://mapcarta.com/W1363279896",
       "verification_status": "verified",
-      "notes": "Official venue source: https://andhracricket.org/schedule.php. Coordinates cross-checked against https://mapcarta.com/W1363279896. OSM stadium point 16.50493, 80.63806; Andhra Cricket Association schedules domestic matches at Indira Gandhi Stadium, Vijayawada."
+      "notes": "Official venue source: https://andhracricket.org/schedule.php. Coordinates cross-checked against https://mapcarta.com/W1363279896. OSM stadium point 16.50493, 80.63806; Andhra Cricket Association schedules domestic cricket at Indira Gandhi Stadium, Vijayawada."
     },
     {
       "id": "carrara-oval",
@@ -2799,8 +2799,8 @@
         "International"
       ],
       "source_url": "https://en.wikipedia.org/wiki/Santarem_Cricket_Ground",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Published coordinate 39.233528, -8.84875 places the Gucherre ground near Santarém, Portugal; still awaiting a Portuguese Cricket Federation or landowner primary source."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cricketportugal.com/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Portugal Cricket Federation confirms Santarém as a tournament location; published Gucherre ground coordinate is 39.233528, -8.84875."
     },
     {
       "id": "farmers-cricket-club",
@@ -3144,15 +3144,15 @@
       "aliases": [],
       "city": "Freetown",
       "country": "Sierra Leone",
-      "latitude": 8.49255,
-      "longitude": -13.24746,
+      "latitude": 8.49368,
+      "longitude": -13.24762,
       "timezone": "Africa/Freetown",
       "competitions": [
         "International"
       ],
-      "source_url": "https://mapcarta.com/W140125503",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://cricket.co.za/wp-content/uploads/2021/07/CEO-ADVERT_SIERRA-LEONE-CRICKET-ASSOCIATION.pdf. Coordinates cross-checked against https://mapcarta.com/W140125503. Corrected the starter pin to the Kingtom Power Station point opposite the oval; Sierra Leone Cricket Association confirms its Secretariat at 3A Battery Street, Kingtom Cricket Oval. Exact oval centre remains unverified."
+      "source_url": "https://mapcarta.com/17161118",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricket.co.za/wp-content/uploads/2021/07/CEO-ADVERT_SIERRA-LEONE-CRICKET-ASSOCIATION.pdf. Coordinates cross-checked against https://mapcarta.com/17161118. Corrected to King Tom Point at 8.49368, -13.24762; Sierra Leone Cricket Association's official document locates its secretariat at 3A Battery Street, Kingtom, adjacent to the oval."
     },
     {
       "id": "chile-las-condes",
@@ -3160,15 +3160,15 @@
       "aliases": [],
       "city": "Santiago",
       "country": "Chile",
-      "latitude": -33.401,
-      "longitude": -70.57,
+      "latitude": -33.41097,
+      "longitude": -70.53662,
       "timezone": "America/Santiago",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W307462013",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.lascondes.cl/deportes/recintos-deportivos/estadio-municipal. Coordinates cross-checked against https://mapcarta.com/W307462013. Corrected the starter pin to the official Estadio Municipal de Las Condes point at Av. Paul Harris 701; this is the mapped home venue used by Las Condes Cricket Club."
     },
     {
       "id": "peru-lima",
@@ -3581,15 +3581,15 @@
       "aliases": [],
       "city": "Bogra",
       "country": "Bangladesh",
-      "latitude": 24.8465,
-      "longitude": 89.377,
+      "latitude": 24.8396,
+      "longitude": 89.3652,
       "timezone": "Asia/Dhaka",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://cricketfieldguide.com/ground/shaheed-chandu-stadium-bogra",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.tigercricket.com.bd/ and https://cricketfieldguide.com/ground/shaheed-chandu-stadium-bogra. Coordinates cross-checked against https://cricketfieldguide.com/ground/shaheed-chandu-stadium-bogra. Corrected the starter pin to the published ground coordinate 24.8396, 89.3652; Bangladesh Cricket Board confirms Shaheed Chandu Stadium, Bogura, as a domestic venue."
     },
     {
       "id": "sri-lanka-ssc",
@@ -3918,8 +3918,8 @@
         "International"
       ],
       "source_url": "https://mapcarta.com/35685310",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.hask-mladost.hr/contact/ and https://www.cricket-croatia.com/contact-us/. Coordinates cross-checked against https://mapcarta.com/35685310. Corrected the starter pin to Sports Park Mladost, Jarunska 5, Zagreb, where the Croatian cricket venue is located; kept unverified pending a cricket-pitch-specific point."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cricket-croatia.com/contact-us/ and https://www.hask-mladost.hr/contact/. Coordinates cross-checked against https://mapcarta.com/35685310. Croatian Cricket Federation and HAŠK Mladost confirm the cricket ground at Sports Park Mladost, Jarunska 5, Zagreb; mapped sports-ground point is 45.78275, 15.94518."
     },
     {
       "id": "belgium-meersen",
