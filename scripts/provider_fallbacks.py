@@ -42,7 +42,7 @@ def _name(value):
     return str(value or "").strip()
 
 
-def _timestamp(*values):
+def _timestamp(*values, naive_timezone=timezone.utc):
     for value in values:
         if not value:
             continue
@@ -50,7 +50,7 @@ def _timestamp(*values):
         try:
             parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
             if parsed.tzinfo is None:
-                parsed = parsed.replace(tzinfo=timezone.utc)
+                parsed = parsed.replace(tzinfo=naive_timezone)
             return int(parsed.timestamp())
         except (TypeError, ValueError):
             pass
@@ -89,6 +89,16 @@ def _venue_metadata(value):
     return {"name": _name(value)}
 
 
+def _provider_bool(value):
+    if isinstance(value, bool): return value
+    if isinstance(value, (int, float)) and value in (0, 1): return bool(value)
+    if isinstance(value, str):
+        key = value.strip().casefold()
+        if key in {"true", "yes", "1", "started", "ended"}: return True
+        if key in {"false", "no", "0", "not started", "not ended"}: return False
+    return None
+
+
 def _normalized_fixture(match_id, team1, team2, fmt, venue, status, start, source, extra=None):
     team1, team2 = _name(team1), _name(team2)
     if not team1 or not team2 or team1.casefold() == team2.casefold():
@@ -105,6 +115,12 @@ def _normalized_fixture(match_id, team1, team2, fmt, venue, status, start, sourc
     }
     if extra:
         fixture["provider_metadata"] = extra
+        started = _provider_bool(extra.get("matchStarted", extra.get("match_started")))
+        ended = _provider_bool(extra.get("matchEnded", extra.get("match_ended")))
+        if started is not None:
+            fixture["match_started"] = started
+        if ended is not None:
+            fixture["match_ended"] = ended
     # Deliberately no score/toss/live fields unless a provider adapter is
     # explicitly verified to supply them in the production schema.
     return fixture
@@ -183,7 +199,7 @@ def normalize_highlightly(payload):
         date_value = item.get("startDate")
         time_value = item.get("startTime")
         combined_start = f"{date_value}T{time_value}" if date_value and time_value else date_value
-        start = _timestamp(combined_start, time_value)
+        start = _timestamp(combined_start, time_value, naive_timezone=ZoneInfo('Asia/Riyadh'))
         venue = item.get("venue")
         state = item.get("state")
         # Highlightly returns state as an object (description/report), not a
@@ -198,7 +214,9 @@ def normalize_highlightly(payload):
             item.get("id"), home, away, item.get("format"), venue,
             status, start, "Highlightly",
             {"league": item.get("league"), "country": item.get("country"),
-             "dayType": item.get("dayType"), "endDate": item.get("endDate")}
+             "dayType": item.get("dayType"), "endDate": item.get("endDate"),
+             "matchStarted": item.get("matchStarted", item.get("match_started")),
+             "matchEnded": item.get("matchEnded", item.get("match_ended"))}
         )
         fixture["status_str"] = str(status)
         if status_note:
