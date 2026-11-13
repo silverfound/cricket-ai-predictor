@@ -72,6 +72,32 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertEqual(fixture["status_note"], "Match yet to begin")
         self.assertNotIn("score", fixture)
 
+    def test_highlightly_preserves_venue_location_timezone_and_coordinates(self):
+        payload = {
+            "data": [{
+                "id": "hl-venue",
+                "homeTeam": {"name": "New Zealand"},
+                "awayTeam": {"name": "India"},
+                "format": "ODI",
+                "venue": {
+                    "name": "Bay Oval",
+                    "location": "Mount Maunganui",
+                    "country": "New Zealand",
+                    "latitude": -37.6528,
+                    "longitude": 176.1907,
+                    "timezone": "Pacific/Auckland",
+                },
+                "startDate": "2026-11-13",
+            }],
+        }
+        [fixture] = normalize_highlightly(payload)
+        self.assertEqual(fixture["venue"]["name"], "Bay Oval")
+        self.assertEqual(fixture["venue"]["location"], "Mount Maunganui")
+        self.assertEqual(fixture["venue"]["country"], "New Zealand")
+        self.assertEqual(fixture["venue"]["latitude"], -37.6528)
+        self.assertEqual(fixture["venue"]["longitude"], 176.1907)
+        self.assertEqual(fixture["venue"]["timezone"], "Pacific/Auckland")
+
     def test_cricketdata_preserves_score_team_info_and_actual_toss(self):
         payload = {
             "status": "success",
