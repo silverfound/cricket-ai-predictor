@@ -39,9 +39,9 @@
         "BBL",
         "WBBL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://www.cricket.com.au/tickets/venues/sydney-cricket-ground",
+      "verification_status": "verified",
+      "notes": "Verified venue identity and address against Cricket Australia (Driver Avenue, Moore Park NSW 2021) and Sydney Cricket Ground official contact page. Coordinates independently corroborated approximately by Monument Australia GPS (-33.891285, 151.223676); registry point (-33.8915, 151.2249) is within approx. 115 m. Sources: https://www.sydneycricketground.com.au/contact_us ; https://www.monumentaustralia.org.au/themes/culture/sport/display/93611-centenary-of-rugby-league-sydney-cricket-ground"
     },
     {
       "id": "adelaide-oval",
