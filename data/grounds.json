@@ -888,16 +888,16 @@
       ],
       "city": "Colombo",
       "country": "Sri Lanka",
-      "latitude": 6.9395,
-      "longitude": 79.873,
+      "latitude": 6.93997,
+      "longitude": 79.87229,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International",
         "LPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W665919418",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.police.lk/?p=20141 and ICC venue information https://images.icc-cricket.com/image/upload/prd/fhyqlkzetesunnjjexjz.pdf. Coordinates cross-checked against map record (https://mapcarta.com/W665919418). OSM cricket-stadium point; Sri Lanka Police and ICC confirm R. Premadasa Stadium, Maligawatte, Colombo."
     },
     {
       "id": "pallekele",
@@ -905,16 +905,16 @@
       "aliases": [],
       "city": "Kandy",
       "country": "Sri Lanka",
-      "latitude": 7.28,
-      "longitude": 80.723,
+      "latitude": 7.28062,
+      "longitude": 80.72246,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International",
         "LPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W225227355",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://en.wikipedia.org/wiki/Pallekele_International_Cricket_Stadium. Coordinates cross-checked against map record (https://mapcarta.com/W225227355). Corrected to the mapped cricket pitch at 7.28062, 80.72246; published stadium coordinate is 7.28028, 80.72222."
     },
     {
       "id": "galle",
@@ -922,16 +922,16 @@
       "aliases": [],
       "city": "Galle",
       "country": "Sri Lanka",
-      "latitude": 6.0329,
-      "longitude": 80.2168,
+      "latitude": 6.03155,
+      "longitude": 80.21603,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International",
         "LPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W232724482",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.gallecricketclub.lk/contact/. Coordinates cross-checked against map record (https://mapcarta.com/W232724482). OSM cricket-stadium point; Galle Cricket Club confirms its ground is Galle International Cricket Stadium, Galle Fort."
     },
     {
       "id": "rangiri-dambulla",
@@ -939,16 +939,16 @@
       "aliases": [],
       "city": "Dambulla",
       "country": "Sri Lanka",
-      "latitude": 7.868,
-      "longitude": 80.651,
+      "latitude": 7.85954,
+      "longitude": 80.63404,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International",
         "LPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "source_url": "https://mapcarta.com/W158821470",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "notes": "Official venue identity/address: https://en.wikipedia.org/wiki/Rangiri_Dambulla_International_Stadium. Coordinates cross-checked against map record (https://mapcarta.com/W158821470). Corrected to the mapped cricket pitch at 7.85954, 80.63404; kept unverified pending a primary Sri Lanka Cricket venue page."
     },
     {
       "id": "dubai-international",
@@ -958,17 +958,17 @@
       ],
       "city": "Dubai",
       "country": "United Arab Emirates",
-      "latitude": 25.0467,
-      "longitude": 55.2189,
+      "latitude": 25.04674,
+      "longitude": 55.21901,
       "timezone": "Asia/Dubai",
       "competitions": [
         "International",
         "ILT20",
         "T10"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W139822392",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.dsc.ae/sports/dubai-international-stadium/. Coordinates cross-checked against map record (https://mapcarta.com/W139822392). OSM cricket-stadium point; Dubai Sports City confirms Dubai International Stadium at Gate 1, Sheikh Mohamed Bin Zayed Road."
     },
     {
       "id": "sharjah-cricket",
@@ -978,17 +978,17 @@
       ],
       "city": "Sharjah",
       "country": "United Arab Emirates",
-      "latitude": 25.33,
-      "longitude": 55.42,
+      "latitude": 25.33086,
+      "longitude": 55.42095,
       "timezone": "Asia/Dubai",
       "competitions": [
         "International",
         "ILT20",
         "T10"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/29298928",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://sharjahcricket.ae/contact-us. Coordinates cross-checked against map record (https://mapcarta.com/29298928). OSM cricket-stadium point; Sharjah Cricket official site provides venue contact details and the mapped stadium address is 8CJC+635, Industrial Area 5."
     },
     {
       "id": "zayed-stadium",
@@ -999,17 +999,17 @@
       ],
       "city": "Abu Dhabi",
       "country": "United Arab Emirates",
-      "latitude": 24.3966,
-      "longitude": 54.5407,
+      "latitude": 24.39554,
+      "longitude": 54.54103,
       "timezone": "Asia/Dubai",
       "competitions": [
         "International",
         "ILT20",
         "T10"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W313892949",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.sportshub.abudhabi/contact-us. Coordinates cross-checked against map record (https://mapcarta.com/W313892949). OSM stadium point; Abu Dhabi Cricket & Sports Hub confirms Khalifa City, Abu Dhabi."
     },
     {
       "id": "tribhuvan-university",
@@ -1021,16 +1021,16 @@
       ],
       "city": "Kirtipur",
       "country": "Nepal",
-      "latitude": 27.67806,
-      "longitude": 85.29056,
+      "latitude": 27.67814,
+      "longitude": 85.2905,
       "timezone": "Asia/Kathmandu",
       "competitions": [
         "International",
         "NPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W200250964",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://cricketnepal.org.np/ground-detail/. Coordinates cross-checked against map record (https://mapcarta.com/W200250964). OSM stadium polygon point; Cricket Association of Nepal confirms TU International Cricket Ground in Kirtipur, Kathmandu. Registry pin was already within a few metres."
     },
     {
       "id": "lc-de-villiers",
@@ -2443,15 +2443,15 @@
       ],
       "city": "Kigali",
       "country": "Rwanda",
-      "latitude": -1.999,
-      "longitude": 30.105,
+      "latitude": -2.02953,
+      "longitude": 30.10714,
       "timezone": "Africa/Kigali",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W1065042197",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.gahangacricketstadium.com/. Coordinates cross-checked against map record (https://mapcarta.com/W1065042197). Corrected the starter pin by several kilometres to the OSM cricket-pitch point; official Gahanga Cricket Stadium site confirms the venue."
     },
     {
       "id": "lugogo",
@@ -2472,18 +2472,21 @@
     {
       "id": "rwanda-kicukiro",
       "name": "Kicukiro Oval",
-      "aliases": [],
+      "aliases": [
+        "Gahanga International Cricket Stadium",
+        "Rwanda Cricket Stadium"
+      ],
       "city": "Kigali",
       "country": "Rwanda",
-      "latitude": -1.97,
-      "longitude": 30.105,
+      "latitude": -2.02953,
+      "longitude": 30.10714,
       "timezone": "Africa/Kigali",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W1065042197",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.icc-cricket.com/about/members/associate/rwanda-cricket-association. Coordinates cross-checked against map record (https://mapcarta.com/W1065042197). Kicukiro Oval / Rwanda Cricket Stadium is the same venue as Gahanga International Cricket Stadium, not a separate ground. Set same verified field point and retained ID for compatibility."
     },
     {
       "id": "windhoek-affies",
@@ -3013,15 +3016,15 @@
       "aliases": [],
       "city": "Nairobi",
       "country": "Kenya",
-      "latitude": -1.2833,
-      "longitude": 36.8167,
+      "latitude": -1.26977,
+      "longitude": 36.8272,
       "timezone": "Africa/Nairobi",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W553300984",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.nairobigymkhana.com/contact.html. Coordinates cross-checked against map record (https://mapcarta.com/W553300984). Corrected the starter pin by about 2 km to the mapped Gymkhana Club Ground; official club confirms Desai Road, Nairobi and cricket facilities."
     },
     {
       "id": "aga-khan",
@@ -3759,16 +3762,16 @@
       "aliases": [],
       "city": "Kathmandu",
       "country": "Nepal",
-      "latitude": 27.735,
-      "longitude": 85.376,
+      "latitude": 27.71881,
+      "longitude": 85.39129,
       "timezone": "Asia/Kathmandu",
       "competitions": [
         "International",
         "NPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W345216088",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue identity/address: https://cricketnepal.org.np/ground-detail/. Coordinates cross-checked against map record (https://mapcarta.com/W345216088). Corrected to the mapped lower Mulpani cricket pitch. The official CAN page identifies Mulpani International Cricket Ground, but exact upper/lower field correspondence still needs confirmation."
     },
     {
       "id": "nepal-upper-mulpani",
@@ -3776,15 +3779,15 @@
       "aliases": [],
       "city": "Kathmandu",
       "country": "Nepal",
-      "latitude": 27.742,
-      "longitude": 85.378,
+      "latitude": 27.72133,
+      "longitude": 85.39015,
       "timezone": "Asia/Kathmandu",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W345200264",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue identity/address: https://cricketnepal.org.np/ground-detail/. Coordinates cross-checked against map record (https://mapcarta.com/W345200264). Corrected to the mapped Mulpani stadium footprint. Upper/lower naming and the official international-ground pin need one more independent confirmation."
     },
     {
       "id": "oman-al-amerat",
