@@ -221,6 +221,7 @@ def make_prediction(m):
     raw1=(m.get('teama') or {}).get('name') or ''; raw2=(m.get('teamb') or {}).get('name') or ''
     if not raw1 or not raw2: return None
     t1=canonical_team_name(raw1); t2=canonical_team_name(raw2)
+    if not t1 or not t2 or team_names_equivalent(t1, t2): return None
     venue=(m.get('venue') or {}).get('name') or ''; fmt=match_type(m.get('format_str'))
     gender=_fixture_gender(t1,t2)
     match_date=datetime.fromtimestamp(int(m.get('timestamp_start') or 0),timezone.utc).date().isoformat() if m.get('timestamp_start') else datetime.now(timezone.utc).date().isoformat()
