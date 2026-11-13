@@ -45,6 +45,10 @@ if (sandbox.resultWinnerMatchesTeam("Tigers won by 24 runs", "Emirates Eagles", 
 if (sandbox.resultWinnerMatchesTeam("Tigers won by 24 runs", "United Tigers", "Desert Tigers", "United Tigers")) throw new Error("ambiguous one-word team alias must not be accepted");
 if (sandbox.resultWinnerMatchesTeam("Tigers won by 24 runs", "United Tigers", "United Tigers", "Tigers XI")) throw new Error("alias appearing anywhere in opponent name must be treated as ambiguous");
 if (sandbox.resolveResultWinnerTeam("Tigers won by 24 runs", "United Tigers", "Tigers XI") !== "") throw new Error("one-word alias shared anywhere by both teams must remain unresolved");
+if (!sandbox.resultWinnerMatchesTeam("Chitwan won by 4 wickets", "Chitwan Rhinos", "Chitwan Rhinos", "Janakpur Bolts")) throw new Error("Chitwan short winner name must match Chitwan Rhinos");
+if (sandbox.resultWinnerMatchesTeam("Chitwan won by 4 wickets", "Janakpur Bolts", "Chitwan Rhinos", "Janakpur Bolts")) throw new Error("Chitwan winner must not match Janakpur Bolts");
+if (sandbox.resolveResultWinnerTeam("Chitwan won by 4 wickets", "Chitwan Rhinos", "Chitwan Kings") !== "") throw new Error("shared first token must remain ambiguous");
+
 
 if (sandbox.canonicalCricketTeamName("Sudur Paschim Royals (NPL)") !== "Sudur Paschim Royals") throw new Error("competition suffix must not block canonical team lookup");
 if (sandbox.canonicalCricketTeamName("S. Paschim") !== "Sudur Paschim Royals") throw new Error("known short provider alias must resolve to canonical team");
