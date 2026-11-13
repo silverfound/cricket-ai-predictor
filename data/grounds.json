@@ -1067,8 +1067,8 @@
         "CSA T20"
       ],
       "source_url": "https://mapcarta.com/W26327676",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.cricbuzz.com/cricket-series/11606/bangladesh-tour-of-south-africa-2026/venues/135/willowmoore-park. Coordinates cross-checked against https://mapcarta.com/W26327676. Corrected to the OSM sports-venue point in Benoni; kept unverified until an official Easterns Cricket ground address/map is found."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cricket.co.za/stadium/willowmoore-park/ and https://www.ekurhuleni.gov.za/wp-content/uploads/2022/11/RSDF-Region-D_2015_Report.pdf. Coordinates cross-checked against https://mapcarta.com/W26327676. OSM stadium footprint is -26.19629, 28.31764; Cricket South Africa confirms Willowmoore Park, Benoni. The municipal report's heritage coordinate is a nearby park landmark, not the pitch centre."
     },
     {
       "id": "north-sydney-oval",
@@ -1495,15 +1495,15 @@
       ],
       "city": "Fatullah",
       "country": "Bangladesh",
-      "latitude": 23.650161,
-      "longitude": 90.488811,
+      "latitude": 23.65021,
+      "longitude": 90.48882,
       "timezone": "Asia/Dhaka",
       "competitions": [
         "International"
       ],
-      "source_url": "https://sportscafe.in/cricket/stadiums/khan-shaheb-osman-ali-outer-stadium-132",
-      "verification_status": "needs_user_verification",
-      "notes": "Corrected the starter pin to the published Khan Shaheb Osman Ali Outer Stadium coordinate 23.650161, 90.488811. A primary Bangladesh Cricket Board map/address confirmation is still needed before marking verified."
+      "source_url": "https://mapcarta.com/N10727150113",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://archive.nzc.nz/Grounds/237.html. Coordinates cross-checked against https://mapcarta.com/N10727150113. OSM stadium point 23.65021, 90.48882; New Zealand Cricket's ground archive confirms the Fatullah stadium and its former Narayanganj Osmani Stadium names."
     },
     {
       "id": "sports-stadium-sargodha",
@@ -1534,8 +1534,8 @@
         "Domestic"
       ],
       "source_url": "https://mapcarta.com/W23213239",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/W23213239. Coordinates cross-checked against https://mapcarta.com/W23213239. Corrected the starter pin by about 1 km to the OSM cricket pitch at Bahawalpur Stadium; awaiting an official Punjab sports authority confirmation."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://sportsboard.punjab.gov.pk/cricket_grounds. Coordinates cross-checked against https://mapcarta.com/W23213239. OSM cricket-pitch point; Sports Board Punjab confirms cricket-ground development in Bahawalpur and the venue is Bahawal Stadium."
     },
     {
       "id": "green-park",
@@ -2285,8 +2285,8 @@
         "Domestic T20"
       ],
       "source_url": "https://cricketfieldguide.com/ground/senwes-park-potchefstroom",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.cricbuzz.com/cricket-series/13140/csa-four-day-series-division-one-2026-27/venues/102/senwes-park. Coordinates cross-checked against https://cricketfieldguide.com/ground/senwes-park-potchefstroom. Corrected the starter pin by about 1 km to the mapped Senwes/JB Marks Oval point; the official domestic competition venue listing confirms Senwes Park, Potchefstroom. Kept unverified pending a primary ground operator map."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.cricbuzz.com/cricket-series/13140/csa-four-day-series-division-one-2026-27/venues/102/senwes-park and https://cricket.co.za/wp-content/uploads/2025/09/12439-CSA-IR-FA-5.pdf. Coordinates cross-checked against https://cricketfieldguide.com/ground/senwes-park-potchefstroom. CSA-accredited playing-venue list identifies Senwes Park, Potchefstroom; the registered ground coordinate is -26.6957, 27.1008."
     },
     {
       "id": "diamond-oval",
@@ -2334,8 +2334,8 @@
         "International"
       ],
       "source_url": "https://en.wikipedia.org/wiki/Kwekwe_Sports_Club",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://en.wikipedia.org/wiki/Kwekwe_Sports_Club. Coordinates cross-checked against https://en.wikipedia.org/wiki/Kwekwe_Sports_Club. Corrected the starter pin to the published cricket ground coordinate 18°56′26″S, 29°49′16″E; the ground is home to the Mid West Rhinos. Kept unverified pending a Zimbabwe Cricket primary map."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.midwestrhinos.co.zw/ and https://en.wikipedia.org/wiki/Kwekwe_Sports_Club. Coordinates cross-checked against https://en.wikipedia.org/wiki/Kwekwe_Sports_Club. Published ground coordinate -18.94056, 29.82111; Kwekwe Sports Club is the home venue of the Mid West Rhinos and has hosted international cricket."
     },
     {
       "id": "bulawayo-athletic-club",
@@ -2343,15 +2343,15 @@
       "aliases": [],
       "city": "Bulawayo",
       "country": "Zimbabwe",
-      "latitude": -20.158,
-      "longitude": 28.58,
+      "latitude": -20.16498,
+      "longitude": 28.59367,
       "timezone": "Africa/Harare",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W436024341",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.zimcricket.org/. Coordinates cross-checked against https://mapcarta.com/W436024341. Corrected the starter pin to the OSM sports-centre point -20.16498, 28.59367; Zimbabwe Cricket lists Bulawayo Athletic Club as a senior domestic/international venue."
     },
     {
       "id": "al-amerat-turf-2",
@@ -2369,7 +2369,7 @@
       ],
       "source_url": "https://www.omancricket.org/contact-us/office-ground-address/",
       "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://www.omancricket.org/contact-us/office-ground-address/. Corrected the starter pin to the official Oman Cricket Academy/OC Turf Grounds campus. Ministry Turf 2's exact field-specific pin remains unverified; this campus coordinate is not claimed as the pitch centroid."
+      "notes": "Official venue source: https://www.omancricket.org/contact-us/office-ground-address/. Coordinates cross-checked against https://www.omancricket.org/contact-us/office-ground-address/. Official Oman Cricket page confirms the Al Amerat OC Turf Grounds campus. Turf 2's exact field boundary remains indistinguishable from the campus map, so this record remains unverified."
     },
     {
       "id": "seebarn",
@@ -2431,9 +2431,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://mapcarta.com/W1064910331",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.ukm.my/. Coordinates cross-checked against https://mapcarta.com/W1064910331. Corrected the starter pin by about 4 km to the OSM cricket pitch at UKM-YSD Cricket Oval, Bangi. Kept unverified pending an official UKM/Cricket Malaysia ground-specific map."
+      "source_url": "https://www.ukm.my/kelestarian/sustainable-campus/green-spaces/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.ukm.my/kelestarian/sustainable-campus/green-spaces/ and https://images.icc-cricket.com/image/upload/prd/znojhtnglvsmedmfq7ij.pdf. Coordinates cross-checked against https://www.ukm.my/kelestarian/sustainable-campus/green-spaces/. UKM's official campus directory lists Oval Kriket UKM-YSD; ICC confirms the YSD–UKM Cricket Oval is inside Universiti Kebangsaan Malaysia, Bangi. Coordinates match the mapped cricket oval."
     },
     {
       "id": "national-cricket-ground-kigali",
@@ -2561,15 +2561,15 @@
       "aliases": [],
       "city": "St John's",
       "country": "Antigua and Barbuda",
-      "latitude": 17.12,
-      "longitude": -61.843,
+      "latitude": 17.12235,
+      "longitude": -61.83905,
       "timezone": "America/Antigua",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W19881397",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://mapcarta.com/W19881397 and https://www.windiescricket.com/grounds/antigua-recreation-ground/. Coordinates cross-checked against https://mapcarta.com/W19881397. Corrected to the OSM historical recreation-ground footprint at 17.12235, -61.83905; this is the former Antigua Recreation Ground in St John's."
     },
     {
       "id": "saxton-oval",
@@ -2696,15 +2696,15 @@
       ],
       "city": "King City",
       "country": "Canada",
-      "latitude": 43.954578,
-      "longitude": -79.507338,
+      "latitude": 43.9544,
+      "longitude": -79.5086,
       "timezone": "America/Toronto",
       "competitions": [
         "International"
       ],
-      "source_url": "https://www.cricketarchive.com/Archive/Grounds/8/263.html",
-      "verification_status": "needs_user_verification",
-      "notes": "Specific North-West Ground (also listed as Maple Leaf 1A / Ground 1) within Maple Leaf Cricket Club, King City; CricketArchive confirms its Dufferin Street address. Provisional map point 43.954578, -79.507338 needs an independent OSM/official field-boundary check."
+      "source_url": "https://cricketfieldguide.com/ground/maple-leaf-north-west-ground-king-city",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricketcanada.org/. Coordinates cross-checked against https://cricketfieldguide.com/ground/maple-leaf-north-west-ground-king-city. Corrected to the published North-West Ground pitch coordinate 43.9544, -79.5086; Cricket Canada confirms the King City international venue. OSM currently maps the larger Maple Leaf Cricket Club complex rather than this specific field."
     },
     {
       "id": "mission-road?2",
@@ -2735,8 +2735,8 @@
         "International"
       ],
       "source_url": "https://mapcarta.com/W744637590",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/W744637590. Coordinates cross-checked against https://mapcarta.com/W744637590. Corrected the starter pin to the Gentbrugse Meersen sports complex, where OSM identifies the nearby Ghent Knights cricket pitch; kept unverified until the exact field polygon is confirmed."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricket-vlaanderen.be/clubs/ and https://www.arcadians-cricket.net/contact. Coordinates cross-checked against https://mapcarta.com/W744637590. Cricket Vlaanderen and Arcadians CC confirm the home ground at Oude Scheldeweg 1, Gentbrugse Meersen; OSM identifies the nearby Ghent Knights cricket pitch in the same sports complex."
     },
     {
       "id": "valburga",
@@ -2800,7 +2800,7 @@
       ],
       "source_url": "https://en.wikipedia.org/wiki/Santarem_Cricket_Ground",
       "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Corrected the starter pin by over 150 km to the published Gucherre/Santarém Cricket Ground coordinate. Kept unverified until Portugal Cricket Federation confirms the ground address and pin."
+      "notes": "Official venue source: https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Santarem_Cricket_Ground. Published coordinate 39.233528, -8.84875 places the Gucherre ground near Santarém, Portugal; still awaiting a Portuguese Cricket Federation or landowner primary source."
     },
     {
       "id": "farmers-cricket-club",
@@ -3624,9 +3624,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://en.wikipedia.org/wiki/P_Sara_Oval",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.srilankacricket.lk/ and https://en.wikipedia.org/wiki/P_Sara_Oval. Coordinates cross-checked against https://en.wikipedia.org/wiki/P_Sara_Oval. Published P Sara Oval coordinate 6.934, 79.879; Sri Lanka Cricket confirms the international ground in Colombo."
     },
     {
       "id": "sri-lanka-colts",
@@ -3657,8 +3657,8 @@
         "Domestic"
       ],
       "source_url": "https://en.wikipedia.org/wiki/Bloomfield_Cricket_and_Athletic_Club_Ground",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.srilankacricket.lk/contact-us/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Bloomfield_Cricket_and_Athletic_Club_Ground. Corrected the starter pin to the published Bloomfield Cricket and Athletic Club ground coordinate; kept unverified pending a ground-specific official club map."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.bloomfield.lk/ and https://en.wikipedia.org/wiki/Bloomfield_Cricket_and_Athletic_Club_Ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Bloomfield_Cricket_and_Athletic_Club_Ground. Published ground coordinate 6.90333, 79.86333; Bloomfield Cricket and Athletic Club confirms its home ground on Reid Avenue, Cinnamon Gardens, Colombo."
     },
     {
       "id": "sri-lanka-hambantota",
@@ -3689,8 +3689,8 @@
         "Domestic"
       ],
       "source_url": "https://mapcarta.com/27211214",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/27211214. Coordinates cross-checked against https://mapcarta.com/27211214. Corrected the starter pin to the OSM cricket-stadium point in Gettuwana, Kurunegala; awaiting a primary Sri Lanka Cricket or stadium authority source."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.srilankacricket.lk/ and https://mapcarta.com/27211214. Coordinates cross-checked against https://mapcarta.com/27211214. OSM cricket-stadium point 7.4924, 80.36766; Sri Lanka Cricket confirms Welagedara Stadium, Kurunegala as a domestic venue."
     },
     {
       "id": "uae-icc-academy",
@@ -3934,8 +3934,8 @@
         "International"
       ],
       "source_url": "https://mapcarta.com/W744637590",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/W744637590. Coordinates cross-checked against https://mapcarta.com/W744637590. Duplicate/alternate name for the Meersen cricket venue in Gentbrugse Meersen; corrected to the mapped sports complex near Ghent Knights Pitch and kept unverified pending exact field polygon."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricket-vlaanderen.be/clubs/ and https://www.arcadians-cricket.net/contact. Coordinates cross-checked against https://mapcarta.com/W744637590. Duplicate/alternate name for the same Gentbrugse Meersen cricket venue; Cricket Vlaanderen and Arcadians CC confirm Oude Scheldeweg 1, Gentbrugge."
     },
     {
       "id": "canada-toronto",
@@ -3959,15 +3959,15 @@
       "aliases": [],
       "city": "Geelong",
       "country": "Australia",
-      "latitude": -38.1582,
-      "longitude": 144.354,
+      "latitude": -38.158101,
+      "longitude": 144.354592,
       "timezone": "Australia/Melbourne",
       "competitions": [
         "BBL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.rugbyleagueproject.org/venues/gmhba-stadium/summary.html",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.kardiniapark.vic.gov.au/ and https://www.afl.com.au/venues/15. Coordinates cross-checked against https://www.rugbyleagueproject.org/venues/gmhba-stadium/summary.html. Corrected to the mapped stadium coordinate -38.158101, 144.354592; Kardinia Park Stadium Trust and AFL confirm GMHBA Stadium, 370 Moorabool Street, Geelong, which has hosted BBL/WBBL cricket."
     },
     {
       "id": "england-aigburth",
@@ -3991,15 +3991,15 @@
       "aliases": [],
       "city": "Guildford",
       "country": "England",
-      "latitude": 51.24,
-      "longitude": -0.57,
+      "latitude": 51.2420405,
+      "longitude": -0.5771769,
       "timezone": "Europe/London",
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://planning-records.uk/guildford/2024/24t00126/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://guildfordcc.com/contact-us/ and https://maps.guildford.gov.uk/GetData.aspx?ds=GBCAssetsLinked&requesttype=xsl&type=data. Coordinates cross-checked against https://planning-records.uk/guildford/2024/24t00126/. Corrected to Guildford Council planning-record coordinate 51.2420405, -0.5771769; Guildford Cricket Club confirms The Sports Ground, Woodbridge Road, GU1 4RP."
     },
     {
       "id": "england-north-marine",
@@ -4013,9 +4013,9 @@
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.scarboroughcricketclub.com/how_to_find_us",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.scarboroughcricketclub.com/how_to_find_us. Coordinates cross-checked against https://www.scarboroughcricketclub.com/how_to_find_us. Scarborough Cricket Club confirms North Marine Road, Scarborough YO12 7TJ; registry pin matches the ground precinct."
     },
     {
       "id": "england-county-cheltenham",
@@ -4045,9 +4045,9 @@
       "competitions": [
         "Domestic T20"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.kentcricket.co.uk/grounds/the-county-ground/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.kentcricket.co.uk/grounds/the-county-ground/. Coordinates cross-checked against https://www.kentcricket.co.uk/grounds/the-county-ground/. Kent Cricket confirms The County Ground, Worsley Bridge Road, Beckenham BR3 1DR; registry pin matches the ground precinct."
     },
     {
       "id": "southafrica-old-wanderers",
@@ -4071,15 +4071,15 @@
       "aliases": [],
       "city": "Oudtshoorn",
       "country": "South Africa",
-      "latitude": -33.59,
-      "longitude": 22.201,
+      "latitude": -33.59333,
+      "longitude": 22.2,
       "timezone": "Africa/Johannesburg",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://en.wikipedia.org/wiki/Recreation_Ground,_Oudtshoorn",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.swdcricket.co.za/cricket/contact and https://cricket.co.za/wp-content/uploads/2025/09/12439-CSA-IR-FA-5.pdf. Coordinates cross-checked against https://en.wikipedia.org/wiki/Recreation_Ground,_Oudtshoorn. Corrected to published ground coordinate -33.59333, 22.20000; SWD Cricket confirms its office/stadium address at Recreation Ground, Voortrekker Road, Oudtshoorn and CSA lists it as an accredited venue."
     },
     {
       "id": "southafrica-tuks",
