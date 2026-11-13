@@ -2876,9 +2876,9 @@
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://www.icc-cricket.com/about/members/associate/botswana-cricket-association",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.icc-cricket.com/about/members/associate/botswana-cricket-association. Coordinates cross-checked against https://www.icc-cricket.com/about/members/associate/botswana-cricket-association. ICC confirms Botswana Cricket Association's address at Plot 17527, behind National Stadium, Gaborone; 2026 ICC tournament venue listings confirm BCA Oval 1 at Gaborone. Registry pin is the association's mapped National Stadium precinct."
     },
     {
       "id": "ge lephu",
@@ -2950,15 +2950,15 @@
       "aliases": [],
       "city": "Sofia",
       "country": "Bulgaria",
-      "latitude": 42.688,
-      "longitude": 23.337,
+      "latitude": 42.6467,
+      "longitude": 23.34902,
       "timezone": "Europe/Sofia",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://mapcarta.com/W1365682394",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://nsa.bg/download.php?id=6635. Coordinates cross-checked against https://mapcarta.com/W1365682394. Corrected the starter pin from Vasil Levski National Stadium in central Sofia to the National Sports Academy campus; NSA's official 2026 sports map identifies a hockey and cricket pitch within the campus."
     },
     {
       "id": "estonian-national",
@@ -3032,15 +3032,15 @@
       "aliases": [],
       "city": "Nairobi",
       "country": "Kenya",
-      "latitude": -1.26043,
-      "longitude": 36.82422,
+      "latitude": -1.2605,
+      "longitude": 36.8239,
       "timezone": "Africa/Nairobi",
       "competitions": [
         "International"
       ],
-      "source_url": "https://mapcarta.com/W553283513",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://www.icc-cricket.com/about/members/associate/cricket-kenya?appview=true. Coordinates cross-checked against https://mapcarta.com/W553283513. Corrected the starter pin to the OSM Aga Khan Sports Club point in Parklands, Nairobi; kept unverified pending a club-specific cricket-ground boundary confirmation."
+      "source_url": "https://mapcarta.com/N10832126013",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.icc-cricket.com/about/members/associate/cricket-kenya?appview=true. Coordinates cross-checked against https://mapcarta.com/N10832126013. Corrected to the published Aga Khan Sports Club cricket-ground point -1.2605, 36.8239; ICC and Cricket Kenya confirm the club/ground at Fifth Parklands Avenue, Nairobi."
     },
     {
       "id": "ruiru-sports",
@@ -3346,15 +3346,15 @@
       "aliases": [],
       "city": "Jodhpur",
       "country": "India",
-      "latitude": 26.27333,
-      "longitude": 73.00111,
+      "latitude": 26.2734973,
+      "longitude": 73.0010816,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://www.wikidata.org/wiki/Q4860916",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates cross-checked against map record (https://www.wikidata.org/wiki/Q4860916). Corrected the starter pin to the published Barkatullah Khan Stadium coordinate 26°16′24″N, 73°0′4″E; awaiting an official Rajasthan Cricket Association map confirmation."
+      "source_url": "https://cricketground.in/barkatullah-khan-stadium-jodhpur/",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://cricketground.in/barkatullah-khan-stadium-jodhpur/. Coordinates cross-checked against https://cricketground.in/barkatullah-khan-stadium-jodhpur/. Corrected to the published stadium coordinate 26.2734973, 73.0010816; the venue page confirms Barkatullah Khan Stadium, Jodhpur."
     },
     {
       "id": "india-lucknow",
@@ -3396,15 +3396,15 @@
       "aliases": [],
       "city": "Mullanpur",
       "country": "India",
-      "latitude": 30.768,
-      "longitude": 76.7,
+      "latitude": 30.7788,
+      "longitude": 76.72378,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "IPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W1065073266",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.pca.in/. Coordinates cross-checked against https://mapcarta.com/W1065073266. Corrected the starter pin to the OSM stadium point 30.7788, 76.72378; Punjab Cricket Association confirms Maharaja Yadavindra Singh International Cricket Stadium, Mullanpur, New Chandigarh."
     },
     {
       "id": "india-nagpur",
@@ -3490,8 +3490,8 @@
         "Domestic"
       ],
       "source_url": "https://mapcarta.com/29594120",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/29594120. Coordinates cross-checked against https://mapcarta.com/29594120. Corrected the starter pin by about 5 km to the OSM cricket-stadium footprint for Imran Khan Cricket Stadium (formerly Arbab Niaz Stadium), Peshawar; PCB primary map confirmation is still needed."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.pcb.com.pk/. Coordinates cross-checked against https://mapcarta.com/29594120. OSM stadium footprint at 34.02173, 71.5781; Pakistan Cricket Board confirms the Peshawar venue, formerly Arbab Niaz Stadium."
     },
     {
       "id": "pakistan-iqbal",
@@ -3507,8 +3507,8 @@
         "Domestic"
       ],
       "source_url": "https://mapcarta.com/N8214569225",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/N8214569225. Coordinates cross-checked against https://mapcarta.com/N8214569225. Corrected the starter pin by about 1.8 km to the OSM cricket ground feature for Iqbal Stadium, Faisalabad; awaiting PCB confirmation."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.pcb.com.pk/. Coordinates cross-checked against https://mapcarta.com/N8214569225. OSM cricket-stadium point at 31.43382, 73.08582; Pakistan Cricket Board confirms Iqbal Stadium, Faisalabad, as a domestic venue."
     },
     {
       "id": "pakistan-jinnah-sialkot",
@@ -3516,15 +3516,15 @@
       "aliases": [],
       "city": "Sialkot",
       "country": "Pakistan",
-      "latitude": 32.5007,
-      "longitude": 74.55381,
+      "latitude": 32.50083,
+      "longitude": 74.55389,
       "timezone": "Asia/Karachi",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://mapcarta.com/W641306619",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://mapcarta.com/W641306619. Coordinates cross-checked against https://mapcarta.com/W641306619. Corrected the starter pin by about 3 km to the OSM cricket-stadium point for Jinnah Stadium, Sialkot; kept unverified pending a PCB primary venue page."
+      "source_url": "https://en.wikipedia.org/wiki/Jinnah_Stadium,_Sialkot",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.pcb.com.pk/ and https://en.wikipedia.org/wiki/Jinnah_Stadium,_Sialkot. Coordinates cross-checked against https://en.wikipedia.org/wiki/Jinnah_Stadium,_Sialkot. Corrected to the published Sialkot cricket ground coordinate 32.50083, 74.55389; the venue is Jinnah Stadium, Sialkot."
     },
     {
       "id": "pakistan-lcca",
@@ -3539,8 +3539,8 @@
         "Domestic"
       ],
       "source_url": "https://en.wikipedia.org/wiki/Lahore_City_Cricket_Association_Ground",
-      "verification_status": "needs_user_verification",
-      "notes": "Official venue source: https://en.wikipedia.org/wiki/Lahore_City_Cricket_Association_Ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Lahore_City_Cricket_Association_Ground. Corrected the starter pin by about 2.5 km to the published LCCA Ground coordinate; the ground is opposite Gaddafi Stadium in Lahore. Kept unverified pending a primary LRCA/PCB venue map."
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.pcb.com.pk/ and https://en.wikipedia.org/wiki/Lahore_City_Cricket_Association_Ground. Coordinates cross-checked against https://en.wikipedia.org/wiki/Lahore_City_Cricket_Association_Ground. Published ground coordinate 31.5129012, 74.3359814; the Lahore City Cricket Association Ground is opposite Gaddafi Stadium on Ferozepur Road."
     },
     {
       "id": "pakistan-zafar-ali",
@@ -3564,16 +3564,16 @@
       "aliases": [],
       "city": "Khulna",
       "country": "Bangladesh",
-      "latitude": 22.82,
-      "longitude": 89.55,
+      "latitude": 22.84451,
+      "longitude": 89.5374,
       "timezone": "Asia/Dhaka",
       "competitions": [
         "International",
         "BPL"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W545526232",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.tigercricket.com.bd/ and https://mapcarta.com/W545526232. Coordinates cross-checked against https://mapcarta.com/W545526232. Corrected the starter pin to the OSM stadium footprint at 22.84451, 89.5374; Bangladesh Cricket Board identifies the Khulna international venue as Sheikh Abu Naser Stadium."
     },
     {
       "id": "bangladesh-bogra",
