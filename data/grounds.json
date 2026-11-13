@@ -2377,15 +2377,15 @@
       "aliases": [],
       "city": "Seebarn",
       "country": "Austria",
-      "latitude": 48.35,
-      "longitude": 16,
+      "latitude": 48.3832083,
+      "longitude": 16.3887583,
       "timezone": "Europe/Vienna",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "source_url": "https://en.wikipedia.org/wiki/Seebarn_Cricket_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://viennacricketclub.com/ and https://www.vereinsverzeichnis.at/vereine/1213_vienna_cricket_club/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Seebarn_Cricket_Ground. Corrected the starter pin to the dedicated Seebarn Cricket Ground coordinate; Vienna Cricket Club confirms its own ground in Seebarn, and Austrian cricket directories confirm Schlossstraße, 2111 Seebarn."
     },
     {
       "id": "malta-marsa",
@@ -2728,15 +2728,15 @@
       "aliases": [],
       "city": "Ghent",
       "country": "Belgium",
-      "latitude": 51.054,
-      "longitude": 3.717,
+      "latitude": 51.04251,
+      "longitude": 3.77835,
       "timezone": "Europe/Brussels",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W744637590",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://mapcarta.com/W744637590. Coordinates cross-checked against https://mapcarta.com/W744637590. Corrected the starter pin to the Gentbrugse Meersen sports complex, where OSM identifies the nearby Ghent Knights cricket pitch; kept unverified until the exact field polygon is confirmed."
     },
     {
       "id": "valburga",
@@ -2966,15 +2966,15 @@
       "aliases": [],
       "city": "Tallinn",
       "country": "Estonia",
-      "latitude": 59.437,
-      "longitude": 24.753,
+      "latitude": 59.42204,
+      "longitude": 24.58193,
       "timezone": "Europe/Tallinn",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://www.spordiregister.ee/en/ehitis/5203/tiskre_ragbi_ja_kriketiväljakud/detail",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Official venue source: https://www.spordiregister.ee/en/ehitis/5203/tiskre_ragbi_ja_kriketiväljakud/detail. Coordinates cross-checked against https://www.spordiregister.ee/en/ehitis/5203/tiskre_ragbi_ja_kriketiväljakud/detail. Corrected the starter pin from Tallinn city centre to Tiskre, Harku Parish; Estonian Sports Register confirms two active cricket fields at Kallasmaa/Rajakalda/Reinu. Pin is currently the Tiskre locality centre, not a verified pitch centroid."
     },
     {
       "id": "qatar-west-end",
@@ -3144,15 +3144,15 @@
       "aliases": [],
       "city": "Freetown",
       "country": "Sierra Leone",
-      "latitude": 8.4657,
-      "longitude": -13.2317,
+      "latitude": 8.49255,
+      "longitude": -13.24746,
       "timezone": "Africa/Freetown",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W140125503",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://cricket.co.za/wp-content/uploads/2021/07/CEO-ADVERT_SIERRA-LEONE-CRICKET-ASSOCIATION.pdf. Coordinates cross-checked against https://mapcarta.com/W140125503. Corrected the starter pin to the Kingtom Power Station point opposite the oval; Sierra Leone Cricket Association confirms its Secretariat at 3A Battery Street, Kingtom Cricket Oval. Exact oval centre remains unverified."
     },
     {
       "id": "chile-las-condes",
@@ -3927,15 +3927,15 @@
       "aliases": [],
       "city": "Ghent",
       "country": "Belgium",
-      "latitude": 51.054,
-      "longitude": 3.717,
+      "latitude": 51.04251,
+      "longitude": 3.77835,
       "timezone": "Europe/Brussels",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W744637590",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://mapcarta.com/W744637590. Coordinates cross-checked against https://mapcarta.com/W744637590. Duplicate/alternate name for the Meersen cricket venue in Gentbrugse Meersen; corrected to the mapped sports complex near Ghent Knights Pitch and kept unverified pending exact field polygon."
     },
     {
       "id": "canada-toronto",
