@@ -1,6 +1,11 @@
 # Cricket AI Pro — GitHub-only deployment
 
-The production target preserves the current app UI and the four trained prediction artifacts while removing Render, FastAPI hosting, admin/customer licensing, and match permissions.
+The production app keeps three distinct prediction features:
+- **Pre-Toss AI prediction:** neutral baseline, calculated before toss by averaging the four possible toss outcomes.
+- **Post-Toss AI prediction:** recalculated for the actual/selected toss winner and bat/field decision.
+- **Ilmi / Abjad prediction:** the separate Urdu-name, Abjad, captain, venue, Hijri-date and time compatibility calculation in the frontend.
+
+The in-play/live win-probability prediction experiment is not part of the product. Live match fixtures and scores remain in the feed; only the live win-probability model is excluded.
 
 ## Refresh
 - Frontend/data hosting: GitHub Pages.
@@ -11,7 +16,7 @@ The production target preserves the current app UI and the four trained predicti
 - Quota planning: normal Highlightly usage is up to 96 requests/day. If Highlightly is down and the backup is needed on every run, Cricket Live Line Advance can use up to 192 requests/day (96 runs × 2 pages); check the RapidAPI plan allowance for that failure scenario. These are separate provider quotas. The 15-minute schedule is not reduced to manage optional enrichment.
 - Head-to-head and recent venue-form statistics are computed locally from the existing 2024–2026 match history, so they do not consume provider quota. Important model boundary: the current trained CatBoost/LightGBM runtime consumes 11 features, including venue name, toss decision and toss-winner identity; it does not consume the separate toss-stats artifact or the calculated venue-form columns. Those extra statistics must not be described as influencing predictions until a model-schema change is separately trained and validated. Weather is a separate optional context source: Open-Meteo's free API is non-commercial, requires attribution, and is not yet fed into the trained predictor. The ground directory currently marks its starter coordinates as needing verification, so weather must not be attached to a fixture until its venue coordinates are verified.
 - CricketDatabase was evaluated as a possible toss/venue source. Its free key allows 50 calls/day but does not include the live-match endpoints; live data requires its Match Week plan. It is therefore not enabled as a free live-toss provider. See [official plan matrix](https://cricketdatabase.com/documentation/guides/plans) and [pricing](https://cricketdatabase.com/pricing).
-- Existing CatBoost/LightGBM ensemble and Elo fallback calculations are mirrored in the workflow generator. It precomputes neutral and four toss scenarios for each fixture, which the existing modal UI reads from a JSON snapshot.
+- Existing CatBoost/LightGBM ensemble and Elo fallback calculations are mirrored in the workflow generator. It precomputes a neutral pre-toss baseline and four post-toss scenarios for each fixture, which the existing modal UI reads from a JSON snapshot.
 - Runs are serialized to avoid concurrent provider requests. A manual workflow dispatch uses the same fixture-provider fallback chain but skips optional CricketData enrichment.
 
 ## Configure Pages
@@ -26,4 +31,4 @@ Each run requests the Riyadh-local current date from Highlightly. The backup req
 - `category_mappings.joblib`
 - `toss_stats.joblib`
 
-Workflow verifies the tracked Git blob SHA of all four files. They are not retrained or rewritten.
+Workflow verifies the tracked Git blob SHA of all four files. They are not retrained or rewritten. Historical match data and ground data are also retained because prediction calculations, venue resolution and feed display depend on them.
