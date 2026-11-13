@@ -452,16 +452,16 @@
       ],
       "city": "Johannesburg",
       "country": "South Africa",
-      "latitude": -26.131,
-      "longitude": 28.057,
+      "latitude": -26.1313,
+      "longitude": 28.0577,
       "timezone": "Africa/Johannesburg",
       "competitions": [
         "International",
         "SA20"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://sahistory.org.za/place/wanderers-cricket-stadium-johannesburg",
+      "verification_status": "verified",
+      "notes": "Current New Wanderers Stadium identity and coordinates corroborated by South African History Online (-26.1313, 28.0577). Distinct from the historic Old Wanderers ground, which was replaced by Park Station."
     },
     {
       "id": "super-sport-park",
@@ -1047,9 +1047,9 @@
         "Domestic",
         "CSA T20"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://www.wikidata.org/wiki/Q18127163",
+      "verification_status": "verified",
+      "notes": "LC de Villiers Oval and Tuks Cricket Oval are the same ground (Tuks Cricket Oval is the current name/formerly LC de Villiers Oval). University of Pretoria confirms Tuks Oval at Hillcrest Sports Campus; Wikidata coordinate is -25.750873, 28.247124."
     },
     {
       "id": "willowmoore-park",
@@ -1316,15 +1316,15 @@
       ],
       "city": "King City",
       "country": "Canada",
-      "latitude": 43.93,
-      "longitude": -79.55,
+      "latitude": 43.95409,
+      "longitude": -79.50742,
       "timezone": "America/Toronto",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W247885746",
+      "verification_status": "verified",
+      "notes": "Maple Leaf Cricket Club is the larger five-ground complex at 13811 Dufferin Street, King City; OSM sports-centre point 43.95409, -79.50742. North-West Ground is its specific international field, not a separate club complex."
     },
     {
       "id": "harare-sports-club",
@@ -1384,15 +1384,15 @@
       ],
       "city": "Windhoek",
       "country": "Namibia",
-      "latitude": -22.592,
-      "longitude": 17.083,
+      "latitude": -22.59122,
+      "longitude": 17.07077,
       "timezone": "Africa/Windhoek",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "source_url": "https://mapcarta.com/W88490976",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "notes": "Corrected the starter pin to the OpenStreetMap-mapped Wanderers Sports Club cricket venue (-22.59122, 17.07077). Awaiting Cricket Namibia confirmation of the exact cricket-field boundary."
     },
     {
       "id": "al-amerat",
@@ -2239,20 +2239,18 @@
     {
       "id": "namibia-cricket-ground",
       "name": "Namibia Cricket Ground",
-      "aliases": [
-        "Wanderers Cricket Ground"
-      ],
+      "aliases": [],
       "city": "Windhoek",
       "country": "Namibia",
-      "latitude": -22.592,
-      "longitude": 17.083,
+      "latitude": -22.6059,
+      "longitude": 17.0875,
       "timezone": "Africa/Windhoek",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://ticketing.ncg.com.na/",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Separated from Wanderers Cricket Ground: official Namibia Cricket Ground ticketing page identifies the distinct venue at Cricket Street, Olympia, Windhoek. Public coordinate reference is -22.6059, 17.0875; keep unverified until its exact field boundary is independently mapped."
     },
     {
       "id": "buffalo-park",
@@ -2689,18 +2687,21 @@
     {
       "id": "maple-leaf-ground-nw",
       "name": "Maple Leaf North-West Ground",
-      "aliases": [],
+      "aliases": [
+        "Maple Leaf 1A",
+        "Ground 1"
+      ],
       "city": "King City",
       "country": "Canada",
-      "latitude": 43.93,
-      "longitude": -79.55,
+      "latitude": 43.954578,
+      "longitude": -79.507338,
       "timezone": "America/Toronto",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://www.cricketarchive.com/Archive/Grounds/8/263.html",
       "verification_status": "needs_user_verification",
-      "notes": "Coordinates are approximate starter pins for user review; verify exact ground boundary and timezone."
+      "notes": "Specific North-West Ground (also listed as Maple Leaf 1A / Ground 1) within Maple Leaf Cricket Club, King City; CricketArchive confirms its Dufferin Street address. Provisional map point 43.954578, -79.507338 needs an independent OSM/official field-boundary check."
     },
     {
       "id": "mission-road?2",
@@ -4047,15 +4048,15 @@
       "aliases": [],
       "city": "Johannesburg",
       "country": "South Africa",
-      "latitude": -26.131,
-      "longitude": 28.057,
+      "latitude": -26.1977,
+      "longitude": 28.0407,
       "timezone": "Africa/Johannesburg",
       "competitions": [
         "Historical"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://en.wikipedia.org/wiki/Old_Wanderers",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Corrected to the historic Old Wanderers site (-26.1977, 28.0407); this was a former ground replaced by Johannesburg Park Station in 1946. Kept unverified pending an authoritative heritage/map source."
     },
     {
       "id": "southafrica-recreation",
@@ -4076,7 +4077,9 @@
     {
       "id": "southafrica-tuks",
       "name": "Tuks Cricket Oval",
-      "aliases": [],
+      "aliases": [
+        "LC de Villiers Oval"
+      ],
       "city": "Pretoria",
       "country": "South Africa",
       "latitude": -25.750873,
@@ -4085,9 +4088,9 @@
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://www.up.ac.za/cricket/who-do-i-contact",
+      "verification_status": "verified",
+      "notes": "Duplicate legacy record for the same ground as LC de Villiers Oval. University of Pretoria confirms Tuks Oval at Hillcrest Sports Campus; retain this ID as an alias for backward compatibility. Coordinate -25.750873, 28.247124."
     },
     {
       "id": "pakistan-karachi",
