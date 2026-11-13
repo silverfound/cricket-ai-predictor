@@ -553,9 +553,9 @@
         "International",
         "PSL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W172700971",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://www.pcb.com.pk/contactus.html); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W172700971). OSM stadium point 31.51339, 74.33346; registry pin 31.5133, 74.3333 is within approx. 20 m."
     },
     {
       "id": "national-stadium-karachi",
@@ -592,9 +592,9 @@
         "International",
         "PSL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/Rawalpindi_Cricket_Stadium_R13886691",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://www.pcb.com.pk/downloads/Urdu-Instructions%20and-Guidlines.pdf); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/Rawalpindi_Cricket_Stadium_R13886691). PCB confirms Rawalpindi Cricket Stadium, Double Road, Rawalpindi; OSM stadium polygon point 33.65194, 73.07597 and independent published ground coordinate 33.65139, 73.07611 bracket the registry pin."
     },
     {
       "id": "multan-cricket-stadium",
@@ -602,16 +602,16 @@
       "aliases": [],
       "city": "Multan",
       "country": "Pakistan",
-      "latitude": 30.203,
-      "longitude": 71.522,
+      "latitude": 30.17077,
+      "longitude": 71.52477,
       "timezone": "Asia/Karachi",
       "competitions": [
         "International",
         "PSL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W53238542",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://multan.punjab.gov.pk/stadium_places); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W53238542). Corrected the starter pin by about 3.6 km to the mapped cricket pitch at 30.17077, 71.52477; Multan District Government confirms the stadium off Vehari Road."
     },
     {
       "id": "arun-jaitley-stadium",
@@ -629,9 +629,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W44195469",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://www.ddca.in/contact-us); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W44195469). OSM cricket-ground point 28.63769, 77.24303; registry pin is within approx. 25 m. DDCA confirms Ferozeshah Kotla Ground, New Delhi."
     },
     {
       "id": "wankhede-stadium",
@@ -646,9 +646,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/25585090",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://www.mumbaicricket.com/wankhede); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/25585090). OSM stadium point 18.93855, 72.82573; registry pin is within approx. 30 m. MCA confirms Wankhede Stadium, D Road, Churchgate, Mumbai."
     },
     {
       "id": "eden-gardens",
@@ -682,9 +682,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W28126916",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://www.cricketkarnataka.com/frm_W_ContactUs.aspx); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W28126916). OSM cricket-stadium point 12.97883, 77.59953; registry pin is within approx. 10 m. KSCA confirms its office at Chinnaswamy Stadium, Bengaluru."
     },
     {
       "id": "ma-chidambaram",
@@ -722,9 +722,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://www.coordinatesfinder.com/coordinates/1537709-narendra-modi-stadium-ahmedabad",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://gujaratcricketassociation.com/contact-us/); coordinates cross-checked against OpenStreetMap-derived map record (https://www.coordinatesfinder.com/coordinates/1537709-narendra-modi-stadium-ahmedabad). Independent GPS point 23.0917717, 72.597334; registry pin is within approx. 40 m. GCA confirms Narendra Modi Stadium, Stadium Road, Motera, Ahmedabad."
     },
     {
       "id": "rajiv-gandhi-hyderabad",
@@ -741,9 +741,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W839364278",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://rajivgandhistadium.com/contact/); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W839364278). OSM stadium point 17.40594, 78.55053; registry pin is within approx. 65 m. Venue reference confirms the stadium in Uppal, Hyderabad."
     },
     {
       "id": "sawai-mansingh",
@@ -760,9 +760,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W612211645",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://rssc.rajasthan.gov.in/content/raj/sports/rajasthan-state-sports-council/en/infrastructure-facilities/district-sports-centre.html?item=jaipur); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W612211645). OSM cricket-ground point 26.89401, 75.80323; registry pin is within approx. 25 m. Rajasthan State Sports Council confirms the stadium at Janpath, Lalkothi, Jaipur."
     },
     {
       "id": "ekana",
@@ -772,15 +772,15 @@
       ],
       "city": "Lucknow",
       "country": "India",
-      "latitude": 26.812,
-      "longitude": 81.02,
+      "latitude": 26.81126,
+      "longitude": 81.01678,
       "timezone": "Asia/Kolkata",
       "competitions": [
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/N10902298853",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://www.ekanasportzcity.com/contact-us/); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/N10902298853). Corrected the starter pin to OSM cricket-stadium point 26.81126, 81.01678; official Ekana Sportz City contact page identifies Cricket Stadium, Lucknow."
     },
     {
       "id": "hpca-dharamshala",
@@ -817,9 +817,9 @@
         "International",
         "IPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W664455147",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://www.cricketpunjab.in/); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W664455147). OSM stadium point 30.69085, 76.73743; registry pin is within approx. 100 m. Punjab Cricket Association confirms I.S. Bindra Stadium, Sector 63, Mohali."
     },
     {
       "id": "shere-bangla",
@@ -837,9 +837,9 @@
         "International",
         "BPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W121390579",
+      "verification_status": "verified",
+      "notes": "Venue identity/address checked against official source (https://www.icc-cricket.com/about/members/associate/bangladesh-cricket-board?appview=true); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W121390579). OSM cricket-stadium point 23.80692, 90.36362; registry pin is within approx. 65 m. ICC/BCB confirms Sher-e-Bangla National Cricket Stadium, Mirpur, Dhaka."
     },
     {
       "id": "zahur-ahmed",
@@ -868,16 +868,16 @@
       "aliases": [],
       "city": "Sylhet",
       "country": "Bangladesh",
-      "latitude": 24.899,
-      "longitude": 91.87,
+      "latitude": 24.92083,
+      "longitude": 91.86856,
       "timezone": "Asia/Dhaka",
       "competitions": [
         "International",
         "BPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
+      "source_url": "https://mapcarta.com/W281086772",
       "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "notes": "Coordinate candidate cross-checked against official source (https://en.wikipedia.org/wiki/Sylhet_International_Cricket_Stadium); coordinates cross-checked against OpenStreetMap-derived map record (https://mapcarta.com/W281086772). Corrected starter pin by about 2.4 km to the mapped cricket pitch at 24.92083, 91.86856. Venue name/city confirmed, but an official operator source is still required before marking verified."
     },
     {
       "id": "r-premadasa",
