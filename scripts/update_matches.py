@@ -15,7 +15,7 @@ except ModuleNotFoundError as exc:
     from prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 API_KEY=os.environ.get("RAPIDAPI_KEY")
 try:
-    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment
+    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, should_fetch_match_info_enrichment
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
@@ -328,7 +328,7 @@ def main():
         except Exception as exc:
             print(f"CricketData enrichment unavailable: {type(exc).__name__}; primary feed retained.")
 
-    if cricketdata_items and secondary_enrichment_due:
+    if cricketdata_items and should_fetch_match_info_enrichment(provider_name, secondary_enrichment_due):
         active = [x for x in cricketdata_items
                   if (x.get("provider_metadata") or {}).get("matchStarted")
                   and not _canonical_toss(x)]
