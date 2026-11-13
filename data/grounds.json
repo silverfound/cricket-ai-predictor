@@ -3032,15 +3032,15 @@
       "aliases": [],
       "city": "Nairobi",
       "country": "Kenya",
-      "latitude": -1.26,
-      "longitude": 36.82,
+      "latitude": -1.26043,
+      "longitude": 36.82422,
       "timezone": "Africa/Nairobi",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/W553283513",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://www.icc-cricket.com/about/members/associate/cricket-kenya?appview=true. Coordinates cross-checked against https://mapcarta.com/W553283513. Corrected the starter pin to the OSM Aga Khan Sports Club point in Parklands, Nairobi; kept unverified pending a club-specific cricket-ground boundary confirmation."
     },
     {
       "id": "ruiru-sports",
@@ -3048,15 +3048,15 @@
       "aliases": [],
       "city": "Ruiru",
       "country": "Kenya",
-      "latitude": -1.145,
-      "longitude": 36.96,
+      "latitude": -1.13075,
+      "longitude": 36.99086,
       "timezone": "Africa/Nairobi",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/N6207490931",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://ruirusportsclub.co.ke/. Coordinates cross-checked against https://mapcarta.com/N6207490931. Corrected the starter pin to the OSM Ruiru Sports Club point near Thika Road; kept unverified because current club sources do not clearly confirm a cricket field at this location."
     },
     {
       "id": "kyambogo",
@@ -3599,16 +3599,16 @@
       ],
       "city": "Colombo",
       "country": "Sri Lanka",
-      "latitude": 6.906,
-      "longitude": 79.867,
+      "latitude": 6.90596,
+      "longitude": 79.86945,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International",
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W435041789",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.ssc.lk/ and https://www.cricketarchive.com/Archive/Grounds/25/1708.html. Coordinates cross-checked against https://mapcarta.com/W435041789. Corrected the starter longitude to the OSM cricket pitch; SSC's official club rules and CricketArchive confirm the ground at 35 Maitland Place, Colombo 07."
     },
     {
       "id": "sri-lanka-p-sara",
@@ -3634,15 +3634,15 @@
       "aliases": [],
       "city": "Colombo",
       "country": "Sri Lanka",
-      "latitude": 6.899,
-      "longitude": 79.866,
+      "latitude": 6.8863,
+      "longitude": 79.86761,
       "timezone": "Asia/Colombo",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W177258193",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://colombocolts.lk/contact. Coordinates cross-checked against https://mapcarta.com/W177258193. Corrected the starter pin by about 1.4 km to the OSM cricket pitch; Colombo Colts Cricket Club confirms No. 17 Park Road, Colombo 05."
     },
     {
       "id": "sri-lanka-bloomfield",
@@ -3650,15 +3650,15 @@
       "aliases": [],
       "city": "Colombo",
       "country": "Sri Lanka",
-      "latitude": 6.914,
-      "longitude": 79.868,
+      "latitude": 6.90333,
+      "longitude": 79.86333,
       "timezone": "Asia/Colombo",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://en.wikipedia.org/wiki/Bloomfield_Cricket_and_Athletic_Club_Ground",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://www.srilankacricket.lk/contact-us/. Coordinates cross-checked against https://en.wikipedia.org/wiki/Bloomfield_Cricket_and_Athletic_Club_Ground. Corrected the starter pin to the published Bloomfield Cricket and Athletic Club ground coordinate; kept unverified pending a ground-specific official club map."
     },
     {
       "id": "sri-lanka-hambantota",
@@ -3666,15 +3666,15 @@
       "aliases": [],
       "city": "Sooriyawewa",
       "country": "Sri Lanka",
-      "latitude": 6.124,
-      "longitude": 81.027,
+      "latitude": 6.3536,
+      "longitude": 81.02468,
       "timezone": "Asia/Colombo",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/35568566",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://images.icc-cricket.com/image/upload/prd/fhyqlkzetesunnjjexjz.pdf and https://www.swa.lk/projects/mahinda-rajapaksa-international-cricket-stadium. Coordinates cross-checked against https://mapcarta.com/35568566. Corrected the starter pin by about 25 km to the OSM stadium point; ICC and the stadium project architect confirm Mahinda Rajapaksa International Cricket Stadium at Sooriyawewa, Hambantota."
     },
     {
       "id": "sri-lanka-kurunegala",
@@ -3682,15 +3682,15 @@
       "aliases": [],
       "city": "Kurunegala",
       "country": "Sri Lanka",
-      "latitude": 7.486,
-      "longitude": 80.364,
+      "latitude": 7.4924,
+      "longitude": 80.36766,
       "timezone": "Asia/Colombo",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
+      "source_url": "https://mapcarta.com/27211214",
       "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "notes": "Official venue source: https://mapcarta.com/27211214. Coordinates cross-checked against https://mapcarta.com/27211214. Corrected the starter pin to the OSM cricket-stadium point in Gettuwana, Kurunegala; awaiting a primary Sri Lanka Cricket or stadium authority source."
     },
     {
       "id": "uae-icc-academy",
@@ -3698,17 +3698,17 @@
       "aliases": [],
       "city": "Dubai",
       "country": "United Arab Emirates",
-      "latitude": 25.033,
-      "longitude": 55.218,
+      "latitude": 25.03667,
+      "longitude": 55.22778,
       "timezone": "Asia/Dubai",
       "competitions": [
         "ILT20",
         "T10",
         "International"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://en.wikipedia.org/wiki/ICC_Academy_Ground",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.iccacademy.com/contact-us and https://www.icc-cricket.com/news/icc-academy. Coordinates cross-checked against https://en.wikipedia.org/wiki/ICC_Academy_Ground. Corrected the starter pin to the published ICC Academy ground coordinate; ICC Academy confirms Sports Village, Dubai Sports City and two full-size ODI ovals."
     },
     {
       "id": "uae-tolerance-oval",
@@ -3716,16 +3716,16 @@
       "aliases": [],
       "city": "Abu Dhabi",
       "country": "United Arab Emirates",
-      "latitude": 24.425,
-      "longitude": 54.61,
+      "latitude": 24.39701,
+      "longitude": 54.53849,
       "timezone": "Asia/Dubai",
       "competitions": [
         "ILT20",
         "T10"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W624442495",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.sportshub.abudhabi/contact-us. Coordinates cross-checked against https://mapcarta.com/W624442495. Corrected the starter pin by about 7 km to the OSM cricket pitch; Abu Dhabi Cricket & Sports Hub confirms the venue in Khalifa City, Abu Dhabi."
     },
     {
       "id": "uae-sevens",
@@ -3831,15 +3831,15 @@
       "aliases": [],
       "city": "Kowloon",
       "country": "Hong Kong",
-      "latitude": 22.32,
-      "longitude": 114.17,
+      "latitude": 22.32303,
+      "longitude": 114.1852,
       "timezone": "Asia/Hong_Kong",
       "competitions": [
         "Domestic"
       ],
-      "source_url": "https://cricsheet.org/; https://statz.ai/cricket/grounds; https://en.wikipedia.org/wiki/List_of_Twenty20_International_cricket_grounds",
-      "verification_status": "needs_user_verification",
-      "notes": "Approximate starter coordinates; verify ground-specific pin, aliases and timezone before production use."
+      "source_url": "https://mapcarta.com/W41955241",
+      "verification_status": "verified",
+      "notes": "Official venue source: https://www.lcsd.gov.hk/en/facilities/facilitieslist/facilities.php?did=4&ftid=56. Coordinates cross-checked against https://mapcarta.com/W41955241. Corrected the starter pin by about 1.7 km to the OSM sports-centre point; Hong Kong LCSD confirms Tin Kwong Road Recreation Ground, 7 Tin Kwong Road, Kowloon, as a cricket practice venue."
     },
     {
       "id": "scotland-grange",
