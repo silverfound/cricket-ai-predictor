@@ -432,16 +432,16 @@
       "aliases": [],
       "city": "Cape Town",
       "country": "South Africa",
-      "latitude": -33.9817,
-      "longitude": 18.468,
+      "latitude": -33.97364,
+      "longitude": 18.46888,
       "timezone": "Africa/Johannesburg",
       "competitions": [
         "International",
         "SA20"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/N6178628921",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.cricket.co.za/stadium/newlands-cricket-ground/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/N6178628921. Corrected the starter pin by about 900 m to the mapped stadium point; Cricket South Africa confirms Campground Road, Newlands, Cape Town."
     },
     {
       "id": "wanderers",
@@ -488,16 +488,16 @@
       "aliases": [],
       "city": "Durban",
       "country": "South Africa",
-      "latitude": -29.848,
-      "longitude": 31.029,
+      "latitude": -29.84966,
+      "longitude": 31.02772,
       "timezone": "Africa/Johannesburg",
       "competitions": [
         "International",
         "SA20"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W774668295",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://sahistory.org.za/place/kingsmead-cricket-stadium-durban. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/W774668295. Corrected the starter pin to the OSM cricket-ground point; South African History Online independently places Kingsmead at -29.8490, 31.0270."
     },
     {
       "id": "st-georges-park",
@@ -507,16 +507,16 @@
       ],
       "city": "Gqeberha",
       "country": "South Africa",
-      "latitude": -33.961,
-      "longitude": 25.6,
+      "latitude": -33.96655,
+      "longitude": 25.61017,
       "timezone": "Africa/Johannesburg",
       "competitions": [
         "International",
         "SA20"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://za.geoview.info/st_georges_park_cricket_ground%2C16843330r",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.cricket.co.za/stadium/st-georges-park/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://za.geoview.info/st_georges_park_cricket_ground%2C16843330r. Corrected the starter pin to the OSM stadium polygon centre; Cricket South Africa confirms Park Drive, Gqeberha."
     },
     {
       "id": "mangaung-oval",
@@ -526,16 +526,16 @@
       ],
       "city": "Bloemfontein",
       "country": "South Africa",
-      "latitude": -29.119,
-      "longitude": 26.217,
+      "latitude": -29.11672,
+      "longitude": 26.20523,
       "timezone": "Africa/Johannesburg",
       "competitions": [
         "International",
         "SA20"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W391342348",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.cricket.co.za/stadium/mangaung-oval/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/W391342348. Corrected the starter pin by about 1.1 km to the OSM cricket pitch; Cricket South Africa confirms Att Horak Street, Willows, Bloemfontein."
     },
     {
       "id": "gaddafi-stadium",
@@ -1113,16 +1113,16 @@
       ],
       "city": "North Sound",
       "country": "Antigua and Barbuda",
-      "latitude": 17.108,
-      "longitude": -61.792,
+      "latitude": 17.10272,
+      "longitude": -61.78489,
       "timezone": "America/Antigua",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W19881528",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.sirvivianrichardsstadium.com/contact-us/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/W19881528. Corrected the starter pin to the OSM stadium point; official stadium contact confirms Sir Sydney Walling Highway, North Sound, Antigua."
     },
     {
       "id": "kensington-oval",
@@ -1130,16 +1130,16 @@
       "aliases": [],
       "city": "Bridgetown",
       "country": "Barbados",
-      "latitude": 13.109,
-      "longitude": -59.62,
+      "latitude": 13.10531,
+      "longitude": -59.62262,
       "timezone": "America/Barbados",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W576678586",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://kensingtonoval.org/contact/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/W576678586. Corrected the starter pin to the OSM cricket-stadium point; official venue address is President Kennedy Drive, Bridgetown."
     },
     {
       "id": "queen-s-park-oval",
@@ -1149,16 +1149,16 @@
       ],
       "city": "Port of Spain",
       "country": "Trinidad and Tobago",
-      "latitude": 10.659,
-      "longitude": -61.523,
+      "latitude": 10.66622,
+      "longitude": -61.52369,
       "timezone": "America/Port_of_Spain",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/32695372",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://qpcc.com/contact-us/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/32695372. Corrected the starter pin to the OSM-mapped cricket pitch; Queen's Park Cricket Club confirms Queen's Park Oval, Port of Spain."
     },
     {
       "id": "warner-park",
@@ -1185,16 +1185,16 @@
       "aliases": [],
       "city": "Kingston",
       "country": "Jamaica",
-      "latitude": 17.971,
-      "longitude": -76.787,
+      "latitude": 17.97797,
+      "longitude": -76.78259,
       "timezone": "America/Jamaica",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/34490206",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://joa.org.jm/member-associations/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/34490206. Corrected the starter pin to the OSM cricket-ground point; Jamaica Cricket Association is officially listed at Sabina Park, George Headley Stand, Kingston."
     },
     {
       "id": "national-cricket-stadium-grenada",
@@ -1223,16 +1223,16 @@
       ],
       "city": "Gros Islet",
       "country": "Saint Lucia",
-      "latitude": 14.077,
-      "longitude": -60.953,
+      "latitude": 14.0703,
+      "longitude": -60.93203,
       "timezone": "America/St_Lucia",
       "competitions": [
         "International",
         "CPL"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W576357922",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.beausejourstadium.com/contact-us/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/W576357922. Corrected the starter pin by more than 2 km to the OSM stadium point; official venue contact confirms Daren Sammy Cricket Ground, Beausejour, Gros Islet."
     },
     {
       "id": "providence-stadium",
@@ -1334,15 +1334,15 @@
       ],
       "city": "Harare",
       "country": "Zimbabwe",
-      "latitude": -17.819,
-      "longitude": 31.049,
+      "latitude": -17.81402,
+      "longitude": 31.05047,
       "timezone": "Africa/Harare",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://mapcarta.com/W25446687",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.cricket.co.za/stadium/harare-sports-club/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://mapcarta.com/W25446687. Corrected the starter pin to the OSM-mapped cricket sports-centre point; venue source confirms Lanark Road, Harare."
     },
     {
       "id": "queens-sports-club",
@@ -1350,15 +1350,15 @@
       "aliases": [],
       "city": "Bulawayo",
       "country": "Zimbabwe",
-      "latitude": -20.151,
-      "longitude": 28.588,
+      "latitude": -20.14508,
+      "longitude": 28.58799,
       "timezone": "Africa/Harare",
       "competitions": [
         "International"
       ],
-      "source_url": "https://cricketfieldguide.com/field-atlas",
-      "verification_status": "needs_user_verification",
-      "notes": "Starter coordinates, aliases and competition tags; user verification requested before treating as authoritative."
+      "source_url": "https://zw.geoview.info/queens_sports_club%2C5513874r",
+      "verification_status": "verified",
+      "notes": "Official venue identity/address: https://www.cricket.co.za/stadium/queens-sports-club/. Coordinates cross-checked against OpenStreetMap-derived ground record: https://zw.geoview.info/queens_sports_club%2C5513874r. Corrected the starter pin by about 700 m to the OSM stadium polygon centre; venue source confirms Queens Sports Club, Bulawayo."
     },
     {
       "id": "takashinga",
