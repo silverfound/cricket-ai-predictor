@@ -32,3 +32,8 @@ Each run requests the Riyadh-local current date from Highlightly. The backup req
 - `toss_stats.joblib`
 
 Workflow verifies the tracked Git blob SHA of all four files. They are not retrained or rewritten. Historical match data and ground data are also retained because prediction calculations, venue resolution and feed display depend on them.
+
+
+### Team identity and provider aliases
+
+All provider-to-model team aliases are maintained in `data/team_aliases.json` and shared by the browser and scheduled prediction pipeline. Matching removes known competition suffixes and normalizes punctuation, but preserves men's/women's identity and avoids fuzzy prefix matches. Short result aliases are accepted only when they uniquely identify one of the two teams in that fixture. Add new aliases to the shared registry and cover them with the Python and browser regression tests.
