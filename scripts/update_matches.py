@@ -23,11 +23,11 @@ except ModuleNotFoundError as exc:
     from prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 API_KEY=os.environ.get("RAPIDAPI_KEY")
 try:
-    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, should_fetch_match_info_enrichment
+    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_live_line_advance, merge_fixture_coverage, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, should_fetch_match_info_enrichment
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
-    from provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, fetch_cricketdata_match_info
+    from provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_live_line_advance, merge_fixture_coverage, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, should_fetch_match_info_enrichment
 MODELS=joblib.load("cricket_ensemble_modern.joblib")
 ELO=joblib.load("latest_elo_ratings.joblib")
 MAPPINGS=joblib.load("category_mappings.joblib")
@@ -328,6 +328,18 @@ def main():
                 f"Highlightly={primary_error or 'not selected'}, "
                 f"CricketData={type(exc).__name__}; prior snapshot left untouched."
             ) from exc
+
+    # Highlightly and Live Line Advance are the two primary coverage feeds.
+    # Supplemental failures are non-fatal: retain the already validated feed.
+    if provider_name == "Highlightly" and API_KEY:
+        try:
+            live_line_items = fetch_live_line_advance(date_range)
+            added_count = merge_fixture_coverage(items, live_line_items)
+            print(f"Live Line Advance coverage: {added_count} missing fixture(s) added; "
+                  f"{len(live_line_items)} supplemental fixtures checked.")
+        except Exception as exc:
+            print(f"Live Line Advance supplemental feed unavailable: {type(exc).__name__}; "
+                  "Highlightly fixtures retained.")
 
     # Preserve existing scheduled CricketData enrichment for the legacy
     # Cricket Live Line Advance backup; no new enrichment calls are added.

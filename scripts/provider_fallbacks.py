@@ -10,6 +10,13 @@ from email.utils import parsedate_to_datetime
 import os
 import requests
 
+try:
+    from scripts.team_identity import fixture_teams_equivalent
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from team_identity import fixture_teams_equivalent
+
 TIMEOUT = 25
 HIGHLIGHTLY_HOST = "cricket-highlights-api.p.rapidapi.com"
 
@@ -239,6 +246,101 @@ def fetch_cricketdata():
     )
     response.raise_for_status()
     return normalize_cricketdata(response.json())
+
+
+
+
+def fetch_live_line_advance(date=None):
+    """Fetch the Live Line Advance fixtures as a supplemental primary feed.
+
+    Pagination is validated as a whole before fixtures are returned; callers
+    can safely retain the Highlightly snapshot if this adapter fails.
+    """
+    key = os.getenv("RAPIDAPI_KEY", "").strip()
+    if not key:
+        raise RuntimeError("RAPIDAPI_KEY is not configured")
+    date = date or datetime.now(timezone.utc).date().isoformat()
+    url = "https://cricket-live-line-advance.p.rapidapi.com/matches"
+    headers = {"X-RapidAPI-Key": key,
+               "X-RapidAPI-Host": "cricket-live-line-advance.p.rapidapi.com"}
+    params = {"date": date, "per_paged": 100, "paged": 1}
+    response = requests.get(url, params=params, headers=headers, timeout=TIMEOUT)
+    response.raise_for_status()
+    payload = response.json()
+    body = payload.get("response") if isinstance(payload, dict) else None
+    first = body.get("items") if isinstance(body, dict) else None
+    if not isinstance(first, list) or not first or not all(isinstance(x, dict) for x in first):
+        raise ValueError("Live Line Advance returned no valid response.items")
+    pages = int(body.get("total_pages") or 1)
+    total = int(body.get("total_items") or len(first))
+    if pages < 1 or pages > 2:
+        raise ValueError(f"Live Line Advance unsupported page count: {pages}")
+    items = list(first)
+    if pages == 2:
+        page2 = requests.get(url, params={"date": date, "per_paged": 100, "paged": 2},
+                             headers=headers, timeout=TIMEOUT)
+        page2.raise_for_status()
+        payload2 = page2.json()
+        body2 = payload2.get("response") if isinstance(payload2, dict) else None
+        second = body2.get("items") if isinstance(body2, dict) else None
+        if not isinstance(second, list) or not all(isinstance(x, dict) for x in second):
+            raise ValueError("Live Line Advance page 2 is malformed")
+        if int(body2.get("total_pages") or 1) != pages or int(body2.get("total_items") or total) != total:
+            raise ValueError("Live Line Advance pagination metadata changed")
+        items.extend(second)
+    if len(items) != total:
+        raise ValueError(f"Live Line Advance incomplete fixtures: {len(items)} of {total}")
+    ids = [str(x.get("match_id") or x.get("id") or x.get("matchId")) for x in items
+           if x.get("match_id") is not None or x.get("id") is not None or x.get("matchId") is not None]
+    if ids and (len(ids) != len(items) or len(ids) != len(set(ids))):
+        raise ValueError("Live Line Advance fixtures contain missing or duplicate IDs")
+    for item in items:
+        item.setdefault("provider_source", "Cricket Live Line Advance")
+    return items
+
+
+def merge_fixture_coverage(primary_items, supplemental_items):
+    """Append only supplemental fixtures not already represented by primary.
+
+    Teams and format must agree, and timestamps must be within 12 hours to
+    avoid collapsing distinct league meetings between the same teams.
+    """
+    def names(item):
+        return [str((item.get(k) or {}).get("name") or "").strip()
+                for k in ("teama", "teamb")]
+    def fmt(item):
+        return _format(item.get("format_str") or item.get("format"))
+    def start(item):
+        try: return int(item.get("timestamp_start") or 0)
+        except (TypeError, ValueError): return 0
+    added = 0
+    for candidate in supplemental_items or []:
+        candidate_names = names(candidate)
+        if not all(candidate_names):
+            continue
+        duplicate = False
+        for current in primary_items:
+            current_names = names(current)
+            if not all(current_names) or fmt(current) != fmt(candidate):
+                continue
+            if not fixture_teams_equivalent(*current_names, *candidate_names):
+                continue
+            current_start, candidate_start = start(current), start(candidate)
+            if current_start and candidate_start and abs(current_start-candidate_start) <= 12*3600:
+                duplicate = True
+                break
+            if not current_start and not candidate_start:
+                current_venue = str((current.get("venue") or {}).get("name") or "").casefold()
+                candidate_venue = str((candidate.get("venue") or {}).get("name") or "").casefold()
+                if current_venue and current_venue == candidate_venue:
+                    duplicate = True
+                    break
+        if not duplicate:
+            copy = dict(candidate)
+            copy.setdefault("provider_source", "Cricket Live Line Advance")
+            primary_items.append(copy)
+            added += 1
+    return added
 
 
 def fetch_highlightly():
