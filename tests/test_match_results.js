@@ -10,6 +10,7 @@ sandbox.__source = source.slice(start, end) + `
 const __aliases = ${aliasesJson};
 cricketTeamAliasIndex = Object.fromEntries(Object.entries(__aliases).map(([alias, canonical]) => [normalizeCricketTeamName(alias), cleanCricketTeamLabel(canonical)]));
 this.classifyMatchStatus = classifyMatchStatus;
+this.isSameLocalMatchDay = isSameLocalMatchDay;
 this.getMatchResultText = getMatchResultText;
 this.resultWinnerMatchesTeam = resultWinnerMatchesTeam;
 this.resolveResultWinnerTeam = resolveResultWinnerTeam;
@@ -17,6 +18,10 @@ this.canonicalCricketTeamName = canonicalCricketTeamName;
 this.cricketTeamNamesEquivalent = cricketTeamNamesEquivalent;
 `;
 vm.runInNewContext(sandbox.__source, sandbox);
+const localToday = new Date(2026, 10, 14, 12, 0, 0);
+if (!sandbox.isSameLocalMatchDay(new Date(2026, 10, 14, 1, 0, 0).getTime() / 1000, localToday)) throw new Error("same local calendar day must be included");
+if (sandbox.isSameLocalMatchDay(new Date(2026, 10, 13, 23, 59, 0).getTime() / 1000, localToday)) throw new Error("previous calendar day must be excluded");
+if (sandbox.isSameLocalMatchDay(0, localToday)) throw new Error("missing start timestamp must be excluded");
 const now = 1_800_000_000;
 const result = "S Paschim won by 7 runs";
 const fixture = { match_id: "54551317", teama: { name: "Kathmandu Gurkhas (NPL)" }, teamb: { name: "Sudur Paschim Royals (NPL)" }, status_note: result, timestamp_start: now - 3600 };
