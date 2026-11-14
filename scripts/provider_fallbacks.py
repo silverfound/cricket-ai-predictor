@@ -10,6 +10,13 @@ from email.utils import parsedate_to_datetime
 import os
 import requests
 
+try:
+    from scripts.team_identity import fixture_teams_equivalent
+except ModuleNotFoundError as exc:
+    if exc.name != "scripts":
+        raise
+    from team_identity import fixture_teams_equivalent
+
 TIMEOUT = 25
 HIGHLIGHTLY_HOST = "cricket-highlights-api.p.rapidapi.com"
 
