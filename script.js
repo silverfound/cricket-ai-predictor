@@ -115,6 +115,15 @@ function resultWinnerMatchesTeam(resultText, predictedTeam, team1, team2) {
     return Boolean(winner && cricketTeamNamesEquivalent(predictedTeam, winner));
 }
 
+function isSameLocalMatchDay(timestampSeconds, now = new Date()) {
+    const startSeconds = Number(timestampSeconds);
+    if (!Number.isFinite(startSeconds) || startSeconds <= 0) return false;
+    const matchDate = new Date(startSeconds * 1000);
+    return matchDate.getFullYear() === now.getFullYear()
+        && matchDate.getMonth() === now.getMonth()
+        && matchDate.getDate() === now.getDate();
+}
+
 function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
     const metadata = match?.provider_metadata || {};
     const asFlag = value => {
@@ -1626,7 +1635,8 @@ async function fetchMatches() {
 
             const matchBucket = classifyMatchStatus(m, nowSeconds);
             if (matchBucket === 'finished') {
-                finishedMatches.push(m);
+                // Finished tab is a one-calendar-day view in the viewer's local timezone.
+                if (isSameLocalMatchDay(m.timestamp_start)) finishedMatches.push(m);
             } else if (matchBucket === 'live') {
                 liveMatches.push(m);
             } else if (matchBucket === 'upcoming') {

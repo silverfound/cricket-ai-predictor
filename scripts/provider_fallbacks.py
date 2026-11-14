@@ -299,6 +299,65 @@ def fetch_live_line_advance(date=None):
     return items
 
 
+
+def is_indian_domestic_fixture(item):
+    """Hide Indian domestic/state competitions while retaining IPL, WPL and internationals."""
+    if not isinstance(item, dict):
+        return False
+
+    def flatten(value):
+        if isinstance(value, dict):
+            return " ".join(flatten(v) for v in value.values())
+        if isinstance(value, (list, tuple, set)):
+            return " ".join(flatten(v) for v in value)
+        return str(value or "")
+
+    metadata = item.get("provider_metadata") or {}
+    competition_text = " ".join(flatten(item.get(key)) for key in (
+        "league", "series", "tournament", "competition", "event", "match_name",
+        "name", "title", "series_name", "competition_name"
+    ))
+    competition_text += " " + " ".join(flatten(metadata.get(key)) for key in (
+        "league", "series", "tournament", "competition", "event", "name",
+        "series_name", "competition_name"
+    ))
+    comp = competition_text.casefold()
+    # Franchise leagues and international fixtures are intentionally retained.
+    if any(token in comp for token in ("indian premier league", "ipl", "women's premier league", "wpl")):
+        return False
+    domestic_markers = (
+        "ranji trophy", "vijay hazare", "syed mushtaq ali", "duleep trophy",
+        "irani cup", "ck nayudu", "c k nayudu", "buchi babu",
+        "maharaja trophy", "karnataka premier league", "tamil nadu premier league",
+        "tamil nadu premier", "kerala cricket league", "maharashtra premier league",
+        "bengal pro t20", "delhi premier league", "uttar pradesh t20",
+        "madhya pradesh t20", "rajasthan premier league", "haryana premier league",
+        "andhra premier league", "punjab t20", "odisha t20", "assam t20",
+        "india domestic", "indian domestic"
+    )
+    if any(token in comp for token in domestic_markers):
+        return True
+
+    country_text = " ".join(flatten(item.get(key)) for key in ("country", "venue"))
+    country_text += " " + " ".join(flatten(metadata.get(key)) for key in ("country", "venue"))
+    country = country_text.casefold()
+    is_india = any(token in country for token in ("india", "indian"))
+    if not is_india:
+        return False
+
+    teams = []
+    for key in ("teama", "teamb"):
+        team = item.get(key) or {}
+        teams.append(str(team.get("name") or "").casefold() if isinstance(team, dict) else str(team).casefold())
+    state_teams = (
+        "mumbai", "maharashtra", "karnataka", "delhi", "bengal", "tamil nadu",
+        "punjab", "haryana", "rajasthan", "uttar pradesh", "madhya pradesh",
+        "andhra", "kerala", "goa", "odisha", "assam", "tripura", "saurashtra",
+        "vidarbha", "baroda", "hyderabad", "services", "railways", "jharkhand",
+        "chhattisgarh", "himachal", "jammu and kashmir", "uttarakhand"
+    )
+    return len(teams) == 2 and all(any(state in team for state in state_teams) for team in teams)
+
 def merge_fixture_coverage(primary_items, supplemental_items):
     """Append only supplemental fixtures not already represented by primary.
 

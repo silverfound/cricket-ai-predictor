@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.provider_fallbacks import normalize_cricketdata, normalize_highlightly, should_fetch_match_info_enrichment, merge_fixture_coverage
+from scripts.provider_fallbacks import normalize_cricketdata, normalize_highlightly, should_fetch_match_info_enrichment, merge_fixture_coverage, is_indian_domestic_fixture
 
 
 class ProviderFallbackAdapterTests(unittest.TestCase):
@@ -166,6 +166,27 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertTrue(should_fetch_match_info_enrichment("Cricket Live Line Advance", True))
         self.assertFalse(should_fetch_match_info_enrichment("Cricket Live Line Advance", False))
         self.assertTrue(should_fetch_match_info_enrichment("Highlightly", True))
+
+    def test_indian_domestic_competitions_are_filtered(self):
+        fixtures = [
+            {"league": {"name": "Ranji Trophy"}, "teama": {"name": "Mumbai"},
+             "teamb": {"name": "Karnataka"}, "format_str": "Test"},
+            {"league": {"name": "Syed Mushtaq Ali Trophy"}, "teama": {"name": "Delhi"},
+             "teamb": {"name": "Punjab"}, "format_str": "T20"},
+            {"venue": {"country": "India"}, "teama": {"name": "Maharashtra"},
+             "teamb": {"name": "Baroda"}, "format_str": "T20"},
+        ]
+        self.assertTrue(all(is_indian_domestic_fixture(item) for item in fixtures))
+
+    def test_indian_franchise_and_international_matches_are_retained(self):
+        fixtures = [
+            {"league": {"name": "Indian Premier League"}, "country": "India",
+             "teama": {"name": "Mumbai Indians"}, "teamb": {"name": "Chennai Super Kings"}},
+            {"league": {"name": "Women's Premier League"}, "country": "India",
+             "teama": {"name": "Mumbai Indians Women"}, "teamb": {"name": "Delhi Capitals Women"}},
+            {"country": "India", "teama": {"name": "India"}, "teamb": {"name": "Australia"}},
+        ]
+        self.assertTrue(all(not is_indian_domestic_fixture(item) for item in fixtures))
 
     def test_error_or_empty_provider_payload_is_rejected(self):
         with self.assertRaises(ValueError):
