@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.provider_fallbacks import normalize_cricketdata, normalize_highlightly, should_fetch_match_info_enrichment
+from scripts.provider_fallbacks import normalize_cricketdata, normalize_highlightly, should_fetch_match_info_enrichment, merge_fixture_coverage
 
 
 class ProviderFallbackAdapterTests(unittest.TestCase):
@@ -172,6 +172,35 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
             normalize_cricketdata({"status": "failure", "data": []})
         with self.assertRaises(ValueError):
             normalize_highlightly({"data": []})
+
+
+
+    def test_coverage_merge_adds_missing_fixtures_and_skips_same_fixture_duplicate(self):
+        primary = [{"match_id": "hl-1", "teama": {"name": "Brisbane Heat Women"},
+                    "teamb": {"name": "Hobart Hurricanes Women"}, "format_str": "T20",
+                    "timestamp_start": 1794654000}]
+        supplemental = [
+            {"match_id": "lla-duplicate", "teama": {"name": "Brisbane Heat Women"},
+             "teamb": {"name": "Hobart Hurricanes Women"}, "format_str": "T20",
+             "timestamp_start": 1794654300},
+            {"match_id": "lla-missing", "teama": {"name": "Melbourne Stars Women"},
+             "teamb": {"name": "Sydney Sixers Women"}, "format_str": "T20",
+             "timestamp_start": 1794658000},
+        ]
+        added = merge_fixture_coverage(primary, supplemental)
+        self.assertEqual(added, 1)
+        self.assertEqual(len(primary), 2)
+        self.assertEqual(primary[-1]["match_id"], "lla-missing")
+
+    def test_coverage_merge_does_not_collapse_same_teams_on_distinct_dates(self):
+        primary = [{"match_id": "hl-1", "teama": {"name": "Team A Women"},
+                    "teamb": {"name": "Team B Women"}, "format_str": "T20",
+                    "timestamp_start": 1794654000}]
+        supplemental = [{"match_id": "lla-2", "teama": {"name": "Team A Women"},
+                        "teamb": {"name": "Team B Women"}, "format_str": "T20",
+                        "timestamp_start": 1794754000}]
+        self.assertEqual(merge_fixture_coverage(primary, supplemental), 1)
+        self.assertEqual(len(primary), 2)
 
 
 if __name__ == "__main__":
