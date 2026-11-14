@@ -27,7 +27,7 @@ try:
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
-    from provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_live_line_advance, merge_fixture_coverage, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, should_fetch_match_info_enrichment
+    from provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_live_line_advance, merge_fixture_coverage, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, should_fetch_match_info_enrichment, is_indian_domestic_fixture
 MODELS=joblib.load("cricket_ensemble_modern.joblib")
 ELO=joblib.load("latest_elo_ratings.joblib")
 MAPPINGS=joblib.load("category_mappings.joblib")
