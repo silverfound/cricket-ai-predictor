@@ -23,7 +23,7 @@ except ModuleNotFoundError as exc:
     from prediction_formats import match_type, elo_win_probability, is_t10_format, binary_class_probabilities
 API_KEY=os.environ.get("RAPIDAPI_KEY")
 try:
-    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_live_line_advance, merge_fixture_coverage, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, should_fetch_match_info_enrichment
+    from scripts.provider_fallbacks import fetch_cricketdata, fetch_highlightly, fetch_live_line_advance, merge_fixture_coverage, fetch_cricketdata_match_info, should_refresh_cricketdata_enrichment, should_fetch_match_info_enrichment, is_indian_domestic_fixture
 except ModuleNotFoundError as exc:
     if exc.name != "scripts":
         raise
@@ -381,6 +381,12 @@ def main():
                   'fetched_pages':1,'provider':provider_name}
     print(f"Fixture source selected: {provider_name} ({len(items)} normalized fixtures).")
 
+    # Exclude Indian local/domestic competitions from every provider feed.
+    provider_raw_count = len(items)
+    india_domestic_count = sum(1 for item in items if is_indian_domestic_fixture(item))
+    items = [item for item in items if not is_indian_domestic_fixture(item)]
+    print(f"India domestic filter: {india_domestic_count} local fixture(s) excluded.")
+
     # Keep only formats/team levels represented by the trained prediction model.
     def is_untrained_fixture(item):
         fmt=str(item.get('format_str') or '').strip().lower()
@@ -402,14 +408,15 @@ def main():
     for item in items:
         pred=make_prediction(item)
         if pred: item['ai_prediction']=pred
+    filtered_out_count=provider_raw_count-len(items)
     response['items']=items
     response['provider_total_items']=provider_total_items
-    response['filtered_out_items']=raw_count-len(items)
+    response['filtered_out_items']=filtered_out_count
     output={'updated_at':datetime.now(timezone.utc).isoformat(),
             'provider_date_start':start_date,'provider_date_end':end_date,
             'provider_total_items':provider_total_items,
             'provider':provider_name,
-            'filtered_out_items':raw_count-len(items),
+            'filtered_out_items':filtered_out_count,
             'provider_total_pages':total_pages,'response':response}
     Path('data').mkdir(exist_ok=True)
     # Keep completed fixtures across provider feed rollovers. The archive is
@@ -428,5 +435,5 @@ def main():
     recent_archive=merge_recent_results(items, previous_items, existing_archive)
     archive_path.write_text(json.dumps(recent_archive,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
     Path('data/matches.json').write_text(json.dumps(output,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-    print(f'Generated snapshot with {len(items)} eligible fixtures (filtered {raw_count-len(items)} of {raw_count} API fixtures) across {start_date} to {end_date} using {total_pages} provider page(s).')
+    print(f'Generated snapshot with {len(items)} eligible fixtures (filtered {filtered_out_count} of {provider_raw_count} API fixtures) across {start_date} to {end_date} using {total_pages} provider page(s).')
 if __name__=='__main__': main()
