@@ -12,6 +12,7 @@ cricketTeamAliasIndex = Object.fromEntries(Object.entries(__aliases).map(([alias
 this.classifyMatchStatus = classifyMatchStatus;
 this.isSameLocalMatchDay = isSameLocalMatchDay;
 this.getMatchResultText = getMatchResultText;
+this.getPostTossPredictionKey = getPostTossPredictionKey;
 this.resultWinnerMatchesTeam = resultWinnerMatchesTeam;
 this.resolveResultWinnerTeam = resolveResultWinnerTeam;
 this.canonicalCricketTeamName = canonicalCricketTeamName;
@@ -68,3 +69,8 @@ if (sandbox.resolveResultWinnerTeam("Mystery XI won by 10 runs", "United Tigers"
 if (sandbox.resolveResultWinnerTeam("Match abandoned with no result", "United Tigers", "Emirates Eagles") !== "") throw new Error("no-result text must not invent a winner");
 
 process.stdout.write("PASS result note classifies as Finished\nPASS S Paschim alias matches Sudur Paschim Royals prediction\nPASS losing team remains incorrect\nPASS result can be read from status field\n");
+if (sandbox.getPostTossPredictionKey("", "Desert Vipers", "MI Emirates", "field") !== "") throw new Error("post-toss prediction must require a toss winner");
+if (sandbox.getPostTossPredictionKey("Desert Vipers", "Desert Vipers", "MI Emirates", "") !== "") throw new Error("post-toss prediction must require a bat/field decision");
+if (sandbox.getPostTossPredictionKey("Desert Vipers", "Desert Vipers", "MI Emirates", "field") !== "t1_field") throw new Error("team 1 toss winner must map to team 1 field scenario");
+if (sandbox.getPostTossPredictionKey("MI Emirates", "Desert Vipers", "MI Emirates", "bat") !== "t2_bat") throw new Error("team 2 toss winner must map to team 2 bat scenario");
+if (sandbox.getPostTossPredictionKey("Unknown XI", "Desert Vipers", "MI Emirates", "bat") !== "") throw new Error("unknown toss winner must not map to a prediction scenario");
