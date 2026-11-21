@@ -213,6 +213,16 @@ const urduTeams = {
     "Melbourne Stars Women": "میلبرن اسٹارز ویمن"
 };
 
+// ILT20 franchise names (official full-name display mapping).
+Object.assign(urduTeams, {
+    "Abu Dhabi Knight Riders": "ابوظہبی نائٹ رائیڈرز",
+    "Desert Vipers": "ڈیزرٹ وائپرز",
+    "Dubai Capitals": "دبئی کیپیٹلز",
+    "Gulf Giants": "گلف جائنٹس",
+    "MI Emirates": "ایم آئی ایمریٹس",
+    "Sharjah Warriorz": "شارجہ واریئرز"
+});
+
 // --- ADDITIONAL INTERNATIONAL WOMEN + ASSOCIATE + LEAGUE TEAM NAMES ---
 Object.assign(urduTeams, {
     "Argentina": "ارجنٹینا", "Austria": "آسٹریا", "Bahrain": "بحرین",
