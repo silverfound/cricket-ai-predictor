@@ -124,6 +124,17 @@ function isSameLocalMatchDay(timestampSeconds, now = new Date()) {
         && matchDate.getDate() === now.getDate();
 }
 
+function getPostTossPredictionKey(tossWinner, team1, team2, decision) {
+    if (!["bat", "field"].includes(String(decision || ""))) return "";
+    const winner = canonicalCricketTeamName(tossWinner);
+    const first = canonicalCricketTeamName(team1);
+    const second = canonicalCricketTeamName(team2);
+    if (!winner || !first || !second || cricketTeamNamesEquivalent(first, second)) return "";
+    if (cricketTeamNamesEquivalent(winner, first)) return `t1_${decision}`;
+    if (cricketTeamNamesEquivalent(winner, second)) return `t2_${decision}`;
+    return "";
+}
+
 function classifyMatchStatus(match, nowSeconds = Math.floor(Date.now() / 1000)) {
     const metadata = match?.provider_metadata || {};
     const asFlag = value => {
@@ -208,6 +219,12 @@ const urduTeams = {
     "Sudurpaschim Royals": "سُدور پشچم رائلز",
     "Dolphins": "ڈولفنز",
     "Western Province": "ویسٹرن پروونس",
+    "Abu Dhabi Knight Riders": "ابوظہبی نائٹ رائیڈرز",
+    "Desert Vipers": "ڈیزرٹ وائپرز",
+    "Dubai Capitals": "دبئی کیپیٹلز",
+    "Gulf Giants": "گلف جائنٹس",
+    "MI Emirates": "ایم آئی ایمریٹس",
+    "Sharjah Warriorz": "شارجہ واریئرز",
     "Hobart Hurricanes Women": "ہوبارٹ ہریکینز ویمن",
     "Melbourne Renegades Women": "میلبرن رینیگیڈز ویمن",
     "Melbourne Stars Women": "میلبرن اسٹارز ویمن"
@@ -768,6 +785,11 @@ const urduCaptains = {
     "Ishan Kishan": "ایشان کشن",
     "Shaheen Shah Afridi": "شاہین شاہ آفریدی",
     "Shadab Khan": "شاداب خان",
+    "Heinrich Klaasen": "ہینرک کلاسن",
+    "Sam Billings": "سام بلنگز",
+    "Nicholas Pooran": "نکولس پورن",
+    "Jason Holder": "جیسن ہولڈر",
+    "Sikandar Raza": "سکندر رضا",
     "Babar Azam": "بابر اعظم",
     "Mohammad Rizwan": "محمد رضوان",
     "Saud Shakeel": "سعود شکیل",
@@ -840,6 +862,13 @@ const teamCaptains = {
     "United Arab Emirates": "Muhammad Waseem",
     "UAE": "Muhammad Waseem",
     "Oman": "Vinayak Shukla",
+    // DP World ILT20 Season 5 captains (2026-27)
+    "Abu Dhabi Knight Riders": "Jason Holder",
+    "Desert Vipers": "Shadab Khan",
+    "Dubai Capitals": "Sam Billings",
+    "Gulf Giants": "Heinrich Klaasen",
+    "MI Emirates": "Nicholas Pooran",
+    "Sharjah Warriorz": "Sikandar Raza",
     "Biratnagar Kings": "Sandeep Lamichhane",
     "Chitwan Rhinos": "Kushal Malla",
     "Janakpur Bolts": "Harmeet Singh",
@@ -1485,15 +1514,18 @@ const popupHTML = `
             <p style="color: #fbbf24; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">📊 Pre-Toss Neutral Prediction</p>
             <div id="pre-toss-result" style="color: white; font-size: 14px;">Calculating...</div>
         </div>
+        <div id="prediction-model-note" style="font-size:11px; line-height:1.45; color:#94a3b8; margin:0 0 14px 0;">
+            Model estimate uses team identity, format, venue, Elo ratings, recent team form, head-to-head and toss inputs. It does not use confirmed playing XI, player availability, pitch or weather. Probabilities are estimates and are not calibrated guarantees.
+        </div>
         
         <label style="color:#94a3b8; font-size:14px;">Toss Winner:</label>
-        <select id="toss-winner" style="width:100%; padding:8px; margin-bottom:10px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;"></select>
+        <select id="toss-winner" style="width:100%; padding:8px; margin-bottom:10px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;"><option value="">Select actual toss winner</option></select>
         <label style="color:#94a3b8; font-size:14px;">Toss Decision:</label>
         <select id="toss-decision" style="width:100%; padding:8px; margin-bottom:15px; background:#0f172a; color:white; border:1px solid #334155; border-radius:6px;">
-            <option value="bat">Bat First</option><option value="field">Field First</option>
+            <option value="">Select actual toss decision</option><option value="bat">Bat First</option><option value="field">Field First</option>
         </select>
         
-        <button id="get-prediction-btn" style="width:100%; padding:10px; background:#00ffcc; color:black; font-weight:bold; border:none; border-radius:6px; cursor:pointer;">Calculate Post-Toss Impact</button>
+        <button id="get-prediction-btn" disabled style="width:100%; padding:10px; background:#475569; color:#cbd5e1; font-weight:bold; border:none; border-radius:6px; cursor:not-allowed;">Select actual toss details first</button>
         
         <div id="post-toss-area" style="display:none; margin-top:15px; padding: 10px; border-radius: 8px; border: 1px solid #00ffcc; background: #0b1120;">
             <p style="color: #00ffcc; margin: 0 0 5px 0; font-size: 12px; font-weight: bold;">🎯 Post-Toss Prediction & Impact</p>
@@ -1792,6 +1824,20 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     if (actualToss?.decision && ['bat', 'field'].includes(actualToss.decision)) {
         document.getElementById('toss-decision').value = actualToss.decision;
     }
+    const tossWinnerSelect = document.getElementById('toss-winner');
+    const tossDecisionSelect = document.getElementById('toss-decision');
+    const postTossButton = document.getElementById('get-prediction-btn');
+    const refreshPostTossButton = () => {
+        const ready = Boolean(getPostTossPredictionKey(tossWinnerSelect.value, t1, t2, tossDecisionSelect.value));
+        postTossButton.disabled = !ready;
+        postTossButton.textContent = ready ? "Calculate Post-Toss Impact" : "Select actual toss details first";
+        postTossButton.style.background = ready ? "#00ffcc" : "#475569";
+        postTossButton.style.color = ready ? "#000" : "#cbd5e1";
+        postTossButton.style.cursor = ready ? "pointer" : "not-allowed";
+    };
+    tossWinnerSelect.onchange = refreshPostTossButton;
+    tossDecisionSelect.onchange = refreshPostTossButton;
+    refreshPostTossButton();
 
     // --- NAME MAPPING FOR AI ---
     let modelT1 = canonicalCricketTeamName(t1);
@@ -1811,6 +1857,9 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             if (actualToss?.winner && actualToss?.decision) {
                 preDiv.innerHTML += `<p style="color:#22c55e;font-size:11px;margin-top:5px;">Verified provider toss: ${actualToss.winner} won and elected to ${actualToss.decision === 'bat' ? 'bat' : 'field'}. Post-toss controls pre-filled.</p>`;
             }
+            if (/\b(?:ilt20|international league t20)\b/i.test(String(competitionTitle || ""))) {
+                preDiv.innerHTML += `<p style="color:#fbbf24;font-size:11px;margin-top:7px;">ILT20 note: is season ke liye dedicated model calibration verify nahi hui. Is prediction ko estimate samjhein; confirmed XI aur player availability abhi model inputs nahi hain.</p>`;
+            }
             
             if (type === "T10" && pred.is_default) {
                 preDiv.innerHTML += `<p style="color:#fbbf24;font-size:10px;margin-top:5px;">⚠️ T10 ke liye dedicated trained AI model abhi available nahi. Yeh estimate Elo team ratings par based hai, is liye confidence limited hai.</p>`;
@@ -1825,6 +1874,54 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             }
         }
     } catch (e) { preDiv.innerText = "Error loading prediction."; }
+
+    // 3. POST-TOSS AI CALCULATION
+    document.getElementById('get-prediction-btn').onclick = async () => {
+        const tw = tossWinnerSelect.value;
+        const td = tossDecisionSelect.value;
+        let postDiv = document.getElementById('prediction-result');
+        
+        document.getElementById('post-toss-area').style.display = 'block';
+        postDiv.innerHTML = "Calculating Post-Toss Impact...";
+
+        const predictionKey = getPostTossPredictionKey(tw, t1, t2, td);
+        if (!predictionKey) {
+            postDiv.innerText = "Actual toss winner aur decision select karein. Default toss prediction nahi banayi jayegi.";
+            return;
+        }
+
+        try {
+            const pred = { success: Boolean(predictionData.post_toss?.[predictionKey]), predictions: predictionData.post_toss?.[predictionKey] || {} };
+            if (pred.success) {
+                const p1 = pred.predictions[modelT1], p2 = pred.predictions[modelT2];
+                if (p1 == null || p2 == null || !Number.isFinite(parseFloat(p1)) || !Number.isFinite(parseFloat(p2))) {
+                    postDiv.innerText = "Post-Toss prediction values unavailable for this toss selection. Please verify the selected toss winner and decision.";
+                    return;
+                }
+                let html = `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="color:#00ffcc;">${t1}: <b>${p1}</b></span><span style="color:#ff4d4d;">${t2}: <b>${p2}</b></span></div>`;
+                
+                if (!isLiveMatch) {
+                    let n1 = parseFloat(p1), n2 = parseFloat(p2);
+                    savePrediction(matchId, t1, t2, (n1 > n2 ? t1 : t2), Math.max(n1, n2), match);
+                }
+
+                if (window.prePred) {
+                    const preP1 = window.prePred[modelT1];
+                    const preP2 = window.prePred[modelT2];
+                    const d1 = (parseFloat(p1) - parseFloat(preP1)).toFixed(1);
+                    const d2 = (parseFloat(p2) - parseFloat(preP2)).toFixed(1);
+                    html += `<div style="font-size:12px; border-top:1px solid #334155; padding-top:10px;">Toss Impact:</div>
+                             <div style="display:flex; justify-content:space-between; font-size:12px;">
+                                <span style="color:${d1>0?'#22c55e':(d1<0?'#ef4444':'#94a3b8')}">${t1} (${d1>0?'+':''}${d1}%)</span>
+                                <span style="color:${d2>0?'#22c55e':(d2<0?'#ef4444':'#94a3b8')}">${t2} (${d2>0?'+':''}${d2}%)</span>
+                             </div>`;
+                }
+                postDiv.innerHTML = html;
+            } else {
+                postDiv.innerText = "Post-Toss prediction is unavailable for this toss winner/decision. Please try the other toss option.";
+            }
+        } catch (e) { postDiv.innerText = "Error calculating impact."; }
+    };
 
     // 2. ILMI CALCULATION
     document.getElementById('ilmi-area').style.display = 'block';
@@ -2004,51 +2101,7 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     }
     }
 
-    // 3. POST-TOSS AI CALCULATION
-    document.getElementById('get-prediction-btn').onclick = async () => {
-        const tw = document.getElementById('toss-winner').value;
-        const td = document.getElementById('toss-decision').value;
-        let postDiv = document.getElementById('prediction-result');
-        
-        document.getElementById('post-toss-area').style.display = 'block';
-        postDiv.innerHTML = "Calculating Post-Toss Impact...";
 
-        let modelTw = canonicalCricketTeamName(tw);
-
-        try {
-            const tossSide = modelTw === modelT1 ? 't1' : 't2';
-            const predictionKey = `${tossSide}_${td}`;
-            const pred = { success: Boolean(predictionData.post_toss?.[predictionKey]), predictions: predictionData.post_toss?.[predictionKey] || {} };
-            if (pred.success) {
-                const p1 = pred.predictions[modelT1], p2 = pred.predictions[modelT2];
-                if (p1 == null || p2 == null || !Number.isFinite(parseFloat(p1)) || !Number.isFinite(parseFloat(p2))) {
-                    postDiv.innerText = "Post-Toss prediction values unavailable for this toss selection. Please verify the selected toss winner and decision.";
-                    return;
-                }
-                let html = `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span style="color:#00ffcc;">${t1}: <b>${p1}</b></span><span style="color:#ff4d4d;">${t2}: <b>${p2}</b></span></div>`;
-                
-                if (!isLiveMatch) {
-                    let n1 = parseFloat(p1), n2 = parseFloat(p2);
-                    savePrediction(matchId, t1, t2, (n1 > n2 ? t1 : t2), Math.max(n1, n2), match);
-                }
-
-                if (window.prePred) {
-                    const preP1 = window.prePred[modelT1];
-                    const preP2 = window.prePred[modelT2];
-                    const d1 = (parseFloat(p1) - parseFloat(preP1)).toFixed(1);
-                    const d2 = (parseFloat(p2) - parseFloat(preP2)).toFixed(1);
-                    html += `<div style="font-size:12px; border-top:1px solid #334155; padding-top:10px;">Toss Impact:</div>
-                             <div style="display:flex; justify-content:space-between; font-size:12px;">
-                                <span style="color:${d1>0?'#22c55e':(d1<0?'#ef4444':'#94a3b8')}">${t1} (${d1>0?'+':''}${d1}%)</span>
-                                <span style="color:${d2>0?'#22c55e':(d2<0?'#ef4444':'#94a3b8')}">${t2} (${d2>0?'+':''}${d2}%)</span>
-                             </div>`;
-                }
-                postDiv.innerHTML = html;
-            } else {
-                postDiv.innerText = "Post-Toss prediction is unavailable for this toss winner/decision. Please try the other toss option.";
-            }
-        } catch (e) { postDiv.innerText = "Error calculating impact."; }
-    };
 }
 
 document.addEventListener("DOMContentLoaded", () => { fetchMatches(); });
