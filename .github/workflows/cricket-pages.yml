@@ -84,6 +84,8 @@ jobs:
           cp data/matches.json _site/data/matches.json
           cp data/recent_results.json _site/data/recent_results.json
           cp data/grounds.json _site/data/grounds.json
+          cp data/team_aliases.json _site/data/team_aliases.json
+          test -s _site/data/team_aliases.json
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
