@@ -607,13 +607,15 @@ function transliterateIlmiName(value) {
 }
 
 function getUrduTeamName(value) {
-    if (urduTeams[value]) return urduTeams[value];
-    const normalized = normalizeIlmiName(value);
+    const raw = String(value || "").trim();
+    const canonical = canonicalCricketTeamName(raw) || raw;
+    if (urduTeams[canonical]) return urduTeams[canonical];
+    if (urduTeams[raw]) return urduTeams[raw];
+    const normalized = normalizeIlmiName(canonical);
     const key = Object.keys(urduTeams).find(k => normalizeIlmiName(k) === normalized);
     if (key) return urduTeams[key];
-    const raw = String(value || "").trim();
-    if (/\s+women$/i.test(raw)) {
-        const base = raw.replace(/\s+women$/i, "").trim();
+    if (/\s+women$/i.test(canonical)) {
+        const base = canonical.replace(/\s+women$/i, "").trim();
         if (urduTeams[base]) return urduTeams[base] + " ویمن";
     }
     return "";
@@ -1006,7 +1008,8 @@ function isIlmiInternationalTeam(name) {
     return ilmiInternationalTeams.has(aliases[key] || key);
 }
 function ilmiCaptainForEligibility(name, format) {
-    const normalized = normalizeIlmiName(name);
+    const canonical = canonicalCricketTeamName(name) || String(name || "").trim();
+    const normalized = normalizeIlmiName(canonical);
     const internationalKey = Object.keys(internationalCaptains)
         .find(key => normalizeIlmiName(key) === normalized);
     if (internationalKey) return internationalCaptains[internationalKey][format === "T10" ? "T20" : format] || "";
@@ -2023,7 +2026,8 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
     let capT2_Name = "";
 
     const captainFor = name => {
-        const exactName = String(name || "").trim();
+        const rawName = String(name || "").trim();
+        const exactName = canonicalCricketTeamName(rawName) || rawName;
         const normalizedName = normalizeIlmiName(exactName);
         const internationalKey = Object.keys(internationalCaptains)
             .find(key => normalizeIlmiName(key) === normalizedName);
