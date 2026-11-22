@@ -237,7 +237,9 @@ Object.assign(urduTeams, {
     "Dubai Capitals": "دبئی کیپیٹلز",
     "Gulf Giants": "گلف جائنٹس",
     "MI Emirates": "ایم آئی ایمریٹس",
-    "Sharjah Warriorz": "شارجہ واریئرز"
+    "Sharjah Warriorz": "شارجہ واریئرز",
+    // Provider feeds sometimes spell the franchise as "Sharjah Warriors".
+    "Sharjah Warriors": "شارجہ واریئرز"
 });
 
 // --- ADDITIONAL INTERNATIONAL WOMEN + ASSOCIATE + LEAGUE TEAM NAMES ---
@@ -879,6 +881,8 @@ const teamCaptains = {
     "Gulf Giants": "Heinrich Klaasen",
     "MI Emirates": "Nicholas Pooran",
     "Sharjah Warriorz": "Sikandar Raza",
+    // Provider feed spelling alias; same franchise and captain record.
+    "Sharjah Warriors": "Sikandar Raza",
     "Biratnagar Kings": "Sandeep Lamichhane",
     "Chitwan Rhinos": "Kushal Malla",
     "Janakpur Bolts": "Harmeet Singh",
