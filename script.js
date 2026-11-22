@@ -225,6 +225,7 @@ const urduTeams = {
     "Gulf Giants": "گلف جائنٹس",
     "MI Emirates": "ایم آئی ایمریٹس",
     "Sharjah Warriorz": "شارجہ واریئرز",
+    "Sharjah Warriors": "شارجہ واریئرز",
     "Hobart Hurricanes Women": "ہوبارٹ ہریکینز ویمن",
     "Melbourne Renegades Women": "میلبرن رینیگیڈز ویمن",
     "Melbourne Stars Women": "میلبرن اسٹارز ویمن"
@@ -1822,6 +1823,26 @@ function renderMatches(matches) {
 // ==========================================
 // MAIN PREDICTION MODAL LOGIC
 // ==========================================
+function getTeamPredictionValue(predictions, rawTeamName, canonicalTeamName) {
+    if (!predictions || typeof predictions !== "object") return null;
+    const keys = [rawTeamName, canonicalTeamName].filter(Boolean);
+    for (const key of keys) {
+        if (Object.prototype.hasOwnProperty.call(predictions, key)) {
+            const value = Number(predictions[key]);
+            if (Number.isFinite(value)) return value;
+        }
+    }
+    const matchingKey = Object.keys(predictions).find(key =>
+        cricketTeamNamesEquivalent(key, rawTeamName) ||
+        cricketTeamNamesEquivalent(key, canonicalTeamName)
+    );
+    if (matchingKey) {
+        const value = Number(predictions[matchingKey]);
+        if (Number.isFinite(value)) return value;
+    }
+    return null;
+}
+
 async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '', venueMeta = {}, matchContext = {}, predictionData = {}, match = {}) {
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
@@ -1866,7 +1887,13 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
         
         if (pred.success) {
             window.prePred = pred.predictions; 
-            preDiv.innerHTML = `<div style="display:flex; justify-content:space-between;"><span style="color:#00ffcc;">${t1}: <b>${pred.predictions[modelT1]}</b></span><span style="color:#ff4d4d;">${t2}: <b>${pred.predictions[modelT2]}</b></span></div>`;
+            const preP1 = getTeamPredictionValue(pred.predictions, t1, modelT1);
+            const preP2 = getTeamPredictionValue(pred.predictions, t2, modelT2);
+            if (preP1 === null || preP2 === null) {
+                preDiv.innerHTML = '<span style="color:#fbbf24;">Pre-toss probability unavailable: team keys did not match the prediction snapshot. No undefined values shown.</span>';
+            } else {
+                preDiv.innerHTML = `<div style="display:flex; justify-content:space-between;"><span style="color:#00ffcc;">${t1}: <b>${preP1.toFixed(2)}%</b></span><span style="color:#ff4d4d;">${t2}: <b>${preP2.toFixed(2)}%</b></span></div>`;
+            }
             if (actualToss?.winner && actualToss?.decision) {
                 preDiv.innerHTML += `<p style="color:#22c55e;font-size:11px;margin-top:5px;">Verified provider toss: ${actualToss.winner} won and elected to ${actualToss.decision === 'bat' ? 'bat' : 'field'}. Post-toss controls pre-filled.</p>`;
             }
@@ -1881,9 +1908,12 @@ async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveM
             }
 
             if (!isLiveMatch) {
-                let p1 = parseFloat(pred.predictions[modelT1]), p2 = parseFloat(pred.predictions[modelT2]);
-                let winner = p1 > p2 ? t1 : t2;
-                savePrediction(matchId, t1, t2, winner, Math.max(p1, p2), match);
+                const p1 = getTeamPredictionValue(pred.predictions, t1, modelT1);
+                const p2 = getTeamPredictionValue(pred.predictions, t2, modelT2);
+                if (p1 !== null && p2 !== null) {
+                    let winner = p1 > p2 ? t1 : t2;
+                    savePrediction(matchId, t1, t2, winner, Math.max(p1, p2), match);
+                }
             }
         }
     } catch (e) { preDiv.innerText = "Error loading prediction."; }
