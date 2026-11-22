@@ -1844,6 +1844,8 @@ function getTeamPredictionValue(predictions, rawTeamName, canonicalTeamName) {
 }
 
 async function openPredictModal(t1, t2, venue, type, matchId, startTime, isLiveMatch, city, country, competitionTitle = '', venueTimezoneHint = '', venueMeta = {}, matchContext = {}, predictionData = {}, match = {}) {
+    // Load provider aliases before resolving snapshot keys, Urdu names, or captains.
+    await ensureCricketTeamAliases();
     document.getElementById('prediction-modal').style.display = 'flex';
     document.getElementById('modal-match-name').innerText = `${t1} vs ${t2} (${type})`;
     document.getElementById('modal-venue').innerText = `🏟️ ${venue}`;
