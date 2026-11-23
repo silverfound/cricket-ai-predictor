@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "Expanded worldwide cricket ground directory. All records require user verification.",
+  "description": "Worldwide cricket ground registry. Weather matching uses only verified records and unambiguous aliases.",
   "count": 238,
   "grounds": [
     {
