@@ -27,7 +27,7 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Validate source syntax, tests, and immutable model artifacts
         run: |
-          python -m py_compile scripts/update_matches.py scripts/provider_fallbacks.py scripts/prediction_formats.py scripts/audit_prediction_models.py
+          python -m py_compile scripts/update_matches.py scripts/provider_fallbacks.py scripts/prediction_formats.py scripts/audit_prediction_models.py scripts/enrich_match_context.py
           python -m unittest discover -s tests -v
           python scripts/audit_t10_data.py
           python scripts/audit_prediction_models.py
@@ -61,12 +61,21 @@ jobs:
           key: recent-results-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
             recent-results-
+      - name: Restore optional weather cache
+        uses: actions/cache@v4
+        with:
+          path: data/match_context_cache.json
+          key: match-context-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            match-context-
       - name: Fetch all allowed provider pages and compute prediction snapshots
         env:
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           CRICKETDATA_API_KEY: ${{ secrets.CRICKETDATA_API_KEY }}
           SECONDARY_API_KEY: ${{ secrets.SECONDARY_API_KEY }}
         run: python scripts/update_matches.py
+      - name: Build optional match context (weather and explicit provider fields)
+        run: python scripts/enrich_match_context.py
       - name: Check generated snapshot, frontend, and immutable model files
         run: |
           test -s data/matches.json
@@ -84,6 +93,7 @@ jobs:
           cp data/matches.json _site/data/matches.json
           cp data/recent_results.json _site/data/recent_results.json
           cp data/grounds.json _site/data/grounds.json
+          cp data/match_context.json _site/data/match_context.json
           cp data/team_aliases.json _site/data/team_aliases.json
           test -s _site/data/team_aliases.json
           touch _site/.nojekyll
