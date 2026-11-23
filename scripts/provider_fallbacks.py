@@ -159,6 +159,24 @@ def _attach_match_details(fixture, item):
         fixture["toss_winner"] = _name(toss_winner)
     if toss_decision:
         fixture["toss_decision"] = toss_decision
+
+    # Preserve optional context only when a provider explicitly supplies it.
+    # A squad/team roster is deliberately not treated as a confirmed playing XI.
+    context_fields = (
+        ("playing_xi", ("confirmedPlayingXI", "confirmed_playing_xi", "playingXI",
+                        "playing_xi", "playing11", "playing_11")),
+        ("pitch_report", ("pitchReport", "pitch_report", "pitchCondition", "pitch_condition")),
+        ("player_availability", ("playerAvailability", "player_availability",
+                                 "unavailablePlayers", "unavailable_players",
+                                 "injuryReport", "injury_report", "injuries")),
+    )
+    for target, keys in context_fields:
+        for key in keys:
+            value = item.get(key)
+            if value not in (None, "", [], {}):
+                fixture[target] = value
+                fixture["context_provider_source"] = fixture.get("provider_source")
+                break
     return fixture
 
 
@@ -228,7 +246,7 @@ def normalize_highlightly(payload):
         fixture["status_str"] = str(status)
         if status_note:
             fixture["status_note"] = str(status_note)
-        fixtures.append(fixture)
+        fixtures.append(_attach_match_details(fixture, item))
     fixtures = [item for item in fixtures if item]
     if not fixtures:
         raise ValueError("Highlightly returned no fixtures with two valid team names")
