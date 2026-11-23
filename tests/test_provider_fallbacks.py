@@ -188,6 +188,36 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         ]
         self.assertTrue(all(not is_indian_domestic_fixture(item) for item in fixtures))
 
+    def test_explicit_context_fields_are_preserved_without_inference(self):
+        payload = {
+            "status": "success",
+            "data": [{
+                "id": "cd-context", "matchType": "t20",
+                "teams": ["Team A", "Team B"],
+                "playingXI": [{"name": "Player A"}],
+                "pitchReport": {"type": "dry"},
+                "injuryReport": {"out": ["Player B"]},
+            }],
+        }
+        [fixture] = normalize_cricketdata(payload)
+        self.assertEqual(fixture["playing_xi"], [{"name": "Player A"}])
+        self.assertEqual(fixture["pitch_report"], {"type": "dry"})
+        self.assertEqual(fixture["player_availability"], {"out": ["Player B"]})
+        self.assertEqual(fixture["context_provider_source"], "CricketData")
+
+    def test_squad_or_team_info_is_not_mislabeled_as_confirmed_xi(self):
+        payload = {
+            "status": "success",
+            "data": [{
+                "id": "cd-squad", "matchType": "t20",
+                "teams": ["Team A", "Team B"],
+                "teamInfo": [{"name": "Team A", "shortname": "A"}],
+            }],
+        }
+        [fixture] = normalize_cricketdata(payload)
+        self.assertNotIn("playing_xi", fixture)
+        self.assertNotIn("player_availability", fixture)
+
     def test_error_or_empty_provider_payload_is_rejected(self):
         with self.assertRaises(ValueError):
             normalize_cricketdata({"status": "failure", "data": []})
