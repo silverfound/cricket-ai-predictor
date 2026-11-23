@@ -205,6 +205,22 @@ class ProviderFallbackAdapterTests(unittest.TestCase):
         self.assertEqual(fixture["player_availability"], {"out": ["Player B"]})
         self.assertEqual(fixture["context_provider_source"], "CricketData")
 
+    def test_highlightly_explicit_match_context_fields_are_preserved(self):
+        payload = {
+            "data": [{
+                "id": "hl-context",
+                "homeTeam": {"name": "Team A"}, "awayTeam": {"name": "Team B"},
+                "format": "T20", "playing_xi": [{"name": "Player A"}],
+                "pitch_report": "Dry surface",
+                "player_availability": {"unavailable": ["Player B"]},
+            }],
+        }
+        [fixture] = normalize_highlightly(payload)
+        self.assertEqual(fixture["playing_xi"], [{"name": "Player A"}])
+        self.assertEqual(fixture["pitch_report"], "Dry surface")
+        self.assertEqual(fixture["player_availability"], {"unavailable": ["Player B"]})
+        self.assertEqual(fixture["context_provider_source"], "Highlightly")
+
     def test_squad_or_team_info_is_not_mislabeled_as_confirmed_xi(self):
         payload = {
             "status": "success",
