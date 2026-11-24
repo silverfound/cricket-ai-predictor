@@ -1,7 +1,7 @@
 name: Refresh cricket data and deploy Pages
 on:
   schedule:
-    - cron: "7,22,37,52 * * * *"
+    - cron: "11,26,41,56 * * * *"
   workflow_dispatch:
   pull_request:
     branches: [main]
