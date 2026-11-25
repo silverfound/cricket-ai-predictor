@@ -39,13 +39,10 @@ jobs:
           test "$(git hash-object latest_elo_ratings.joblib)" = "ba9b707b9bb4915e812fd3b310616059154b0bf5"
           test "$(git hash-object category_mappings.joblib)" = "682ae8a0568d4c2a88282ca78f5785ca0f761b7e"
           test "$(git hash-object toss_stats.joblib)" = "e9952cb3c51a2c7b0843bd67bbacceac112a6fbc"
-  refresh-and-deploy:
+  build-and-upload:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     needs: validate
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -100,49 +97,14 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
-      - name: Wait for GitHub Pages artifact visibility
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPOSITORY: ${{ github.repository }}
-          GH_RUN_ID: ${{ github.run_id }}
-        run: |
-          python - <<'PY'
-          import json
-          import os
-          import time
-          import urllib.request
-
-          url = (
-              f"https://api.github.com/repos/{os.environ['GH_REPOSITORY']}"
-              f"/actions/runs/{os.environ['GH_RUN_ID']}/artifacts"
-          )
-          request = urllib.request.Request(
-              url,
-              headers={
-                  "Accept": "application/vnd.github+json",
-                  "Authorization": f"Bearer {os.environ['GH_TOKEN']}",
-                  "X-GitHub-Api-Version": "2022-11-28",
-              },
-          )
-          for attempt in range(1, 13):
-              try:
-                  with urllib.request.urlopen(request, timeout=15) as response:
-                      payload = json.load(response)
-                  artifacts = payload.get("artifacts", [])
-                  if any(
-                      item.get("name") == "github-pages"
-                      and not item.get("expired", False)
-                      for item in artifacts
-                  ):
-                      print(f"github-pages artifact visible (attempt {attempt}).")
-                      break
-                  print(f"Artifact not visible yet (attempt {attempt}/12).")
-              except Exception as exc:
-                  print(f"Artifact API check {attempt}/12: {exc}")
-              if attempt == 12:
-                  raise SystemExit("github-pages artifact did not become visible.")
-              time.sleep(5)
-          PY
+  deploy:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    needs: build-and-upload
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
